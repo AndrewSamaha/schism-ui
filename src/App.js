@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import { Button } from './stories/atoms/Button/Button';
 
 import React from "react";
 import {
@@ -8,6 +9,41 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql
+} from "@apollo/client";
+
+const GET_ALL_PLAYERS = gql`
+  query getAllPlayers {
+    getAllPlayers {
+      id
+      name
+      gameState {
+        position {
+          x
+          y
+          z
+        }
+      }
+    }
+  }
+`;
+function AllPlayers() {
+  const { loading, error, data } = useQuery(GET_ALL_PLAYERS);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+  return data.getAllPlayers.map(({ id, name }) => (
+    <div key={id}>
+      <p>
+        {id}: {name}
+      </p>
+    </div>
+  ));
+}
 
 function App() {
   return (
@@ -40,7 +76,12 @@ function App() {
 }
 
 function Home() {
-  return <h2>Home</h2>;
+  return (
+    <div>
+      <h2>Home</h2>
+      <Button label="Button" primary="true"></Button>
+    </div>
+  );
 }
 
 function About() {
@@ -48,7 +89,12 @@ function About() {
 }
 
 function Users() {
-  return <h2>Users</h2>;
+  return (
+    <div>
+      <h2>Users</h2>
+      <AllPlayers />
+    </div>
+  );
 }
 
 export default App;
