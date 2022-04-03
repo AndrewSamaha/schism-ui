@@ -16,6 +16,7 @@ import {
   useQuery,
   gql
 } from "@apollo/client";
+import { Home } from './stories/pages/Home/Home';
 import { Login } from './stories/pages/Login/Login';
 
 import GET_ALL_PLAYERS from './graph/queries';
@@ -37,20 +38,6 @@ function App() {
   return (
     <Router>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/users">Users</Link>
-            </li>
-          </ul>
-        </nav>
-
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Routes>
@@ -61,15 +48,6 @@ function App() {
         </Routes>
       </div>
     </Router>
-  );
-}
-
-function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-      <Button label="Button" primary="true"></Button>
-    </div>
   );
 }
 
