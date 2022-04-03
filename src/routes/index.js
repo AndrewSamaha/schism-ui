@@ -7,6 +7,7 @@
 const fileHandler = {
     testNothing: console.log('fileHandler'),
     handler: (req, res) => {
+        console.log('boop');
         console.log(res.file('index.html'));
         return res.file('index.html');
     }

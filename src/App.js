@@ -16,22 +16,10 @@ import {
   useQuery,
   gql
 } from "@apollo/client";
+import { Login } from './stories/pages/Login/Login';
 
-const GET_ALL_PLAYERS = gql`
-  query getAllPlayers {
-    getAllPlayers {
-      id
-      name
-      gameState {
-        position {
-          x
-          y
-          z
-        }
-      }
-    }
-  }
-`;
+import GET_ALL_PLAYERS from './graph/queries';
+
 function AllPlayers() {
   const { loading, error, data } = useQuery(GET_ALL_PLAYERS);
   if (loading) return <p>Loading...</p>;
@@ -69,6 +57,7 @@ function App() {
           <Route path="/about" element={<About/>} />
           <Route path="/users" element={<Users/>} />
           <Route path="/" element={<Home/>} />
+          <Route path="/login" element={<Login/>} />
         </Routes>
       </div>
     </Router>

@@ -1,18 +1,18 @@
 import React from 'react';
 import { within, userEvent } from '@storybook/testing-library';
 
-import { Page } from './Page';
+import { Login } from './Login';
 
 export default {
-  title: 'Pages/Page',
-  component: Page,
+  title: 'Pages/Login',
+  component: Login,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'fullscreen',
   },
 };
 
-const Template = (args) => <Page {...args} />;
+const Template = (args) => <Login {...args} />;
 
 // More on interaction testing: https://storybook.js.org/docs/react/writing-tests/interaction-testing
 export const LoggedOut = Template.bind({});
