@@ -1,16 +1,18 @@
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { Header } from '../../organisms/Header/Header';
+
 import './home.css';
 
 export const Home = () => {
   const [user, setUser] = React.useState();
-
+  const navigate = useNavigate();
+  
   return (
     <article>
       <Header
         user={user}
-        onLogin={() => setUser({ name: 'Jane Doe' })}
+        onLogin={() => navigate('/login')} // setUser({ name: 'Jane Doe' })}
         onLogout={() => setUser(undefined)}
         onCreateAccount={() => setUser({ name: 'Jane Doe' })}
       />
