@@ -1,10 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { Button } from '../../atoms/Button/Button';
 import { LogoSVG } from '../../atoms/LogoSVG/LogoSVG';
 import './header.css';
 
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+    
 export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) => (
   <header>
     <div className="wrapper">

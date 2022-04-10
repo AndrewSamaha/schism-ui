@@ -1,24 +1,47 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { useNavigate, withRouter } from 'react-router-dom';
 import { Header } from '../../organisms/Header/Header';
+import { Canvas, useFrame } from '@react-three/fiber';
 
 import './home.css';
 
+function Box(props) {
+  // This reference gives us direct access to the THREE.Mesh object
+  const ref = useRef()
+  // Hold state for hovered and clicked events
+  const [hovered, hover] = useState(false)
+  const [clicked, click] = useState(false)
+  // Subscribe this component to the render-loop, rotate the mesh every frame
+  useFrame((state, delta) => (ref.current.rotation.x += 0.01))
+  // Return the view, these are regular Threejs elements expressed in JSX
+  return (
+    <mesh
+      {...props}
+      ref={ref}
+      scale={clicked ? 1.5 : 1}
+      onClick={(event) => click(!clicked)}
+      onPointerOver={(event) => hover(true)}
+      onPointerOut={(event) => hover(false)}>
+      <boxGeometry args={[2, 2, 2]} />
+      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+    </mesh>
+  )
+}
+
 export const Home = () => {
   const [user, setUser] = React.useState();
-  const navigate = useNavigate();
-  
+
   return (
     <article>
       <Header
         user={user}
-        onLogin={() => navigate('/login')} // setUser({ name: 'Jane Doe' })}
+        onLogin={() => window.location = '/login'} // navigate('/login')} // setUser({ name: 'Jane Doe' })}
         onLogout={() => setUser(undefined)}
         onCreateAccount={() => setUser({ name: 'Jane Doe' })}
       />
 
       <section>
-        <h2>Pages in Storybook</h2>
+        <h2>Schism</h2>
         <p>
           We recommend building UIs with a{' '}
           <a href="https://componentdriven.org" target="_blank" rel="noopener noreferrer">
@@ -26,6 +49,12 @@ export const Home = () => {
           </a>{' '}
           process starting with atomic components and ending with pages.
         </p>
+        <Canvas class="homedemo">
+          <ambientLight />
+          <pointLight position={[10, 10, 10]} />
+          <Box position={[-1.6, 0, 0]} />
+          <Box position={[1.6, 0, 0]} />
+        </Canvas>
         <p>
           Render pages with mock data. This makes it easy to build and review page states without
           needing to navigate to them in your app. Here are some handy patterns for managing page

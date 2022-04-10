@@ -1,10 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 import { Button } from './stories/atoms/Button/Button';
-
 import React from "react";
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
+  Router,
   Routes,
   Route,
   Link
@@ -36,7 +36,7 @@ function AllPlayers() {
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <div>
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
@@ -47,7 +47,7 @@ function App() {
           <Route path="/login" element={<Login/>} />
         </Routes>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 

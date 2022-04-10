@@ -12,6 +12,9 @@ export const Login = () => {
       <Header
         showLogin={false}
         user={null}
+        onLogin={() => true}
+        onCreateAccount={() => true}
+        onLogout={() => true}
       />
 
       <section>
