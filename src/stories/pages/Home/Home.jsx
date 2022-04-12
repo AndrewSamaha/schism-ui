@@ -42,14 +42,7 @@ export const Home = () => {
 
       <section>
         <h2>Schism</h2>
-        <p>
-          We recommend building UIs with a{' '}
-          <a href="https://componentdriven.org" target="_blank" rel="noopener noreferrer">
-            <strong>component-driven</strong>
-          </a>{' '}
-          process starting with atomic components and ending with pages.
-        </p>
-        <Canvas class="homedemo">
+        <Canvas className="homedemo">
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
           <Box position={[-1.6, 0, 0]} />

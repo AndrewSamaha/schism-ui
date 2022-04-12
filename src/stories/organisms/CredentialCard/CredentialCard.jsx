@@ -5,7 +5,7 @@ import Container from '@mui/material/Container';
 import { Button } from '../../atoms/Button/Button';
 
 export const CredentialCard = () => (
-  <Container maxWidth="sm" class="credential">
+  <Container maxWidth="sm" className="credential">
     
     <TextField id="username" label="Username" variant="outlined" /><br/>
     <TextField id="password" label="Password" variant="outlined" type="password" /><br/>
