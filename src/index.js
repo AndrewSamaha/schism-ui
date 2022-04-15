@@ -4,6 +4,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import UserContext from './contexts/UserContext';
 
 import { ApolloClient, createHttpLink, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
@@ -31,6 +32,11 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+const user = {
+  id: 0,
+  name: null
+};
+
 
 const container = document.getElementById('root');
 
@@ -40,9 +46,11 @@ const root = ReactDOMClient.createRoot(container);
 // Initial render: Render an element to the root.
 root.render(
   <React.StrictMode>
-     <ApolloProvider client={client}>
-        <App />
-    </ApolloProvider>
+    <UserContext.Provider value={user}>
+      <ApolloProvider client={client}>
+          <App />
+      </ApolloProvider>
+    </UserContext.Provider>
   </React.StrictMode>
 );
 

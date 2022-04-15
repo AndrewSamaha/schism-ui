@@ -23,8 +23,13 @@ mutation login($name: String!, $password: String!) {
 
 export const CredentialCard = () => {
   const [login, { data, loading, error }] = useMutation(LOGIN, {onCompleted: (data) => {
-    localStorage.setItem('authorization',data.login.authToken);    
-    console.log({data})
+    if (data?.login?.__typename === 'Player') {
+      localStorage.setItem('authorization',data.login.authToken);
+      localStorage.setItem('player', data.login.name)
+      console.log('login successful');
+      return;
+    }
+    console.log('login failed');
   }});
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');

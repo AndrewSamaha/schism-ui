@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '../../atoms/Button/Button';
 import { LogoSVG } from '../../atoms/LogoSVG/LogoSVG';
 import './header.css';
+import UserContext from '../../../contexts/UserContext';
 
 import {
   useLocation,
@@ -10,7 +11,11 @@ import {
   useParams,
 } from "react-router-dom";
     
-export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) => (
+export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) => {
+  const contextUser = useContext(UserContext);
+  const { name } = contextUser;
+  console.log({name});
+  return (
   <header>
     <div className="wrapper">
       <div>
@@ -19,7 +24,7 @@ export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) 
       </div>
       <div>
         {showLogin ? (
-          user ? (
+          name ? (
           <>
             <span className="welcome">
               Welcome, <b>{user.name}</b>!
@@ -36,7 +41,7 @@ export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) 
       </div>
     </div>
   </header>
-);
+)};
 
 Header.propTypes = {
   showLogin: PropTypes.bool,
