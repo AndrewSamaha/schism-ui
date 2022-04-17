@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from '../../atoms/Button/Button';
 import { LogoSVG } from '../../atoms/LogoSVG/LogoSVG';
 import './header.css';
-import UserContext from '../../../contexts/UserContext';
+import { UserContext } from '../../../contexts/UserContext';
 
 import {
   useLocation,
@@ -14,9 +14,11 @@ import {
 export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) => {
   const contextUser = useContext(UserContext);
   const { name } = contextUser;
-  console.log({name});
+  console.log({contextUser});
+  console.log({Header: name});
   return (
   <header>
+    
     <div className="wrapper">
       <div>
         <LogoSVG />
@@ -27,7 +29,7 @@ export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) 
           name ? (
           <>
             <span className="welcome">
-              Welcome, <b>{user.name}</b>!
+              Welcome,  <b>{name}</b>!
             </span>
             <Button size="small" onClick={onLogout} label="Log out" />
           </>
@@ -40,6 +42,7 @@ export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) 
       }
       </div>
     </div>
+    
   </header>
 )};
 

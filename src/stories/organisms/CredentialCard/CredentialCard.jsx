@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import './CredentialCard.css';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { Button } from '../../atoms/Button/Button';
+import { userReducer, initialState } from '../../../contexts/UserContext';
 
 const LOGIN = gql`
 # Increments a back-end counter and gets its resulting value
@@ -22,11 +23,20 @@ mutation login($name: String!, $password: String!) {
 `;
 
 export const CredentialCard = () => {
+  const [state, dispatch] = useReducer(userReducer, initialState);
   const [login, { data, loading, error }] = useMutation(LOGIN, {onCompleted: (data) => {
     if (data?.login?.__typename === 'Player') {
       localStorage.setItem('authorization',data.login.authToken);
       localStorage.setItem('player', data.login.name)
+      dispatch({
+        type: 'login',
+        user: {
+          id: data.login.id,
+          name: data.login.name
+        }
+      });
       console.log('login successful');
+      console.log({state});
       return;
     }
     console.log('login failed');

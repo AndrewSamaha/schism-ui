@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useReducer } from 'react';
 import { useNavigate, withRouter } from 'react-router-dom';
 import { Header } from '../../organisms/Header/Header';
 import { Canvas, useFrame } from '@react-three/fiber';
-
+import { UserContext, userReducer, initialState } from '../../../contexts/UserContext';
 import './home.css';
 
 function Box(props) {
@@ -30,13 +30,16 @@ function Box(props) {
 
 export const Home = () => {
   const [user, setUser] = React.useState();
+  const [state, dispatch] = useReducer(userReducer, initialState);
 
   return (
     <article>
       <Header
         user={user}
         onLogin={() => window.location = '/login'} // navigate('/login')} // setUser({ name: 'Jane Doe' })}
-        onLogout={() => setUser(undefined)}
+        onLogout={() => {
+            dispatch({type: 'logout'})
+        }}
         onCreateAccount={() => setUser({ name: 'Jane Doe' })}
       />
 

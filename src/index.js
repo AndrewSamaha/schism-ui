@@ -4,7 +4,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import UserContext from './contexts/UserContext';
+import { UserContext, userReducer, initialState } from './contexts/UserContext';
 
 import { ApolloClient, createHttpLink, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
@@ -34,9 +34,16 @@ const client = new ApolloClient({
 
 const user = {
   id: 0,
-  name: null
+  name: localStorage.getItem('player') || null
 };
 
+const action = {
+  type: 'login',
+  user: {
+    id: 1,
+    name: 'Super Man'
+  }
+};
 
 const container = document.getElementById('root');
 
