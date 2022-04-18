@@ -1,3 +1,7 @@
+#header {
+  position: sticky;
+}
+
 .wrapper {
   font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -5,6 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  
 }
 
 svg {

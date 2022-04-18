@@ -18,6 +18,7 @@ import {
 } from "@apollo/client";
 import { Home } from './stories/pages/Home/Home';
 import { Login } from './stories/pages/Login/Login';
+import { Play } from './stories/pages/Play/Play';
 
 import GET_ALL_PLAYERS from './graph/queries';
 
@@ -45,6 +46,7 @@ function App() {
           <Route path="/users" element={<Users/>} />
           <Route path="/" element={<Home/>} />
           <Route path="/login" element={<Login/>} />
+          <Route path="/play" element={<Play/>} />
         </Routes>
       </div>
     </BrowserRouter>

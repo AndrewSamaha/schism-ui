@@ -50,16 +50,29 @@ export const CredentialCard = () => {
 
   return (
   <Container maxWidth="sm" className="credential">
-      <TextField id="name" label="Username" variant="outlined" onChange={(event) => setName(event.target.value)} /><br/>
-      <TextField id="password" label="Password" variant="outlined" type="password" onChange={(event) => setPassword(event.target.value)} /><br/>
-      <Button label="Login" onClick={() => {
+      <TextField 
+        id="name" 
+        label="Username" 
+        variant="outlined" 
+        onChange={(event) => setName(event.target.value)} 
+        style={{paddingBottom: '10px'}}
+      />
+      <TextField
+        id="password"
+        label="Password"
+        variant="outlined"
+        type="password"
+        onChange={(event) => setPassword(event.target.value)}
+        style={{paddingLeft: '10px', paddingBottom: '10px'}}
+      /><br/>
+      <Button
+        label="Login"
+        onClick={() => {
           console.log('sending login');
           login({ variables: { name, password } });
           console.log({data});
-        }} />
-    data: {data}<br/>
-    loading: {loading}<br/>
-    error: {error}<br/>
+        }}
+      />
   </Container>
   );
 }

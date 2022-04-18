@@ -21,7 +21,7 @@ function userReducer(state, action) {
             return loginFromCookie;
         case 'login':
             console.log({function: userReducer, user: action.user});
-            window.location = '/';
+            window.location = '/play';
             return action.user;
         case 'logout':
             localStorage.removeItem('player');
