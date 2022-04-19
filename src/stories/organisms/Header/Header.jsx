@@ -17,9 +17,9 @@ export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) 
   console.log({contextUser});
   console.log({Header: name});
   return (
-  <header>
+  <header style={{position: 'sticky', top: '0', zIndex: '10', backgroundColor: 'white'}}>
     
-    <div className="wrapper">
+    <div className="wrapper" style={{position: 'sticky'}}>
       <div>
         <LogoSVG />
         <h1>Schism</h1>

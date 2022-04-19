@@ -42,7 +42,7 @@ export const Play = () => {
         }}
         onCreateAccount={() => setUser({ name: 'Jane Doe' })}
       />
-      <Canvas className="homedemo" style={{width: '100%', height: '100%'}}>
+      <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
         <Box position={[-1.6, 0, 0]} />
