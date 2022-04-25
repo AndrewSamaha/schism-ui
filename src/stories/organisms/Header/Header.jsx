@@ -11,7 +11,7 @@ import {
   useParams,
 } from "react-router-dom";
     
-export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) => {
+export const Header = ({ showLogin, onLogin, onLogout, onCreateAccount }) => {
   const contextUser = useContext(UserContext);
   const { name } = contextUser;
   console.log({contextUser});
@@ -48,10 +48,9 @@ export const Header = ({ showLogin, user, onLogin, onLogout, onCreateAccount }) 
 
 Header.propTypes = {
   showLogin: PropTypes.bool,
-  user: PropTypes.shape({}),
   onLogin: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  onCreateAccount: PropTypes.func.isRequired,
+  // onCreateAccount: PropTypes.func.isRequired,
 };
 
 Header.defaultProps = {
