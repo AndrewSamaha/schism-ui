@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { Button } from '../../atoms/Button/Button';
 import { userReducer, initialState } from '../../../contexts/UserContext';
+// import { gameReducer } from '../../../contexts/GameContext';
 
 const LOGIN = gql`
 # Increments a back-end counter and gets its resulting value
