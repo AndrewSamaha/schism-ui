@@ -1,28 +1,40 @@
 import { createContext } from 'react';
+import { defaultStartingLocation } from '../constants/clientGame';
 
 const UserContext = createContext();
 
 const loggedOut = {
     id: 0,
-    name: null
+    name: null,
+    viewportWorldLocation: defaultStartingLocation
 };
 
 const initialState = { ...loggedOut };
 
 function userReducer(state, action) {
     let newState;
-    console.log({actionType: action.type});
+    console.log('userReducer');
+    console.log({actionType: action.type, state});
     switch (action.type) {
         case 'loginFromCookie':
             const loginFromCookie = {
-                id: 0,
-                name: localStorage.getItem('player') || loggedOut.name
+                ...initialState,
+                name: localStorage.getItem('player') || initialState.name
             }
+            console.log({loginFromCookie});
+            debugger;
             return loginFromCookie;
         case 'login':
             console.log({function: userReducer, user: action.user});
-            window.location = '/play';
-            return action.user;
+            
+            const login = {
+                ...initialState,
+                ...action.user
+            };
+            console.log({login});
+            window.location = '/play'; // the code stops running once this happens..fffff
+            debugger;
+            return login;
         case 'logout':
             localStorage.removeItem('player');
             window.location = '/'
@@ -34,9 +46,6 @@ function userReducer(state, action) {
     }
     return loggedOut;
 }
-
-// export default UserContext;
-// export default.userReducer = userReducer;
 
 export {
     UserContext,

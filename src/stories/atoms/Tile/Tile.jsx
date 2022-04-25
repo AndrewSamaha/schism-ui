@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import Grass from '../../assets/textures/grass/grass1.jpg';
+import { TileGeometry } from '../../../constants/viewport';
 import './Tile.css';
+import { tileTextures } from '../../../constants/tiles';
 
 export const Tile = (props) => {
   // This reference gives us direct access to the THREE.Mesh object
@@ -38,7 +40,7 @@ Tile.propTypes = {
 }
 
 Tile.defaultProps = {
-    geometry: [1, 1],
+    geometry: TileGeometry,
     scale: 1,
     color: 'blue',
     withCanvas: true

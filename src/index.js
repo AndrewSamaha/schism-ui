@@ -4,10 +4,11 @@ import * as ReactDOMClient from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { UserContext, userReducer, initialState } from './contexts/UserContext';
-
+import { UserContext } from './contexts/UserContext';
+import { GameContext } from './contexts/GameContext';
 import { ApolloClient, createHttpLink, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
+import { createClientGameState } from './mock/gameState';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/',
@@ -45,6 +46,8 @@ const action = {
   }
 };
 
+const gameState = createClientGameState();
+
 const container = document.getElementById('root');
 
 // Create a root.
@@ -54,9 +57,11 @@ const root = ReactDOMClient.createRoot(container);
 root.render(
   <React.StrictMode>
     <UserContext.Provider value={user}>
-      <ApolloProvider client={client}>
-          <App />
-      </ApolloProvider>
+      <GameContext.Provider value={null}>
+        <ApolloProvider client={client}>
+            <App />
+        </ApolloProvider>
+      </GameContext.Provider>
     </UserContext.Provider>
   </React.StrictMode>
 );
