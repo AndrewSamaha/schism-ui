@@ -23,16 +23,22 @@ export const Tile = (props) => {
   const colorMap = useTexture(src);
   
   return (
-    <mesh
-      {...props}
-      ref={ref}
-      scale={scale}
-      onClick={(event) => click(!clicked)}
-      onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}>
-      <planeGeometry args={geometry} />
-      <meshStandardMaterial map={colorMap} />
-    </mesh>
+    <group>
+      <mesh
+        {...props}
+        ref={ref}
+        scale={scale}
+        onClick={(event) => click(!clicked)}
+        onPointerOver={(event) => hover(true)}
+        onPointerOut={(event) => hover(false)}>
+        <planeGeometry args={geometry} />
+        <meshStandardMaterial map={colorMap} />
+      </mesh>
+      {hovered && (<mesh position={[position[0], position[1], position[2]]} scale >
+        <planeGeometry args={geometry} />
+        <meshStandardMaterial color='pink' />
+      </mesh>)}
+    </group>
   )
 }
 
