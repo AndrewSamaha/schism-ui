@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
@@ -13,10 +13,14 @@ export const Tile = (props) => {
   // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
-  const { geometry, material, color, scale } = props;
+  const { geometry, material, color, scale, src, position, key } = props;
   // Subscribe this component to the render-loop, rotate the mesh every frame
   // useFrame((state, delta) => (ref.current.rotation.x += 0.01))
-  const colorMap = useTexture(Grass);
+  console.log('tile', position[0], position[1], src, key);
+  useEffect(() => {
+    console.log('tile', position[0], position[1], src, key);
+  },[])
+  const colorMap = useTexture(src);
   
   return (
     <mesh

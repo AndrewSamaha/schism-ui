@@ -11,9 +11,11 @@ import {
   useParams,
 } from "react-router-dom";
     
-export const Header = ({ showLogin, onLogin, onLogout, onCreateAccount }) => {
+export const Header = ({ userState, showLogin, onLogin, onLogout, onCreateAccount }) => {
   const contextUser = useContext(UserContext);
   const { name } = contextUser;
+  console.log('Header');
+  console.log({userState});
   console.log({contextUser});
   console.log({Header: name});
   return (
@@ -26,10 +28,10 @@ export const Header = ({ showLogin, onLogin, onLogout, onCreateAccount }) => {
       </div>
       <div>
         {showLogin ? (
-          name ? (
+          userState ? (
           <>
             <span className="welcome">
-              Welcome,  <b>{name}</b>!
+              Welcome,  <b>{userState.name}</b>!
             </span>
             <Button size="small" onClick={onLogout} label="Log out" />
           </>
@@ -55,5 +57,5 @@ Header.propTypes = {
 
 Header.defaultProps = {
   showLogin: true,
-  user: null
+  userState: null
 };

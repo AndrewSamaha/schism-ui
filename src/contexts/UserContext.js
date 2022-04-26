@@ -19,21 +19,21 @@ function userReducer(state, action) {
         case 'loginFromCookie':
             const loginFromCookie = {
                 ...initialState,
-                name: localStorage.getItem('player') || initialState.name
+                name: localStorage.getItem('player') || initialState.name,
+                loginType: 'loginFromCookie'
             }
             console.log({loginFromCookie});
-            debugger;
             return loginFromCookie;
         case 'login':
             console.log({function: userReducer, user: action.user});
             
             const login = {
                 ...initialState,
-                ...action.user
+                ...action.user,
+                loginType: 'login'
             };
             console.log({login});
             window.location = '/play'; // the code stops running once this happens..fffff
-            debugger;
             return login;
         case 'logout':
             localStorage.removeItem('player');

@@ -1,4 +1,4 @@
-const ViewGeometry = [10,10];
+const ViewGeometry = [20,10];
 const ViewMaxGeometry = [100, 100];
 const TileGeometry = [1,1];
 

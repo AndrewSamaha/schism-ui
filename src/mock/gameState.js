@@ -24,9 +24,9 @@ const generateMockTileArray = () => {
     return mockTiles;
 }
 
-const createClientGameState = () => {
-    const tiles = generateMockTileArray();
-    console.log({f: 'createClientGameState', tileLength: tiles.length})
+const createClientGameState = (useMocks=false) => {
+    const tiles = useMocks ? generateMockTileArray() : [];
+    console.log({f: 'createClientGameState', tileLength: tiles.length, useMocks})
     return {
         lastTic: Date.now(),
         actions: [],

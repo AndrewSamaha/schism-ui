@@ -35,18 +35,12 @@ const client = new ApolloClient({
 
 const user = {
   id: 0,
-  name: localStorage.getItem('player') || null
+  name: null // localStorage.getItem('player') || 
 };
+console.log('user info coming from index.js');
+console.log({user});
 
-const action = {
-  type: 'login',
-  user: {
-    id: 1,
-    name: 'Super Man'
-  }
-};
-
-const gameState = createClientGameState();
+//const gameState = createClientGameState();
 
 const container = document.getElementById('root');
 

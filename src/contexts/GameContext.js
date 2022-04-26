@@ -12,7 +12,8 @@ function gameReducer(state, action) {
     }
     switch (action.type) {
         case 'initMock':
-            const newMockGameState = createClientGameState();
+            const useMocks = true;
+            const newMockGameState = createClientGameState(useMocks);
             return newMockGameState;
         default:
             console.log(`unknown action in gameReducer: ${action}`);
