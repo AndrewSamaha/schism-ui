@@ -2,6 +2,7 @@ import React, { useReducer, useContext, useEffect } from 'react';
 import { Header } from '../../organisms/Header/Header';
 import { Box } from '../../atoms/Box/Box';
 import { ViewportTiles } from '../../molecules/ViewportTiles/ViewportTiles';
+import { ViewGeometry } from '../../../constants/viewport';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { UserContext, userReducer, initialState } from '../../../contexts/UserContext';
 import { GameContext, gameReducer } from '../../../contexts/GameContext';
@@ -40,7 +41,7 @@ export const Play = () => {
         }}
       />
       <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
-        <perspectiveCamera makeDefault position={[-10,-3, 1]} rotation={[-Math.PI*.12, 0, 0]}>
+        <perspectiveCamera makeDefault position={[(-ViewGeometry[0]+1)/2, -3, 1]} rotation={[-Math.PI*.12, 0, 0]}>
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
           <Box position={[-2, 0, 0]} />
