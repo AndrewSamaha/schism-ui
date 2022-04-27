@@ -40,6 +40,7 @@ export const Play = () => {
             userDispatch({type: 'logout'})
         }}
       />
+      <div onKeyDown={(e) => {console.log(e.key)}} onKeyUp={(e)=>{console.log(e.key)}} tabIndex={-1} >
       <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
         <perspectiveCamera makeDefault position={[(-ViewGeometry[0]+1)/2, -3, 1]} rotation={[-Math.PI*.12, 0, 0]}>
           <ambientLight />
@@ -52,6 +53,7 @@ export const Play = () => {
           />
         </perspectiveCamera>
       </Canvas>
+      </div>
     </article>
   );
 };
