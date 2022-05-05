@@ -7,7 +7,8 @@ import {
   Router,
   Routes,
   Route,
-  Link
+  Link,
+  Switch
 } from "react-router-dom";
 import {
   ApolloClient,
@@ -42,11 +43,11 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Routes>
-          <Route path="/about" element={<About/>} />
-          <Route path="/users" element={<Users/>} />
-          <Route path="/" element={<Home/>} />
-          <Route path="/login" element={<Login/>} />
-          <Route path="/play" element={<Play/>} />
+            <Route exact path="/" element={<Home/>} />
+            <Route exact path="/about" element={<About/>} />
+            <Route exact path="/users" element={<Users/>} />
+            <Route exact path="/login" element={<Login/>} />
+            <Route exact path="/play" element={<Play/>} />
         </Routes>
       </div>
     </BrowserRouter>
