@@ -4,7 +4,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { UserContext } from './contexts/UserContext';
+import { UserContext, initialState } from './contexts/UserContext';
 import { GameContext } from './contexts/GameContext';
 import { ApolloClient, createHttpLink, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
@@ -50,7 +50,7 @@ const root = ReactDOMClient.createRoot(container);
 // Initial render: Render an element to the root.
 root.render(
   <React.StrictMode>
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={initialState}>
       <GameContext.Provider value={null}>
         <ApolloProvider client={client}>
             <App />

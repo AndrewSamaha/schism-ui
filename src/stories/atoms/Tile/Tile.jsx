@@ -13,12 +13,12 @@ export const Tile = (props) => {
   // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
-  const { geometry, material, color, scale, src, position, key } = props;
+  const { geometry, material, color, scale, src, position } = props;
   // Subscribe this component to the render-loop, rotate the mesh every frame
   // useFrame((state, delta) => (ref.current.rotation.x += 0.01))
-  console.log('tile', position[0], position[1], src, key);
+  // console.log('tile', position[0], position[1], src, key);
   useEffect(() => {
-    console.log('tile', position[0], position[1], src, key);
+    // console.log('tile', position[0], position[1], src);
   },[])
   const colorMap = useTexture(src);
   

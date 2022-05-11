@@ -14,10 +14,6 @@ import {
 export const Header = ({ userState, showLogin, onLogin, onLogout, onCreateAccount }) => {
   const contextUser = useContext(UserContext);
   const { name } = contextUser;
-  console.log('Header');
-  console.log({userState});
-  console.log({contextUser});
-  console.log({Header: name});
   return (
   <header style={{position: 'sticky', top: '0', zIndex: '10', backgroundColor: 'white'}}>
     
