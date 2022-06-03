@@ -18,7 +18,7 @@ const initialState = { ...loggedOut };
 function userReducer(state, action) {
     const { payload } = action;
     // console.log('userReducer');
-    // console.log({actionType: action.type, state});
+    if (action.type != 'PHYSICS_TIC') console.log(action.type, state);
     const pushSpeed = 0.2;
     switch (action.type) {
         case 'loginFromCookie':

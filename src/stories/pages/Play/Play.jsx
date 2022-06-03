@@ -4,6 +4,7 @@ import { Box } from '../../atoms/Box/Box';
 import { ViewportTiles } from '../../molecules/ViewportTiles/ViewportTiles';
 import { ViewRotation } from '../../../constants/viewport';
 import { Canvas } from '@react-three/fiber';
+import { Stats } from '@react-three/drei';
 import { UserContext, userReducer } from '../../../contexts/UserContext';
 import { gameReducer } from '../../../contexts/GameContext';
 import { createClientGameState } from '../../../mock/gameState';
@@ -17,9 +18,19 @@ export const Play = () => {
   const [userState, userDispatch] = useReducer(userReducer, contextUser);
   const [gameState, gameDispatch] = useReducer(gameReducer, createClientGameState());
   
-  const keydown = (key) => userDispatch({type: 'keydown', payload: key});
-  const keyup = (key) => userDispatch({type: 'keyup', payload: key});
-  
+  const keydown = (event) => {
+    const {key, repeat} = event;
+    if (repeat) return;
+    userDispatch({type: 'keydown', payload: key});
+  };
+
+  const keyup = (event) => {
+    const {key, repeat} = event;
+    if (repeat) return;
+    userDispatch({type: 'keyup', payload: key});
+  };
+  const showStats = 0;
+
   useEffect(() => {
     if (!userState.name) {
       console.log('Play.jsx useEffect; no user logged in, so logging in via userDispatch');
@@ -40,7 +51,7 @@ export const Play = () => {
         }}
       />
 
-      <div onKeyDown={(e) => keydown(e.key)} onKeyUp={(e)=>keyup(e.key)} tabIndex={-1} >
+      <div onKeyDown={(e) => keydown(e)} onKeyUp={(e)=>keyup(e)} tabIndex={-1} >
         <Debug userState={userState} />
         <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
           <perspectiveCamera 
@@ -56,6 +67,7 @@ export const Play = () => {
               userReducer={{userState, userDispatch}}
             />
           </perspectiveCamera>
+          {showStats && <Stats />} 
         </Canvas>
       </div>
     </article>

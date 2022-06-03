@@ -5,7 +5,7 @@ export const Debug = ({userState}) => {
     const { viewportWorldLocation } = userState;
     return (
         <div className='debug'>
-            {viewportWorldLocation[0].toFixed(2)}, 
+            Position: {viewportWorldLocation[0].toFixed(2)}, 
             {viewportWorldLocation[1].toFixed(2)}, 
             {viewportWorldLocation[2].toFixed(2)}
         </div>
