@@ -7,6 +7,7 @@ import { Canvas } from '@react-three/fiber';
 import { UserContext, userReducer } from '../../../contexts/UserContext';
 import { gameReducer } from '../../../contexts/GameContext';
 import { createClientGameState } from '../../../mock/gameState';
+import { Debug } from '../../organisms/Debug/Debug';
 import './play.css';
 
 
@@ -40,15 +41,7 @@ export const Play = () => {
       />
 
       <div onKeyDown={(e) => keydown(e.key)} onKeyUp={(e)=>keyup(e.key)} tabIndex={-1} >
-        <div style={{ 
-          zIndex: '100',
-          position: 'absolute',
-          left: '10px', 
-          top: '75px', 
-          width: '200px', 
-          backgroundColor: 'rgba(230, 230, 230, 0.5)'}}>
-          {userState.viewportWorldLocation[0].toFixed(2)}, {userState.viewportWorldLocation[1].toFixed(2)}, {userState.viewportWorldLocation[2].toFixed(2)}
-        </div>
+        <Debug userState={userState} />
         <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
           <perspectiveCamera 
             makeDefault 
