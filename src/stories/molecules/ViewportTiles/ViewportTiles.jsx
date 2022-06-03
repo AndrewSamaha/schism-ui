@@ -1,6 +1,5 @@
 import React, { useState, useReducer, useContext, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-// import keydown from 'react-keydown';
 import { gql, useMutation } from '@apollo/client';
 import './ViewportTiles.css';
 import TextField from '@mui/material/TextField';
@@ -9,23 +8,21 @@ import { Button } from '../../atoms/Button/Button';
 import { userReducer, initialState } from '../../../contexts/UserContext';
 import { TileGeometry, ViewGeometry, ViewMoveFriction } from '../../../constants/viewport';
 import { Tile } from '../../atoms/Tile/Tile';
-import { getViewportTiles } from '../../../helpers/viewport';
+import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
 import { applyFriction } from '../../../helpers/physics';
 
-// class KeyboardWrapper extends React.Component {
-//   @keydown('a', 's', 'd', 'w')
-//   moveKey( event ) {
-//     console.log(event.which);
-//   }
-// }
+
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
   
   state.viewportVelocity[0] = applyFriction(state.viewportVelocity[0], ViewMoveFriction);
   state.viewportVelocity[1] = applyFriction(state.viewportVelocity[1], ViewMoveFriction);
-  
-  if (state.viewportVelocity[0]) state.viewportWorldLocation[0] += state.viewportVelocity[0] * delta;
-  if (state.viewportVelocity[1]) state.viewportWorldLocation[1] += state.viewportVelocity[1] * delta;
+
+  state.viewportWorldLocation = calcNewViewportWorldPosition(
+    state.viewportWorldLocation,
+    state.viewportVelocity,
+    delta
+  );
 
   return {
     ...state

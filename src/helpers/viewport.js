@@ -1,4 +1,4 @@
-import { ViewGeometry, TileGeometry } from "../constants/viewport"
+import { ViewGeometry, ViewRotation, TileGeometry } from "../constants/viewport"
 const getViewportTiles = ({viewportWorldLocation, tiles}) => {
     // console.log('getViewportTiles');
     // console.log({viewportWorldLocation});
@@ -17,6 +17,25 @@ const getViewportTiles = ({viewportWorldLocation, tiles}) => {
     return viewportTiles;
 }
 
+const calcNewViewportWorldPosition = (currentPosition, viewportVelocity, delta) => {
+    const xViewportDistance = viewportVelocity[0] * delta;
+    const yViewportDistance = viewportVelocity[1] * delta;
+    const zViewportDistance = 0;
+
+    const xWorldDistance = xViewportDistance;
+    const yWorldDistance = Math.cos(ViewRotation[0]) * yViewportDistance;
+    const zWorldDistance = Math.sin(ViewRotation[0]) * yViewportDistance;
+
+    console.log(yViewportDistance, yWorldDistance);
+
+    return [
+        currentPosition[0] + xWorldDistance,
+        currentPosition[1] + yWorldDistance,
+        currentPosition[2] + zWorldDistance
+    ] 
+}
+
 export {
-    getViewportTiles
+    getViewportTiles,
+    calcNewViewportWorldPosition
 }
