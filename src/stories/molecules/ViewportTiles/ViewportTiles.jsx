@@ -1,12 +1,7 @@
-import React, { useState, useReducer, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { gql, useMutation } from '@apollo/client';
 import './ViewportTiles.css';
-import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
-import { Button } from '../../atoms/Button/Button';
-import { userReducer, initialState } from '../../../contexts/UserContext';
-import { TileGeometry, ViewGeometry, ViewMoveFriction } from '../../../constants/viewport';
+import { ViewMoveFriction } from '../../../constants/viewport';
 import { Tile } from '../../atoms/Tile/Tile';
 import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
 import { applyFriction } from '../../../helpers/physics';
@@ -39,11 +34,11 @@ export const ViewportTiles = ({gameReducer, userReducer}) => {
   useEffect(() => {
     const newViewportTiles = getViewportTiles({ viewportWorldLocation, tiles });
     setViewportTiles(newViewportTiles);
-    // console.log(newViewportTiles);
   },[]);
 
   useFrame((state, delta) => {
       const { userInput } = userState;
+
       if (Object.entries(userInput).length > 0) {
         const push = [0,0];
         const pushSpeed = 2;
@@ -57,7 +52,6 @@ export const ViewportTiles = ({gameReducer, userReducer}) => {
       }
 
       userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})
-      console.log(userState.userInput, userState.viewportVelocity, userState.viewportWorldLocation)
   });
   
   return (
