@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { defaultStartingLocation } from '../constants/clientGame';
-import { ViewMoveFriction, ViewMaxVelocity } from '../constants/viewport';
+import { ViewPushSpeed, ViewMaxVelocity } from '../constants/viewport';
 import { limit } from '../helpers/math';
 
 const UserContext = createContext();
@@ -17,9 +17,6 @@ const initialState = { ...loggedOut };
 
 function userReducer(state, action) {
     const { payload } = action;
-    // console.log('userReducer');
-    if (action.type != 'PHYSICS_TIC') console.log(action.type, state);
-    const pushSpeed = 0.2;
     switch (action.type) {
         case 'loginFromCookie':
             const loginFromCookie = {
@@ -65,7 +62,7 @@ function userReducer(state, action) {
                 ...state,
                 viewportVelocity: [
                     state.viewportVelocity[0],
-                    limit(state.viewportVelocity[1] - pushSpeed, -ViewMaxVelocity, ViewMaxVelocity)
+                    limit(state.viewportVelocity[1] - ViewPushSpeed, -ViewMaxVelocity, ViewMaxVelocity)
                 ]
             };
         case 'PUSH_DOWN':
@@ -73,14 +70,14 @@ function userReducer(state, action) {
                 ...state,
                 viewportVelocity: [
                     state.viewportVelocity[0],
-                    limit(state.viewportVelocity[1] + pushSpeed, -ViewMaxVelocity, ViewMaxVelocity)
+                    limit(state.viewportVelocity[1] + ViewPushSpeed, -ViewMaxVelocity, ViewMaxVelocity)
                 ]
             };
         case 'PUSH_LEFT':
             return {
                 ...state,
                 viewportVelocity: [
-                    limit(state.viewportVelocity[0] + pushSpeed, -ViewMaxVelocity, ViewMaxVelocity),
+                    limit(state.viewportVelocity[0] + ViewPushSpeed, -ViewMaxVelocity, ViewMaxVelocity),
                     state.viewportVelocity[1]
                 ]
             };
@@ -88,7 +85,7 @@ function userReducer(state, action) {
             const right = {
                 ...state,
                 viewportVelocity: [
-                    limit(state.viewportVelocity[0] - pushSpeed, -ViewMaxVelocity, ViewMaxVelocity),
+                    limit(state.viewportVelocity[0] - ViewPushSpeed, -ViewMaxVelocity, ViewMaxVelocity),
                     state.viewportVelocity[1]
                 ]
             };

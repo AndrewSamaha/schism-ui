@@ -4,6 +4,7 @@ const ViewRotation = [-Math.PI*.12,0,0];
 const TileGeometry = [1,1];
 const ViewMoveFriction = 0.175;
 const ViewMaxVelocity = 4;
+const ViewPushSpeed = 0.2;
 
 export {
     ViewGeometry,
@@ -11,5 +12,6 @@ export {
     TileGeometry,
     ViewMoveFriction,
     ViewMaxVelocity,
-    ViewRotation
+    ViewRotation,
+    ViewPushSpeed
 };
