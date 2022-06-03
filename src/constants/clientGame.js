@@ -1,4 +1,4 @@
-const defaultStartingLocation = [0,0];
+const defaultStartingLocation = [0, 0];
 
 export {
     defaultStartingLocation

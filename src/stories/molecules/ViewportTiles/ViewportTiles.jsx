@@ -58,8 +58,6 @@ export const ViewportTiles = ({gameReducer, userReducer}) => {
         userState.viewportVelocity[0] += push[0];
         userState.viewportVelocity[1] += push[1];
       }
-      
-
 
       userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})
       console.log(userState.userInput, userState.viewportVelocity, userState.viewportWorldLocation)

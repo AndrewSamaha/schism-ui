@@ -43,7 +43,7 @@ export const Play = () => {
 
       <div onKeyDown={(e) => keydown(e.key)} onKeyUp={(e)=>keyup(e.key)} tabIndex={-1} >
       <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
-        <perspectiveCamera makeDefault position={[(-ViewGeometry[0]+1)/2+userState.viewportWorldLocation[0], -3, 1+userState.viewportWorldLocation[1]]} rotation={[-Math.PI*.12, 0, 0]}>
+        <perspectiveCamera makeDefault position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], 1]} rotation={[-Math.PI*.12, 0, 0]}>
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
           <Box position={[-2, 0, 0]} />
