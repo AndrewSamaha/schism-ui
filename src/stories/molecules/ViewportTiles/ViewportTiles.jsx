@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { useFrame } from '@react-three/fiber';
 import './ViewportTiles.css';
 import { ViewMoveFriction } from '../../../constants/viewport';
 import { Tile } from '../../atoms/Tile/Tile';
 import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
 import { applyFriction } from '../../../helpers/physics';
-
+import { GET_NEARBY_TILES } from '../../../graph/queries';
 
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
@@ -24,16 +25,29 @@ const physicsTic = (delta, state) => {
   };
 }
 
-export const ViewportTiles = ({gameReducer, userReducer}) => {
+export const ViewportTiles = ({gameReducer, userReducer, tilesQuery}) => {
+  //tilesQuery={{getNearbyTilesQuery, nearbyTilesStatus}}
   const [viewportTiles, setViewportTiles] = useState(null);
+  const [tileStatus, setTileStatus] = useState(null);
   const { gameState, gameDispatch } = gameReducer;
   const { userState, userDispatch } = userReducer;
   const {viewportWorldLocation} = userState;
   const { tiles } = gameState;
+  const {getNearbyTilesQuery, nearbyTilesStatus} = tilesQuery;
+  
+  // const getNearbyTiles = () => {};
+  // const nearbyTiles = () => {};
   
   useEffect(() => {
     const newViewportTiles = getViewportTiles({ viewportWorldLocation, tiles });
     setViewportTiles(newViewportTiles);
+    getNearbyTilesQuery({
+      variables: {
+        positions: [{x: 5, y: 7}],
+        range: 0
+      }
+    })
+    setTileStatus('requested');
   },[]);
 
   useFrame((state, delta) => {
@@ -52,8 +66,31 @@ export const ViewportTiles = ({gameReducer, userReducer}) => {
       }
 
       userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})
+      if (nearbyTilesStatus.loading && tileStatus === 'requested') {
+        //console.log('loading')
+        setTileStatus('loading')
+      } else if (tileStatus === 'loading' && nearbyTilesStatus.error) {
+        //console.log('error',nearbyTilesStatus.error);
+        setTileStatus('error')
+      } else if (tileStatus === 'loading' && nearbyTilesStatus.data) {
+        setTileStatus('done')
+        //console.log('nearbyTilesStatustatus data', nearbyTilesStatus.data)
+        //console.log(userState)
+        getNearbyTilesQuery({
+          variables: {
+            positions: [{
+              x: Math.floor(userState.viewportWorldLocation[0])*-1,
+              y: Math.floor(userState.viewportWorldLocation[1])*-1
+            }],
+            range: 2
+          }
+        });
+        setTileStatus('loading')
+        //viewportWorldLocation[0].toFixed(2)}, 
+        //{viewportWorldLocation[1].toFixed(2)
+      }
   });
-  
+
   return (
   <group>
     {viewportTiles && viewportTiles.map((xColumn, x) => {

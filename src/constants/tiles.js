@@ -29,6 +29,21 @@ const tileTextures = [
     },{
         type: 'stone',
         src: require('../stories/assets/textures/stone/stone5.jpg')
+    },{
+        type: 'water',
+        src: require('../stories/assets/textures/water/water1.jpg')
+    },{
+        type: 'water',
+        src: require('../stories/assets/textures/water/water2.jpg')
+    },{
+        type: 'water',
+        src: require('../stories/assets/textures/water/water3.jpg')
+    },{
+        type: 'water',
+        src: require('../stories/assets/textures/water/water4.jpg')
+    },{
+        type: 'water',
+        src: require('../stories/assets/textures/water/water5.jpg')
     }
 ];
 

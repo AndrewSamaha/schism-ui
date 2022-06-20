@@ -1,4 +1,5 @@
 import React, { useReducer, useContext, useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { Header } from '../../organisms/Header/Header';
 import { Box } from '../../atoms/Box/Box';
 import { ViewportTiles } from '../../molecules/ViewportTiles/ViewportTiles';
@@ -9,6 +10,7 @@ import { UserContext, userReducer } from '../../../contexts/UserContext';
 import { gameReducer } from '../../../contexts/GameContext';
 import { createClientGameState } from '../../../mock/gameState';
 import { Debug } from '../../organisms/Debug/Debug';
+import { GET_NEARBY_TILES } from '../../../graph/queries';
 import './play.css';
 
 
@@ -17,7 +19,13 @@ export const Play = () => {
   const contextUser = useContext(UserContext);
   const [userState, userDispatch] = useReducer(userReducer, contextUser);
   const [gameState, gameDispatch] = useReducer(gameReducer, createClientGameState());
-  
+  const [getNearbyTilesQuery, nearbyTilesStatus] = useLazyQuery(GET_NEARBY_TILES, {
+    variables: {
+      positions: [{x: 5, y: 7}],
+      range: 5
+    }
+  }
+  );
   const keydown = (event) => {
     const {key, repeat} = event;
     if (repeat) return;
@@ -65,6 +73,7 @@ export const Play = () => {
             <ViewportTiles
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
+              tilesQuery={{getNearbyTilesQuery, nearbyTilesStatus}}
             />
           </perspectiveCamera>
           {showStats && <Stats />} 

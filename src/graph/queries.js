@@ -16,4 +16,19 @@ const GET_ALL_PLAYERS = gql`
   }
 `;
 
-export default GET_ALL_PLAYERS;
+const GET_NEARBY_TILES = gql`
+query GetTilesNear($positions: [PositionInput]!, $range: Int!) {
+  getTilesNear(positions: $positions, range: $range) {
+    x
+    y
+    TileType {
+      type
+    }
+  }
+}
+`;
+
+export {
+  GET_ALL_PLAYERS,
+  GET_NEARBY_TILES
+};
