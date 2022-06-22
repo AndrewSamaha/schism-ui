@@ -49,6 +49,10 @@ export const Play = () => {
     gameDispatch({type: 'initMock'});
   },[]);
 
+  useEffect(() => {
+    console.log('got tiles: ', nearbyTilesStatus.data)
+  }, nearbyTilesStatus.data)
+
   return (
     <article>
       <Header
