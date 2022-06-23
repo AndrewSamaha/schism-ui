@@ -10,7 +10,7 @@ import { UserContext, userReducer } from '../../../contexts/UserContext';
 import { gameReducer } from '../../../contexts/GameContext';
 import { createClientGameState } from '../../../mock/gameState';
 import { Debug } from '../../organisms/Debug/Debug';
-import { GET_NEARBY_TILES } from '../../../graph/queries';
+import { GET_NEARBY_TILES, GET_WORLD_STATE } from '../../../graph/queries';
 import './play.css';
 
 
@@ -19,10 +19,10 @@ export const Play = () => {
   const contextUser = useContext(UserContext);
   const [userState, userDispatch] = useReducer(userReducer, contextUser);
   const [gameState, gameDispatch] = useReducer(gameReducer, createClientGameState());
-  const [getNearbyTilesQuery, nearbyTilesStatus] = useLazyQuery(GET_NEARBY_TILES, {
+  const [getWorldStateQuery, worldStateQueryStatus] = useLazyQuery(GET_WORLD_STATE, {
     variables: {
       positions: [{x: 5, y: 7}],
-      range: 5
+      range: 1
     }
   }
   );
@@ -50,8 +50,11 @@ export const Play = () => {
   },[]);
 
   useEffect(() => {
-    console.log('got tiles: ', nearbyTilesStatus.data)
-  }, nearbyTilesStatus.data)
+    if (!worldStateQueryStatus.data) {
+      return;
+    }
+    console.log('got tiles: ', worldStateQueryStatus.data.getWorldState)
+  }, worldStateQueryStatus?.data?.getWorldState);
 
   return (
     <article>
@@ -77,7 +80,7 @@ export const Play = () => {
             <ViewportTiles
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
-              tilesQuery={{getNearbyTilesQuery, nearbyTilesStatus}}
+              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
             />
           </perspectiveCamera>
           {showStats && <Stats />} 
