@@ -53,8 +53,9 @@ export const Play = () => {
     if (!worldStateQueryStatus.data) {
       return;
     }
-    console.log('got tiles: ', worldStateQueryStatus.data.getWorldState)
-  }, worldStateQueryStatus?.data?.getWorldState);
+    //console.log('got tiles: ', worldStateQueryStatus.data.getWorldState)
+    gameDispatch({type: 'receivedGameState', worldState: worldStateQueryStatus.data.getWorldState})
+  }, [worldStateQueryStatus?.data]);
 
   return (
     <article>

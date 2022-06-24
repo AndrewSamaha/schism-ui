@@ -1,5 +1,5 @@
 const ViewGeometry = [25,25];
-const ViewMaxGeometry = [100, 100];
+const ViewMaxGeometry = [5, 5];
 const ViewRotation = [-Math.PI*.12,0,0];
 const TileGeometry = [1,1];
 const ViewMoveFriction = 0.175;

@@ -15,6 +15,11 @@ function gameReducer(state, action) {
             const useMocks = true;
             const newMockGameState = createClientGameState(useMocks);
             return newMockGameState;
+        case 'receivedGameState':
+            console.log('receivedGameState',action.worldState)
+            return {
+                ...state
+            }
         default:
             console.log(`unknown action in gameReducer: ${action}`);
             console.log({action});

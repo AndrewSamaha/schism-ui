@@ -75,8 +75,8 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
       } else if (tileStatus === 'loading' && worldStateQueryStatus.error) {
         //console.log('error',worldStateQueryStatus.error);
         setTileStatus('error')
-      } else if (tileStatus === 'loading' && worldStateQueryStatus.data) {
-        setTileStatus('done')
+      } else if (worldStateQueryStatus.data) {
+        //setTileStatus('done')
         //console.log('worldStateQueryStatustatus data', worldStateQueryStatus.data)
         //console.log(userState)
         getWorldStateQuery({
@@ -88,7 +88,7 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
             range: 1
           }
         });
-        setTileStatus('loading')
+        setTileStatus('requested')
         //viewportWorldLocation[0].toFixed(2)}, 
         //{viewportWorldLocation[1].toFixed(2)
       }

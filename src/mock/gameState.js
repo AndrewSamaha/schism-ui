@@ -11,6 +11,7 @@ const createTile = ({ typeIndex, worldPosition }) => {
 }
 
 const generateMockTileArray = () => {
+    console.log('viewMaxGeometry xy=',ViewMaxGeometry[0],ViewMaxGeometry[1]);
     const mockTiles=[];
     for (let x=0; x<ViewMaxGeometry[0]; x++) {
         mockTiles[x] = [];
