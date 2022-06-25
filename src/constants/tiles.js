@@ -1,5 +1,11 @@
 const tileTextures = [
     {
+        type: 'unknown',
+        src: require('../stories/assets/textures/unknown.jpg')
+    },{
+        type: 'land',
+        src: require('../stories/assets/textures/land/land.jpg')
+    },{
         type: 'grass',
         src: require('../stories/assets/textures/grass/grass1.jpg')
     },{

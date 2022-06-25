@@ -1,7 +1,10 @@
 import { createContext } from 'react';
 import { createClientGameState } from '../mock/gameState';
+import { fogOfWarDelay_ms } from '../constants/clientGame';
+import { getTextureSrc } from '../helpers/texture';
 
 const GameContext = createContext();
+
 
 function gameReducer(state, action) {
     let newState;
@@ -17,16 +20,37 @@ function gameReducer(state, action) {
             return newMockGameState;
         case 'receivedGameState':
             const tileSentTime = action.worldState.stateTimeUTC;
-            const timeDiff = Date.now() - tileSentTime; //parseInt(tileSentTime,10); //Date.now() - parseInt(tileSentTime,10);    
-            const expirationTime = Date.now() + 50003;
-            console.log('receivedGameState',timeDiff, action.worldState);
+            const now = Date.now();
+            const timeDiff = now - tileSentTime; //parseInt(tileSentTime,10); //Date.now() - parseInt(tileSentTime,10);    
+            const expirationTime = now + fogOfWarDelay_ms;
+            // console.log('receivedGameState',timeDiff, action.worldState);
             
-            // const newTiles = action.worldState.tiles.map((tile) => {...tile, expirationTime})
-            // const oldTiles = state.tilesFromServer || [];
+            const newTiles = action.worldState.tiles.map((tile) => ({
+                ...tile, 
+                expirationTime,
+                type: tile.TileType.type,
+                src: getTextureSrc(tile.TileType.type)
+            }));
+
+            //console.log(newTiles); 
+            const oldTiles = state.tilesFromServer || {};
+            const activeOldTiles = {};
+            Object.entries(oldTiles).forEach(([key, value]) => {
+                if (value.expirationTime > now) activeOldTiles[key] = value;
+            });
+            const tilesFromServer = newTiles.reduce((tileCollection, tile) => {
+                const key = "x" + tile.x + "y" + tile.y;
+                const newCollection = {
+                    ...tileCollection
+                };
+                newCollection[key] = tile;
+                return newCollection;
+            }, activeOldTiles);
+            
             // const tilesFromServer = oldTiles.filter(tile => )
             return {
-                ...state
-
+                ...state,
+                tilesFromServer
             }
         default:
             console.log(`unknown action in gameReducer: ${action}`);
