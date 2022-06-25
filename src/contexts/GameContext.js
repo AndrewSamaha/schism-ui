@@ -16,9 +16,17 @@ function gameReducer(state, action) {
             const newMockGameState = createClientGameState(useMocks);
             return newMockGameState;
         case 'receivedGameState':
-            console.log('receivedGameState',action.worldState)
+            const tileSentTime = action.worldState.stateTimeUTC;
+            const timeDiff = Date.now() - tileSentTime; //parseInt(tileSentTime,10); //Date.now() - parseInt(tileSentTime,10);    
+            const expirationTime = Date.now() + 50003;
+            console.log('receivedGameState',timeDiff, action.worldState);
+            
+            // const newTiles = action.worldState.tiles.map((tile) => {...tile, expirationTime})
+            // const oldTiles = state.tilesFromServer || [];
+            // const tilesFromServer = oldTiles.filter(tile => )
             return {
                 ...state
+
             }
         default:
             console.log(`unknown action in gameReducer: ${action}`);
