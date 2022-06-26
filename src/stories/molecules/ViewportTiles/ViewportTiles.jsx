@@ -97,11 +97,11 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
 
   return (
   <group>
-    {viewportTiles && viewportTiles.map((xColumn, x) => {
+    {/* {viewportTiles && viewportTiles.map((xColumn, x) => {
       return xColumn.map((tile, y) => {
         return (<Tile key={`${x}-${y}`} position={[x,y,0]} src={tile.src} />)
       })
-    })}
+    })} */}
     {
       gameState?.tilesFromServer && Object.entries(gameState?.tilesFromServer).map(([key,tile]) => {
         console.log('boop',tile);

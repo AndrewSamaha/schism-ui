@@ -11,7 +11,7 @@ export const Debug = ({userState, gameState}) => {
                 {viewportWorldLocation[2].toFixed(2)}
             </div>
             <div className='tiles'>
-                tilesFromServer: {Object.entries(gameState?.tilesFromServer).length} 
+                tilesFromServer: {Object.entries(gameState?.tilesFromServer || {}).length} 
             </div>
         </div>
     );
