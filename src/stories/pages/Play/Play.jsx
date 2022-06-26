@@ -11,6 +11,7 @@ import { gameReducer } from '../../../contexts/GameContext';
 import { createClientGameState } from '../../../mock/gameState';
 import { Debug } from '../../organisms/Debug/Debug';
 import { GET_NEARBY_TILES, GET_WORLD_STATE } from '../../../graph/queries';
+import { visibilityRange } from '../../../constants/clientGame';
 import './play.css';
 
 
@@ -22,7 +23,7 @@ export const Play = () => {
   const [getWorldStateQuery, worldStateQueryStatus] = useLazyQuery(GET_WORLD_STATE, {
     variables: {
       positions: [{x: 5, y: 7}],
-      range: 1
+      range: visibilityRange
     }
   }
   );
@@ -68,7 +69,7 @@ export const Play = () => {
       />
 
       <div onKeyDown={(e) => keydown(e)} onKeyUp={(e)=>keyup(e)} tabIndex={-1} >
-        <Debug userState={userState} />
+        <Debug userState={userState} gameState={gameState} />
         <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
           <perspectiveCamera 
             makeDefault 

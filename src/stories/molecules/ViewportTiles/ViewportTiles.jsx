@@ -7,6 +7,7 @@ import { Tile } from '../../atoms/Tile/Tile';
 import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
 import { applyFriction } from '../../../helpers/physics';
 import { GET_NEARBY_TILES } from '../../../graph/queries';
+import { visibilityRange } from '../../../constants/clientGame';
 
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
@@ -47,7 +48,7 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
           x: Math.floor(userState.viewportWorldLocation[0])*-1,
           y: Math.floor(userState.viewportWorldLocation[1])*-1
         }],
-        range: 1
+        range: visibilityRange
       }
     })
     setTileStatus('requested');
@@ -85,7 +86,7 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
               x: Math.floor(userState.viewportWorldLocation[0])*-1,
               y: Math.floor(userState.viewportWorldLocation[1])*-1
             }],
-            range: 1
+            range: visibilityRange
           }
         });
         setTileStatus('requested')

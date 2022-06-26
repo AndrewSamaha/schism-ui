@@ -1,6 +1,6 @@
-const defaultStartingLocation = [0, 0, 2.5];
-const visibilityRange = 1;
-const fogOfWarDelay_ms = 500;
+const defaultStartingLocation = [0, 0, -20.5];
+const visibilityRange = 3;
+const fogOfWarDelay_ms = 50000;
 
 export {
     defaultStartingLocation,
