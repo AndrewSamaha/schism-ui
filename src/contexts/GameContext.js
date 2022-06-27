@@ -2,9 +2,11 @@ import { createContext } from 'react';
 import { createClientGameState } from '../mock/gameState';
 import { fogOfWarDelay_ms } from '../constants/clientGame';
 import { getTextureSrc } from '../helpers/texture';
+import { TileChunk } from '../lib/TileChunk/TileChunk';
 
 const GameContext = createContext();
 
+const chunk = new TileChunk({ worldTopLeftX: 50, worldTopLeftY: 50});
 
 function gameReducer(state, action) {
     let newState;
