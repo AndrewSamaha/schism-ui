@@ -10,7 +10,7 @@ const chunk = new TileChunk({ worldTopLeftX: 50, worldTopLeftY: 50});
 
 function gameReducer(state, action) {
     let newState;
-    console.log('gameReducer',{state},{action});
+    //console.log('gameReducer',{state},{action});
     if (state === null) {
         console.log('game state is null, creating mock state');
         return createClientGameState();
@@ -53,6 +53,11 @@ function gameReducer(state, action) {
             return {
                 ...state,
                 tilesFromServer
+            }
+        case 'defineChunks':
+
+            return {
+                ...state
             }
         default:
             console.log(`unknown action in gameReducer: ${action}`);

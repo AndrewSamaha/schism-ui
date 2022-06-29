@@ -21,7 +21,7 @@ export const Tile = (props) => {
     // console.log('tile', position[0], position[1], src);
   },[])
   const colorMap = useTexture(src);
-  
+  if (hovered) console.log(position[0],position[1],position[2]);
   return (
     <group>
       <mesh

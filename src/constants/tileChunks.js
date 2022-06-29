@@ -1,4 +1,4 @@
-const CHUNK_SIZE = 25;
+const CHUNK_SIZE = 10;
 const CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE;
 const TILE_SIZE = 25;
 

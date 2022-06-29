@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useFrame } from '@react-three/fiber';
 import './ViewportTiles.css';
-import { ViewMoveFriction } from '../../../constants/viewport';
+import { ViewMoveFriction, ViewGeometry } from '../../../constants/viewport';
 import { Tile } from '../../atoms/Tile/Tile';
 import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
 import { applyFriction } from '../../../helpers/physics';
@@ -35,9 +35,14 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
   const {viewportWorldLocation} = userState;
   const { tiles } = gameState;
   const {getWorldStateQuery, worldStateQueryStatus} = worldStateQuery;
-  
-  // const getNearbyTiles = () => {};
-  // const nearbyTiles = () => {};
+  const UpperLeft = {
+    x: -1 * (userState.viewportWorldLocation[0] + ViewGeometry[0]/2),
+    y: -1 * (userState.viewportWorldLocation[1] - ViewGeometry[1]/2)
+  };
+  const LowerRight = {
+    x: -1 * (userState.viewportWorldLocation[0] - ViewGeometry[0]/2),
+    y: -1 * (userState.viewportWorldLocation[1] + ViewGeometry[1]/2)
+  };
   
   useEffect(() => {
     const newViewportTiles = getViewportTiles({ viewportWorldLocation, tiles });
@@ -95,6 +100,20 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
       }
   });
 
+  const startTime = window.performance.now();
+  const tilesInView = gameState?.tilesFromServer && Object.entries(gameState?.tilesFromServer).filter((arg) => {
+    const [key,tile] = arg;
+    if (tile.x >= UpperLeft.x &&
+        tile.x <= LowerRight.x && 
+        tile.y <= UpperLeft.y &&
+        tile.y >= LowerRight.y) return true;
+    return false;
+  });
+  // const duration = window.performance.now() - startTime;
+  // const numFilteredTiles = gameState?.tilesFromServer && Object.entries(gameState.tilesFromServer).length;
+  // const rate = numFilteredTiles / duration;
+  // if (duration > 0) console.log(rate, numFilteredTiles, duration);
+  
   return (
   <group>
     {/* {viewportTiles && viewportTiles.map((xColumn, x) => {
@@ -103,11 +122,17 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
       })
     })} */}
     {
+      tilesInView?.length && tilesInView.map(([key, tile]) => {
+        //console.log('boop',tile.x, tile.y);
+        return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
+      })
+    }
+    {/* {
       gameState?.tilesFromServer && Object.entries(gameState?.tilesFromServer).map(([key,tile]) => {
         console.log('boop',tile);
         return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
       })
-    }
+    } */}
   </group>
   );
 }
