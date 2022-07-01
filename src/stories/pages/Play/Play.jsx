@@ -12,6 +12,7 @@ import { createClientGameState } from '../../../mock/gameState';
 import { Debug } from '../../organisms/Debug/Debug';
 import { GET_NEARBY_TILES, GET_WORLD_STATE } from '../../../graph/queries';
 import { visibilityRange } from '../../../constants/clientGame';
+import { ChunkManager } from '../../molecules/ChunkManager/ChunkManager';
 import './play.css';
 
 
@@ -80,6 +81,11 @@ export const Play = () => {
             <Box position={[-2, 0, 0]} />
             <Box position={[2, 0, 0]} />
             <ViewportTiles
+              gameReducer={{gameState, gameDispatch}}
+              userReducer={{userState, userDispatch}}
+              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+            />
+            <ChunkManager
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
