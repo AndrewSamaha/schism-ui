@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react';
 import { Tile } from '../../atoms/Tile/Tile';
+import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
 
 const initialState = {
   tiles: [],

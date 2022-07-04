@@ -8,6 +8,7 @@ import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers
 import { applyFriction } from '../../../helpers/physics';
 import { GET_NEARBY_TILES } from '../../../graph/queries';
 import { visibilityRange } from '../../../constants/clientGame';
+import { ChunkManager } from '../../molecules/ChunkManager/ChunkManager';
 
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
@@ -116,23 +117,21 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
   
   return (
   <group>
-    {/* {viewportTiles && viewportTiles.map((xColumn, x) => {
-      return xColumn.map((tile, y) => {
-        return (<Tile key={`${x}-${y}`} position={[x,y,0]} src={tile.src} />)
-      })
-    })} */}
-    {
-      tilesInView?.length && tilesInView.map(([key, tile]) => {
-        //console.log('boop',tile.x, tile.y);
-        return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
-      })
-    }
-    {/* {
-      gameState?.tilesFromServer && Object.entries(gameState?.tilesFromServer).map(([key,tile]) => {
-        console.log('boop',tile);
-        return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
-      })
-    } */}
+   
+    
+  
+    <ChunkManager
+              gameReducer={{gameState, gameDispatch}}
+              userReducer={{userState, userDispatch}}
+              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}>
+      {
+        tilesInView?.length && tilesInView.map(([key, tile]) => {
+          //console.log('boop',tile.x, tile.y);
+          return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
+        })
+      }
+    </ChunkManager>
+            
   </group>
   );
 }
