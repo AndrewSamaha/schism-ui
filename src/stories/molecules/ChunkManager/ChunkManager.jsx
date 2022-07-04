@@ -4,6 +4,7 @@ import { TileChunk } from '../TileChunk/TileChunk';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 const createInitialState = (viewportWorldLocation) => {
+  
   return {
     visibleChunks: {},
     lastViewportWorldLocation: viewportWorldLocation,

@@ -1,21 +1,37 @@
 import React, { useReducer } from 'react';
 import { Tile } from '../../atoms/Tile/Tile';
 import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
+import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 const initialState = {
+  x: 0,
+  y: 0,
+  lastRefresh: 0,
   tiles: [],
   cachedImage: null,
-  lastRefreshTime: 0
+  key: null,
+  inited: false
 };
 
 const REFRESH_TILES = 'REFRESH_TILES';
+const GOT_CHUNK_DATA = 'GOT_CHUNK_DATA';
+const INIT_CHUNK = 'INIT_CHUNK';
 
 function tileChunkReducer(state, action) {
-  let newState;
-
-
-  if (state === null) return initialState();
   switch (action.type) {
+      case INIT_CHUNK:
+        const { x, y, key } = action.payload;
+        return {
+          ...state,
+          x,
+          y,
+          key,
+          inited: true
+        }
+      case GOT_CHUNK_DATA:
+        return {
+          ...state
+        }
       case REFRESH_TILES:
         const cachedImage = []; // calculate a cached image
         return {
@@ -30,14 +46,17 @@ function tileChunkReducer(state, action) {
   return state;
 }
 
+
+
 export const TileChunk = ({chunkData, chunkManagerDispatch}) => {
   const [tileChunkState, tileChunkDispatch] = useReducer(tileChunkReducer, initialState);
-  const [key, chunk] = chunkData;
-  const { tiles, refreshed } = chunk;
-  if (refreshed) tileChunkDispatch({
-    type: REFRESH_TILES,
-    tiles,
-  });
+  if (!tileChunkState.inited) tileChunkDispatch({ type: INIT_CHUNK, payload: chunkData })
+  const { key, tiles, lastRefresh }= tileChunkState;
+  
+  // if (refreshed) tileChunkDispatch({
+  //   type: REFRESH_TILES,
+  //   tiles,
+  // });
 
   return (
   <group>
