@@ -27,8 +27,9 @@ const physicsTic = (delta, state) => {
   };
 }
 
-export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
+export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery, chunkQuery}) => {
   //tilesQuery={{getNearbyTilesQuery, nearbyTilesStatus}}
+  const {getChunkQuery, getChunkQueryStatus} = chunkQuery;
   const [viewportTiles, setViewportTiles] = useState(null);
   const [tileStatus, setTileStatus] = useState(null);
   const { gameState, gameDispatch } = gameReducer;
@@ -123,7 +124,10 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery}) => {
     <ChunkManager
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
-              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}>
+              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+              chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+              >
+              
       {
         tilesInView?.length && tilesInView.map(([key, tile]) => {
           //console.log('boop',tile.x, tile.y);

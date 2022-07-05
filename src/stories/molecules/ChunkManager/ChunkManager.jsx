@@ -8,7 +8,8 @@ const createInitialState = (viewportWorldLocation) => {
   return {
     visibleChunks: {},
     lastViewportWorldLocation: viewportWorldLocation,
-    allChunks: {}
+    allChunks: {},
+    queryQueue: []
   }
 }
 
@@ -79,6 +80,7 @@ function chunkManagerReducer(state, action) {
           }
         }
         const newVisibleChunks = {};
+        const queryQueue = [...state.queryQueue];
         
         newVisibleChunkAddresses.forEach(({x, y}) => {
           const key = getKey({x, y});
@@ -134,12 +136,17 @@ const hasMoved = ({viewportWorldLocation}, {lastViewportWorldLocation}) => {
   return false;
 }
 
-export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, children}) => {
+export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, chunkQuery, children}) => {
   const { userState, userDispatch } = userReducer;
   const {viewportWorldLocation} = userState;
   const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, createInitialState(viewportWorldLocation));
 
-  if (hasMoved(userState, chunkManagerState)) chunkManagerDispatch({ type: UPDATE_LOCATION, payload: viewportWorldLocation})
+  if (hasMoved(userState, chunkManagerState)) 
+    chunkManagerDispatch({ 
+      type: UPDATE_LOCATION,
+      payload: viewportWorldLocation,
+      chunkQuery
+    })
   
   return (
   <group>

@@ -93,7 +93,7 @@ export const Play = () => {
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
-              getChunkQuery={{getChunkQuery, getChunkQueryStatus}}
+              chunkQuery={{getChunkQuery, getChunkQueryStatus}}
             />
           </perspectiveCamera>
           {showStats && <Stats />} 
