@@ -10,8 +10,10 @@ import { UserContext, userReducer } from '../../../contexts/UserContext';
 import { gameReducer } from '../../../contexts/GameContext';
 import { createClientGameState } from '../../../mock/gameState';
 import { Debug } from '../../organisms/Debug/Debug';
-import { GET_NEARBY_TILES, GET_WORLD_STATE } from '../../../graph/queries';
+import { GET_NEARBY_TILES, GET_WORLD_STATE, GET_CHUNK } from '../../../graph/queries';
+// Constants 
 import { visibilityRange } from '../../../constants/clientGame';
+import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 import './play.css';
 
@@ -28,6 +30,13 @@ export const Play = () => {
     }
   }
   );
+  const [getChunkQuery, getChunkQueryStatus] = useLazyQuery(GET_CHUNK, {
+    variables: {
+      positions: [{x: 5, y: 7}],
+      chunkSize: CHUNK_SIZE
+    }
+  });
+
   const keydown = (event) => {
     const {key, repeat} = event;
     if (repeat) return;
@@ -84,6 +93,7 @@ export const Play = () => {
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+              getChunkQuery={{getChunkQuery, getChunkQueryStatus}}
             />
           </perspectiveCamera>
           {showStats && <Stats />} 

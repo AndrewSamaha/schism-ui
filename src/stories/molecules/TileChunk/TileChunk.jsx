@@ -1,6 +1,8 @@
 import React, { useReducer } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { Tile } from '../../atoms/Tile/Tile';
 import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
+import { GET_CHUNK } from '../../../graph/queries';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 const initialState = {
@@ -10,7 +12,8 @@ const initialState = {
   tiles: [],
   cachedImage: null,
   key: null,
-  inited: false
+  inited: false,
+  getChunkQuery: null,
 };
 
 const REFRESH_TILES = 'REFRESH_TILES';
@@ -50,6 +53,8 @@ function tileChunkReducer(state, action) {
 
 export const TileChunk = ({chunkData, chunkManagerDispatch}) => {
   const [tileChunkState, tileChunkDispatch] = useReducer(tileChunkReducer, initialState);
+
+  
   if (!tileChunkState.inited) tileChunkDispatch({ type: INIT_CHUNK, payload: chunkData })
   const { key, tiles, lastRefresh }= tileChunkState;
   

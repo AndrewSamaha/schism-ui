@@ -49,8 +49,31 @@ query GetWorldState($positions: [PositionInput]!, $range: Int!) {
 }
 `;
 
+const GET_CHUNK = gql`
+query GetChunk($positions: [PositionInput]!, $chunkSize: Int!) {
+  getWorldState(positions: $positions, chunkSize: $chunkSize) {
+    tiles {
+      x
+      y
+      TileType {
+        type
+      }
+    }
+    position {
+      x
+      y
+      z
+    }
+    stateTimeUTC
+    chunkSize
+  }
+}
+`;
+
+
 export {
   GET_ALL_PLAYERS,
   GET_NEARBY_TILES,
-  GET_WORLD_STATE
+  GET_WORLD_STATE,
+  GET_CHUNK
 };
