@@ -5,6 +5,8 @@ import { useLazyQuery } from '@apollo/client';
 import { TileChunk } from '../TileChunk/TileChunk';
 // Queries
 import { GET_CHUNK } from '../../../graph/queries';
+// Helpers
+import { getTextureSrc } from '../../../helpers/texture';
 // Constants
 import { ViewGeometry } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
@@ -161,8 +163,36 @@ function chunkManagerReducer(state, action) {
         }
       case RECEIVED_CHUNK:
         console.log('received chunks',action.payload);
+        const { getChunk } = action.payload;
+        const { x, y } = getChunk.position[0];
+        const key = getKey({x, y});
+        console.log('received chunk',key);
+        const tiles = getChunk.tiles.map(tile => ({
+          ...tile,
+          src: getTextureSrc(tile.TileType.type)
+        }));
+        const chunk = {
+          ...getChunk,
+          x,
+          y,
+          key,
+          tiles
+        }
+        //console.log('receivedChunk',chunk);
+        //console.log('chunkFrom state.visibleChunks', Object.keys(state.visibleChunks))
+        const receivedVisibleChunks = {
+          ...state.visibleChunks,
+          [key]: chunk
+        };
+
+        //console.log('new visibleChunks', receivedVisibleChunks)
         return {
-          ...state
+          ...state,
+          visibleChunks: receivedVisibleChunks,
+          allChunks: {
+            ...state.allChunks,
+            ...receivedVisibleChunks
+          }
         };
       default:
           console.log(`unknown action in chunkManagerReducer: ${action}`);
@@ -184,17 +214,12 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
   const {viewportWorldLocation} = userState;
   const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, createInitialState(viewportWorldLocation));
   const [getChunkQuery, getChunkQueryStatus] = useLazyQuery(GET_CHUNK, {
-    onCompleted: (data) => {
-      console.log('on completed', data);
-    },
-    onError: (e) => {
-      console.log('on error',e)
-    },
+    onCompleted: data => chunkManagerDispatch({ type: RECEIVED_CHUNK, payload: data }),
+    onError: e => console.log('on error',e),
     client
   });
-  const chunkQuery = {
-    getChunkQuery, getChunkQueryStatus
-  };
+
+  const chunkQuery = { getChunkQuery, getChunkQueryStatus };
 
   if (hasMoved(userState, chunkManagerState)) 
     chunkManagerDispatch({ 
@@ -202,32 +227,16 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
       payload: viewportWorldLocation,
       chunkQuery
     });
-  
-  
-  
-  // const { getChunkQueryStatus } = chunkQuery;
-  // if (getChunkQueryStatus.data)
-  //   chunkManagerDispatch({
-  //     type: RECEIVED_CHUNK,
-  //     payload: getChunkQueryStatus.data
-  //   });
 
   return (
     <group>
-      {/* {
-        chunkManagerState.visibleChunks.map(([key, chunk]) => {
-          return (<TileChunk 
-                    chunkData={[key, chunk]}
-                    chunkManagerDispatch={{chunkManagerDispatch}}
-                    />);
-        })
-      } */}
       {
         Object.entries(chunkManagerState.visibleChunks).map(([key, chunk]) => {
           return (<TileChunk 
                     key={key}
                     chunkData={[key, chunk]}
                     chunkManagerDispatch={{chunkManagerDispatch}}
+                    chunk={chunk}
                     />);
         })
       }

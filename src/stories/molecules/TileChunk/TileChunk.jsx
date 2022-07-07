@@ -51,22 +51,22 @@ function tileChunkReducer(state, action) {
 
 
 
-export const TileChunk = ({chunkData, chunkManagerDispatch}) => {
-  const [tileChunkState, tileChunkDispatch] = useReducer(tileChunkReducer, initialState);
+export const TileChunk = ({chunk, chunkData, chunkManagerDispatch}) => {
+  //const [tileChunkState, tileChunkDispatch] = useReducer(tileChunkReducer, initialState);
 
   
-  if (!tileChunkState.inited) tileChunkDispatch({ type: INIT_CHUNK, payload: chunkData })
-  const { key, tiles, lastRefresh }= tileChunkState;
+  //if (!tileChunkState.inited) tileChunkDispatch({ type: INIT_CHUNK, payload: chunkData })
+  const { key, tiles, lastRefresh } = chunk;
   
   // if (refreshed) tileChunkDispatch({
   //   type: REFRESH_TILES,
   //   tiles,
   // });
-
+  // console.log('TileChunk>tiles',key,tiles);
   return (
   <group>
     {
-      tiles?.length && tiles.map(([key, tile]) => {
+      tiles?.length && tiles.map((tile) => {
         return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
       })
     }

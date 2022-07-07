@@ -84,10 +84,8 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
         //console.log('error',worldStateQueryStatus.error);
         setTileStatus('error')
       } else if (worldStateQueryStatus.data) {
-        //setTileStatus('done')
-        //console.log('worldStateQueryStatustatus data', worldStateQueryStatus.data)
-        //console.log(userState)
-        getWorldStateQuery({
+        const USE_WORLDSTATE_QUERY = 0;
+        if (USE_WORLDSTATE_QUERY) getWorldStateQuery({
           variables: {
             positions: [{
               x: Math.floor(userState.viewportWorldLocation[0])*-1,
@@ -97,8 +95,6 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
           }
         });
         setTileStatus('requested')
-        //viewportWorldLocation[0].toFixed(2)}, 
-        //{viewportWorldLocation[1].toFixed(2)
       }
   });
 
