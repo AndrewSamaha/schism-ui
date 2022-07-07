@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { ApolloConsumer, useLazyQuery, useQuery } from '@apollo/client';
 import { useFrame } from '@react-three/fiber';
 import './ViewportTiles.css';
 import { ViewMoveFriction, ViewGeometry } from '../../../constants/viewport';
@@ -27,7 +27,7 @@ const physicsTic = (delta, state) => {
   };
 }
 
-export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery, chunkQuery}) => {
+export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery, chunkQuery}) => {
   //tilesQuery={{getNearbyTilesQuery, nearbyTilesStatus}}
   const {getChunkQuery, getChunkQueryStatus} = chunkQuery;
   const [viewportTiles, setViewportTiles] = useState(null);
@@ -111,21 +111,15 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery, chunkQ
         tile.y >= LowerRight.y) return true;
     return false;
   });
-  // const duration = window.performance.now() - startTime;
-  // const numFilteredTiles = gameState?.tilesFromServer && Object.entries(gameState.tilesFromServer).length;
-  // const rate = numFilteredTiles / duration;
-  // if (duration > 0) console.log(rate, numFilteredTiles, duration);
-  
+
   return (
   <group>
-   
-    
-  
     <ChunkManager
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
               chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+              client={client}
               >
               
       {
@@ -135,7 +129,6 @@ export const ViewportTiles = ({gameReducer, userReducer, worldStateQuery, chunkQ
         })
       }
     </ChunkManager>
-            
   </group>
   );
 }

@@ -53,7 +53,7 @@ root.render(
     <UserContext.Provider value={initialState}>
       <GameContext.Provider value={null}>
         <ApolloProvider client={client}>
-            <App />
+            <App client={client} />
         </ApolloProvider>
       </GameContext.Provider>
     </UserContext.Provider>

@@ -36,7 +36,8 @@ function AllPlayers() {
   ));
 }
 
-function App() {
+// function App() {
+const App = ({client}) => {
   return (
     <BrowserRouter>
       <div>
@@ -47,7 +48,7 @@ function App() {
             <Route exact path="/about" element={<About/>} />
             <Route exact path="/users" element={<Users/>} />
             <Route exact path="/login" element={<Login/>} />
-            <Route exact path="/play" element={<Play/>} />
+            <Route exact path="/play" element={<Play client={client} />} />
         </Routes>
       </div>
     </BrowserRouter>

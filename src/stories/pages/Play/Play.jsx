@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useEffect } from 'react';
+import React, { useReducer, useContext, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { Header } from '../../organisms/Header/Header';
 import { Box } from '../../atoms/Box/Box';
@@ -19,7 +19,7 @@ import './play.css';
 
 
 
-export const Play = () => {
+export const Play = ({client}) => {
   const contextUser = useContext(UserContext);
   const [userState, userDispatch] = useReducer(userReducer, contextUser);
   const [gameState, gameDispatch] = useReducer(gameReducer, createClientGameState());
@@ -30,10 +30,13 @@ export const Play = () => {
     }
   }
   );
+  const [queryResults, setQueryResults] = useState();
   const [getChunkQuery, getChunkQueryStatus] = useLazyQuery(GET_CHUNK, {
-    variables: {
-      positions: [{x: 5, y: 7}],
-      chunkSize: CHUNK_SIZE
+    onCompleted: (data) => {
+      console.log('on completed', data);
+    },
+    onError: (e) => {
+      console.log('on error',e)
     }
   });
 
@@ -94,6 +97,7 @@ export const Play = () => {
               userReducer={{userState, userDispatch}}
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
               chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+              client={client}
             />
           </perspectiveCamera>
           {showStats && <Stats />} 

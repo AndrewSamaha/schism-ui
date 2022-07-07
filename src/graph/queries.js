@@ -51,7 +51,7 @@ query GetWorldState($positions: [PositionInput]!, $range: Int!) {
 
 const GET_CHUNK = gql`
 query GetChunk($positions: [PositionInput]!, $chunkSize: Int!) {
-  getWorldState(positions: $positions, chunkSize: $chunkSize) {
+  getChunk(positions: $positions, chunkSize: $chunkSize) {
     tiles {
       x
       y

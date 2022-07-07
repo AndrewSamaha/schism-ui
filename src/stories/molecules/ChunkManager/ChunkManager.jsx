@@ -1,7 +1,15 @@
+// external
 import React, { useState, useEffect, useReducer } from 'react';
-import { ViewGeometry } from '../../../constants/viewport';
+import { useLazyQuery } from '@apollo/client';
+// Components
 import { TileChunk } from '../TileChunk/TileChunk';
+// Queries
+import { GET_CHUNK } from '../../../graph/queries';
+// Constants
+import { ViewGeometry } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
+
+
 
 const createInitialState = (viewportWorldLocation) => {
   
@@ -14,6 +22,7 @@ const createInitialState = (viewportWorldLocation) => {
 }
 
 const UPDATE_LOCATION = 'UPDATE_LOCATION';
+const RECEIVED_CHUNK = 'RECEIVED_CHUNK';
 
 const getWorldLocation = ({viewportWorldLocation}) => {
   return {
@@ -52,6 +61,15 @@ const getVisibleChunkAddresses = ({viewportWorldLocation}) => {
 
 const getKey = ({x, y}) => `ChunkX${x}Y${y}`;
 
+const createNewChunk = ({key, x, y}) => {
+  console.log('createNewChunk',x,y,key)
+  return {
+    key,
+    x,
+    y
+  }
+}
+
 function chunkManagerReducer(state, action) {
 
   // console.log('chunkManagerReducer', action, state);
@@ -80,7 +98,7 @@ function chunkManagerReducer(state, action) {
           }
         }
         const newVisibleChunks = {};
-        const queryQueue = [...state.queryQueue];
+        const newQueries = [];
         
         newVisibleChunkAddresses.forEach(({x, y}) => {
           const key = getKey({x, y});
@@ -88,30 +106,49 @@ function chunkManagerReducer(state, action) {
             newVisibleChunks[key] = state.allChunks[key];
             return;
           }
-          newVisibleChunks[key] = {
-            x,
-            y
-          }
+          newVisibleChunks[key] = createNewChunk({key, x, y});
+          
+          const queryVariables = {
+            positions: [{
+              x,
+              y
+            }],
+            chunkSize: CHUNK_SIZE
+          };
+
+          newQueries.push({
+            key,
+            query: GET_CHUNK,
+            variables: queryVariables,
+            timeAddedToQueue: Date.now()
+          })
         });
+
+        const {getChunkQuery, getChunkQueryStatus} = action.chunkQuery;
+
+        newQueries.forEach(({query, variables}) => {
+          getChunkQuery({ variables });
+        })
+
+        const queryQueue = [...state.queryQueue, ...newQueries];
 
         const stillVisibleChunksAddresses = visibleChunkAddresses.filter((address) => Object.keys(state.visibleChunks).includes(getKey(address)));
         const stillVisibleChunks = {};
         stillVisibleChunksAddresses.forEach(({x, y}) => {
           const key = getKey({x, y});
-          newVisibleChunks[key] = {
-            x,
-            y
-          }
+          stillVisibleChunks[key] = state.visibleChunks[key];
         })
+
         const visibleChunks = {
           ...newVisibleChunks,
           ...stillVisibleChunks
         }
         
-        //console.log('newVisibleChunkAddresses', newVisibleChunkAddresses);
         console.log('update')
         console.log('state.visibleChunks.keys()', Object.keys(state.visibleChunks))
         console.log('visibleChunks', Object.keys(visibleChunks));
+
+
         return {
           ...state,
           lastViewportWorldLocation: action.payload,
@@ -119,8 +156,14 @@ function chunkManagerReducer(state, action) {
           allChunks: {
             ...state.allChunks,
             ...newVisibleChunks
-          }
+          },
+          queryQueue
         }
+      case RECEIVED_CHUNK:
+        console.log('received chunks',action.payload);
+        return {
+          ...state
+        };
       default:
           console.log(`unknown action in chunkManagerReducer: ${action}`);
           console.log({action});
@@ -136,39 +179,60 @@ const hasMoved = ({viewportWorldLocation}, {lastViewportWorldLocation}) => {
   return false;
 }
 
-export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, chunkQuery, children}) => {
+export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, children, client }) => { // chunkQuery,
   const { userState, userDispatch } = userReducer;
   const {viewportWorldLocation} = userState;
   const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, createInitialState(viewportWorldLocation));
+  const [getChunkQuery, getChunkQueryStatus] = useLazyQuery(GET_CHUNK, {
+    onCompleted: (data) => {
+      console.log('on completed', data);
+    },
+    onError: (e) => {
+      console.log('on error',e)
+    },
+    client
+  });
+  const chunkQuery = {
+    getChunkQuery, getChunkQueryStatus
+  };
 
   if (hasMoved(userState, chunkManagerState)) 
     chunkManagerDispatch({ 
       type: UPDATE_LOCATION,
       payload: viewportWorldLocation,
       chunkQuery
-    })
+    });
   
+  
+  
+  // const { getChunkQueryStatus } = chunkQuery;
+  // if (getChunkQueryStatus.data)
+  //   chunkManagerDispatch({
+  //     type: RECEIVED_CHUNK,
+  //     payload: getChunkQueryStatus.data
+  //   });
+
   return (
-  <group>
-    {/* {
-      chunkManagerState.visibleChunks.map(([key, chunk]) => {
-        return (<TileChunk 
-                  chunkData={[key, chunk]}
-                  chunkManagerDispatch={{chunkManagerDispatch}}
-                  />);
-      })
-    } */}
-    {
-      Object.entries(chunkManagerState.visibleChunks).map(([key, chunk]) => {
-        return (<TileChunk 
-                  key={key}
-                  chunkData={[key, chunk]}
-                  chunkManagerDispatch={{chunkManagerDispatch}}
-                  />);
-      })
-    }
-    {children}
-  </group>
+    <group>
+      {/* {
+        chunkManagerState.visibleChunks.map(([key, chunk]) => {
+          return (<TileChunk 
+                    chunkData={[key, chunk]}
+                    chunkManagerDispatch={{chunkManagerDispatch}}
+                    />);
+        })
+      } */}
+      {
+        Object.entries(chunkManagerState.visibleChunks).map(([key, chunk]) => {
+          return (<TileChunk 
+                    key={key}
+                    chunkData={[key, chunk]}
+                    chunkManagerDispatch={{chunkManagerDispatch}}
+                    />);
+        })
+      }
+      {children}
+    </group>
   );
 }
 
