@@ -62,7 +62,7 @@ export const TileChunk = ({chunk, chunkData, chunkManagerDispatch}) => {
   //   type: REFRESH_TILES,
   //   tiles,
   // });
-  // console.log('TileChunk>tiles',key,tiles);
+  // console.log('TileChunk>tiles',key, tiles?.length);
   return (
   <group>
     {

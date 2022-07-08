@@ -70,10 +70,32 @@ query GetChunk($positions: [PositionInput]!, $chunkSize: Int!) {
 }
 `;
 
+const GET_CHUNK_COLLECTION = gql`
+query GetChunkCollection($positions: [PositionInput]!, $chunkSize: Int!) {
+  getChunkCollection(positions: $positions, chunkSize: $chunkSize) {
+    chunkSize
+    chunks {
+      x
+      y
+      tiles {
+        x
+        y
+        TileType {
+          type
+        }
+      }
+    }
+    queryDuration
+    stateTimeUTC
+  }
+}
+`;
+
 
 export {
   GET_ALL_PLAYERS,
   GET_NEARBY_TILES,
   GET_WORLD_STATE,
-  GET_CHUNK
+  GET_CHUNK,
+  GET_CHUNK_COLLECTION
 };
