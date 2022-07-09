@@ -46,20 +46,20 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
     y: -1 * (userState.viewportWorldLocation[1] + ViewGeometry[1]/2)
   };
   
-  useEffect(() => {
-    const newViewportTiles = getViewportTiles({ viewportWorldLocation, tiles });
-    setViewportTiles(newViewportTiles);
-    getWorldStateQuery({
-      variables: {
-        positions: [{
-          x: Math.floor(userState.viewportWorldLocation[0])*-1,
-          y: Math.floor(userState.viewportWorldLocation[1])*-1
-        }],
-        range: visibilityRange
-      }
-    })
-    setTileStatus('requested');
-  },[]);
+  // useEffect(() => {
+  //   const newViewportTiles = getViewportTiles({ viewportWorldLocation, tiles });
+  //   setViewportTiles(newViewportTiles);
+  //   getWorldStateQuery({
+  //     variables: {
+  //       positions: [{
+  //         x: Math.floor(userState.viewportWorldLocation[0])*-1,
+  //         y: Math.floor(userState.viewportWorldLocation[1])*-1
+  //       }],
+  //       range: visibilityRange
+  //     }
+  //   })
+  //   setTileStatus('requested');
+  // },[]);
 
   useFrame((state, delta) => {
       const { userInput } = userState;
@@ -98,15 +98,15 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
       }
   });
 
-  const startTime = window.performance.now();
-  const tilesInView = gameState?.tilesFromServer && Object.entries(gameState?.tilesFromServer).filter((arg) => {
-    const [key,tile] = arg;
-    if (tile.x >= UpperLeft.x &&
-        tile.x <= LowerRight.x && 
-        tile.y <= UpperLeft.y &&
-        tile.y >= LowerRight.y) return true;
-    return false;
-  });
+  // const startTime = window.performance.now();
+  // const tilesInView = gameState?.tilesFromServer && Object.entries(gameState?.tilesFromServer).filter((arg) => {
+  //   const [key,tile] = arg;
+  //   if (tile.x >= UpperLeft.x &&
+  //       tile.x <= LowerRight.x && 
+  //       tile.y <= UpperLeft.y &&
+  //       tile.y >= LowerRight.y) return true;
+  //   return false;
+  // });
 
   return (
   <group>
@@ -118,12 +118,12 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
               client={client}
               >
               
-      {
+      {/* {
         tilesInView?.length && tilesInView.map(([key, tile]) => {
           //console.log('boop',tile.x, tile.y);
           return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
         })
-      }
+      } */}
     </ChunkManager>
   </group>
   );

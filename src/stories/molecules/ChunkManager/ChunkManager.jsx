@@ -75,10 +75,6 @@ const createNewChunk = ({key, x, y}) => {
 }
 
 function chunkManagerReducer(state, action) {
-
-  // console.log('chunkManagerReducer', action, state);
-  if (state === null) return createInitialState([]);
-
   switch (action.type) {
       case 'receivedGameState':
           return {
@@ -262,6 +258,13 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
     client
   });
 
+  useEffect(() => {
+    chunkManagerDispatch({ 
+      type: UPDATE_LOCATION,
+      payload: viewportWorldLocation,
+      chunkQuery
+    });
+  },[])
   const chunkQuery = { getChunkQuery, getChunkQueryStatus };
 
   if (hasMoved(userState, chunkManagerState)) 
@@ -274,7 +277,7 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
   return (
     <group>
       {
-        Object.entries(chunkManagerState.visibleChunks).map(([key, chunk]) => {
+        chunkManagerState.visibleChunks && Object.entries(chunkManagerState.visibleChunks).map(([key, chunk]) => {
           return (<TileChunk 
                     key={key}
                     chunkData={[key, chunk]}
