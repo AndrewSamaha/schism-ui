@@ -1,9 +1,10 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useRef } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { Tile } from '../../atoms/Tile/Tile';
+import { CachedChunk } from './CachedChunk';
 import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
 import { GET_CHUNK } from '../../../graph/queries';
-import { CHUNK_SIZE } from '../../../constants/tileChunks';
+import { CHUNK_SIZE, CHUNK_GEOMETRY } from '../../../constants/tileChunks';
 
 const initialState = {
   x: 0,
@@ -52,17 +53,12 @@ function tileChunkReducer(state, action) {
 
 
 export const TileChunk = ({chunk, chunkData, chunkManagerDispatch}) => {
-  //const [tileChunkState, tileChunkDispatch] = useReducer(tileChunkReducer, initialState);
-
-  
-  //if (!tileChunkState.inited) tileChunkDispatch({ type: INIT_CHUNK, payload: chunkData })
   const { key, tiles, lastRefresh } = chunk;
-  
-  // if (refreshed) tileChunkDispatch({
-  //   type: REFRESH_TILES,
-  //   tiles,
-  // });
-  // console.log('TileChunk>tiles',key, tiles?.length);
+
+  if (chunk.cachedImg) {
+    return (<CachedChunk chunk={chunk}></CachedChunk>)
+  };
+
   return (
   <group>
     {

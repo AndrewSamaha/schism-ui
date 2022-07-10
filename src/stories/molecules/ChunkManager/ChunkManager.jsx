@@ -74,6 +74,38 @@ const createNewChunk = ({key, x, y}) => {
   }
 }
 
+const makeChunkImageContext = (chunk) => {
+  const { x, y, tiles } = chunk;
+  const canvas = document.createElement('canvas');
+  const tileWidth = 100;
+  const tileHeight = 100;
+  canvas.width = CHUNK_SIZE * tileWidth;
+  canvas.height = CHUNK_SIZE * tileHeight;
+
+  // The default <canvas> is transparent, let's make it white
+  const startTime = window.performance.now();
+  let canvasContext = canvas.getContext('2d');
+  canvasContext.fillStyle = 'white';
+  canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+  
+  tiles.map((tile) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    
+    img.onload = function() {
+      canvasContext.drawImage(img, 0, 0);
+      // img.style.display = 'none';
+      // console.log(`makeChunkImage for ${tile.x},${tile.y} = ${duration} ms`);    
+      chunk.cachedImg = img;
+      chunk.cachedImgDurationMs = window.performance.now() - startTime;
+    }
+    img.src = tile.src;
+  });
+  const duration = window.performance.now() - startTime;
+  console.log(`FINAL makeChunkImage for ${tiles.length} = ${duration} ms`)
+  return canvasContext;
+}
+
 function chunkManagerReducer(state, action) {
   switch (action.type) {
       case 'receivedGameState':
@@ -115,21 +147,9 @@ function chunkManagerReducer(state, action) {
             }],
             chunkSize: CHUNK_SIZE
           };
-
-          // newQueries.push({
-          //   key,
-          //   query: GET_CHUNK,
-          //   variables: queryVariables,
-          //   timeAddedToQueue: Date.now()
-          // })
         });
 
         const {getChunkQuery, getChunkQueryStatus} = action.chunkQuery;
-
-        // newQueries.forEach(({query, variables}) => {
-        //   getChunkQuery({ variables });
-        //   console.log(' Querying for ', variables.positions[0], variables.positions.length);
-        // })
 
         getChunkQuery({
           variables: {
@@ -169,19 +189,25 @@ function chunkManagerReducer(state, action) {
         }
       case RECEIVED_CHUNK_COLLECTION:
         const { getChunkCollection: { chunks: receivedChunks } } = action.payload;
+        console.log(`calling makeChunkImage on ${receivedChunks.length} chunks.`);
         const chunks = receivedChunks.reduce((collection, chunk) => {
           const { x, y } = chunk;
           const key = getKey(chunk);
+          const tiles = chunk.tiles.map(tile => ({
+            ...tile,
+            src: getTextureSrc(tile.TileType.type)
+          }));
+          const newChunk = {
+            ...chunk,
+            key,
+            tiles
+          };
+
+          makeChunkImageContext(newChunk);
+
           return {
             ...collection,
-            [key]: {
-              ...chunk,
-              key,
-              tiles: chunk.tiles.map(tile => ({
-                ...tile,
-                src: getTextureSrc(tile.TileType.type)
-              }))
-            }
+            [key]: newChunk
           }
         },{})
 
