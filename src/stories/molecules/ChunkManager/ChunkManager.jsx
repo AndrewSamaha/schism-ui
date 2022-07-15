@@ -1,6 +1,7 @@
 // external
 import React, { useState, useEffect, useReducer } from 'react';
 import { useLazyQuery } from '@apollo/client';
+import { CanvasTexture } from 'three';
 // Components
 import { TileChunk } from '../TileChunk/TileChunk';
 // Queries
@@ -77,33 +78,65 @@ const createNewChunk = ({key, x, y}) => {
 const makeChunkImageContext = (chunk) => {
   const { x, y, tiles } = chunk;
   const canvas = document.createElement('canvas');
-  const tileWidth = 100;
-  const tileHeight = 100;
+  const tileWidth = 20;
+  const tileHeight = 20;
   canvas.width = CHUNK_SIZE * tileWidth;
   canvas.height = CHUNK_SIZE * tileHeight;
 
   // The default <canvas> is transparent, let's make it white
   const startTime = window.performance.now();
-  let canvasContext = canvas.getContext('2d');
-  canvasContext.fillStyle = 'white';
-  canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+  let ctx = canvas.getContext('2d');
   
-  tiles.map((tile) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
+  const colorArray = ['blue','black','blue','green','red','pink'];
+  const randColor = colorArray[Math.floor(colorArray.length * Math.random())];
+  
+  ctx.fillStyle = '#FFF'; //randColor;
+  ctx.fillRect(50, 50, 100, 100);
+  
+  ctx.beginPath();
+  ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+  ctx.stroke();
+
+  ctx.font = "30px Arial";
+  ctx.fillText("Hello World", 10, 50);
+  console.log('creating blank image',randColor, canvas.width, canvas.height);
+
+  // tiles.map((tile) => {
+  //   const img = new Image();
+  //   // img.crossOrigin = 'anonymous';
     
-    img.onload = function() {
-      canvasContext.drawImage(img, 0, 0);
-      // img.style.display = 'none';
-      // console.log(`makeChunkImage for ${tile.x},${tile.y} = ${duration} ms`);    
-      chunk.cachedImg = img;
-      chunk.cachedImgDurationMs = window.performance.now() - startTime;
-    }
-    img.src = tile.src;
-  });
+  //   img.onload = function() {
+  //     // const rcolor = colorArray[Math.floor(colorArray.length * Math.random())];
+  //     // ctx.fillStyle = rcolor;
+  //     // const startX = Math.floor(ctx.canvas.width*Math.random());
+  //     // const startY = Math.floor(ctx.canvas.height*Math.random());
+  //     // const endX = Math.floor((ctx.canvas.width-startX)*Math.random());
+  //     // const endY = Math.floor((ctx.canvas.height-startY)*Math.random());
+  //     // ctx.fillRect(
+  //     //   startX,
+  //     //   startY,
+  //     //   endX,
+  //     //   endY);
+  //     // console.log('box',rcolor, startX,startY,endX,endY)
+  //     ctx.drawImage(this, 
+  //       tile.x,
+  //       ctx.canvas.height - tile.y);
+  //       // ctx.canvas.width, ctx.canvas.height);
+  //     // img.style.display = 'none';
+  //     // console.log(`makeChunkImage for ${tile.x},${tile.y} = ${duration} ms`);    
+  //     // chunk.cachedImg = canvas; //img
+  //     chunk.cachedImgDurationMs = window.performance.now() - startTime;
+  //     // console.log('img.onLoad - tile.src=',tile.src)
+  //     //console.log('onload',ctx.canvas.width,ctx.canvas.height)
+  //   }
+  //   img.src = tile.src;
+  // });
+  chunk.cachedImg = canvas; //img
+  chunk.texture = new CanvasTexture(ctx.canvas);
+  chunk.texture.needsUpdate = true;
   const duration = window.performance.now() - startTime;
-  console.log(`FINAL makeChunkImage for ${tiles.length} = ${duration} ms`)
-  return canvasContext;
+  // console.log(`FINAL makeChunkImage for ${tiles.length} = ${duration} ms`)
+  return ctx;
 }
 
 function chunkManagerReducer(state, action) {
@@ -203,7 +236,7 @@ function chunkManagerReducer(state, action) {
             tiles
           };
 
-          makeChunkImageContext(newChunk);
+          newChunk.imgContext = makeChunkImageContext(newChunk);
 
           return {
             ...collection,
