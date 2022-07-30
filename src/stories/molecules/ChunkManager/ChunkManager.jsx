@@ -78,8 +78,8 @@ const createNewChunk = ({key, x, y}) => {
 const makeChunkImageContext = (chunk) => {
   const { x, y, tiles } = chunk;
   const canvas = document.createElement('canvas');
-  const tileWidth = 20;
-  const tileHeight = 20;
+  const tileWidth = 100;
+  const tileHeight = 100;
   canvas.width = CHUNK_SIZE * tileWidth;
   canvas.height = CHUNK_SIZE * tileHeight;
 
@@ -87,50 +87,35 @@ const makeChunkImageContext = (chunk) => {
   const startTime = window.performance.now();
   let ctx = canvas.getContext('2d');
   
-  const colorArray = ['blue','black','blue','green','red','pink'];
-  const randColor = colorArray[Math.floor(colorArray.length * Math.random())];
-  
-  ctx.fillStyle = '#FFF'; //randColor;
-  ctx.fillRect(50, 50, 100, 100);
-  
-  ctx.beginPath();
-  ctx.arc(95, 50, 40, 0, 2 * Math.PI);
-  ctx.stroke();
+  const colorArray = ['blue','brown','blue','green','red','pink'];
 
-  ctx.font = "30px Arial";
-  ctx.fillText("Hello World", 10, 50);
-  console.log('creating blank image',randColor, canvas.width, canvas.height);
+  const pixelOffsetX = -chunk.x*tileWidth;
+  const pixelOffsetY = chunk.y*tileHeight - tileHeight + canvas.height;
 
-  // tiles.map((tile) => {
-  //   const img = new Image();
-  //   // img.crossOrigin = 'anonymous';
+  tiles.map((tile) => {
+    const img = new Image();
     
-  //   img.onload = function() {
-  //     // const rcolor = colorArray[Math.floor(colorArray.length * Math.random())];
-  //     // ctx.fillStyle = rcolor;
-  //     // const startX = Math.floor(ctx.canvas.width*Math.random());
-  //     // const startY = Math.floor(ctx.canvas.height*Math.random());
-  //     // const endX = Math.floor((ctx.canvas.width-startX)*Math.random());
-  //     // const endY = Math.floor((ctx.canvas.height-startY)*Math.random());
-  //     // ctx.fillRect(
-  //     //   startX,
-  //     //   startY,
-  //     //   endX,
-  //     //   endY);
-  //     // console.log('box',rcolor, startX,startY,endX,endY)
-  //     ctx.drawImage(this, 
-  //       tile.x,
-  //       ctx.canvas.height - tile.y);
-  //       // ctx.canvas.width, ctx.canvas.height);
-  //     // img.style.display = 'none';
-  //     // console.log(`makeChunkImage for ${tile.x},${tile.y} = ${duration} ms`);    
-  //     // chunk.cachedImg = canvas; //img
-  //     chunk.cachedImgDurationMs = window.performance.now() - startTime;
-  //     // console.log('img.onLoad - tile.src=',tile.src)
-  //     //console.log('onload',ctx.canvas.width,ctx.canvas.height)
-  //   }
-  //   img.src = tile.src;
-  // });
+    img.onload = function() {
+
+      const rcolor = colorArray[Math.floor(colorArray.length * Math.random())];
+      ctx.fillStyle = rcolor;
+      
+      const chunkImgX = tile.x*tileWidth + pixelOffsetX;
+      const chunkImgY = -(tile.y*tileHeight) + pixelOffsetY;
+      
+      ctx.fillRect(chunkImgX, chunkImgY, tileWidth, tileHeight);
+      
+      ctx.drawImage(this, 
+        chunkImgX,
+        chunkImgY,
+        tileWidth,
+        tileHeight);
+
+      chunk.cachedImgDurationMs = window.performance.now() - startTime;
+      chunk.texture.needsUpdate = true;
+    }
+    img.src = tile.src;
+  });
   chunk.cachedImg = canvas; //img
   chunk.texture = new CanvasTexture(ctx.canvas);
   chunk.texture.needsUpdate = true;
