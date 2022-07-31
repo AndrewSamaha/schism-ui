@@ -141,6 +141,7 @@ function chunkManagerReducer(state, action) {
         const visibleChunkKeys = visibleChunkAddresses.map(({x,y}) => `ChunkX${x}Y${y}`);
         const newVisibleChunkKeys = visibleChunkKeys.filter((key) => !Object.keys(state.visibleChunks).includes(key));
         const newVisibleChunkAddresses = visibleChunkAddresses.filter((address) => !Object.keys(state.visibleChunks).includes(getKey(address)));
+        
         if (!newVisibleChunkAddresses.length) {
           return {
             ...state,
@@ -149,13 +150,15 @@ function chunkManagerReducer(state, action) {
         }
         const newVisibleChunks = {};
         const newQueries = [];
-        
+        const chunksAddressesToQuery = [];
+
         newVisibleChunkAddresses.forEach(({x, y}) => {
           const key = getKey({x, y});
           if (Object.keys(state.allChunks).includes(key)) {
             newVisibleChunks[key] = state.allChunks[key];
             return;
           }
+          chunksAddressesToQuery.push({x, y});
           newVisibleChunks[key] = createNewChunk({key, x, y});
           
           const queryVariables = {
@@ -168,13 +171,18 @@ function chunkManagerReducer(state, action) {
         });
 
         const {getChunkQuery, getChunkQueryStatus} = action.chunkQuery;
-
-        getChunkQuery({
-          variables: {
-            positions: newVisibleChunkAddresses,
-            chunkSize: CHUNK_SIZE
-          }
-        });
+        
+        // Need to change this to only query for those chunks we've NEVER seen
+        // currently, it all the chunks that are just new to be drawn
+        console.log('chunkAddressesToQuery', chunksAddressesToQuery);
+        if (chunksAddressesToQuery.length) {
+          getChunkQuery({
+            variables: {
+              positions: chunksAddressesToQuery, // newVisibleChunkAddresses
+              chunkSize: CHUNK_SIZE
+            }
+          });
+        }
 
         const queryQueue = [...state.queryQueue, ...newQueries];
 
