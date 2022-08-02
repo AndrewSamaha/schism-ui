@@ -297,7 +297,7 @@ const hasMoved = ({viewportWorldLocation}, {lastViewportWorldLocation}) => {
   return false;
 }
 
-export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, children, client }) => { // chunkQuery,
+export const EntityManager = ({gameReducer, userReducer, worldStateQuery, children, client }) => { // chunkQuery,
   const { userState, userDispatch } = userReducer;
   const {viewportWorldLocation} = userState;
   const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, createInitialState(viewportWorldLocation));
@@ -340,6 +340,6 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
   );
 }
 
-ChunkManager.propTypes = { };
+EntityManager.propTypes = { };
 
-ChunkManager.defaultProps = { };
+EntityManager.defaultProps = { };
