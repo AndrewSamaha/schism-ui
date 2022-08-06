@@ -15,7 +15,7 @@ import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 
 const createInitialState = (viewportWorldLocation) => {
-  
+  console.log('chunkManager.createInitialState, viewportWorldLocation', viewportWorldLocation)
   return {
     visibleChunks: {},
     lastViewportWorldLocation: viewportWorldLocation,
@@ -300,7 +300,7 @@ const hasMoved = ({viewportWorldLocation}, {lastViewportWorldLocation}) => {
 export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, children, client }) => { // chunkQuery,
   const { userState, userDispatch } = userReducer;
   const {viewportWorldLocation} = userState;
-  const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, createInitialState(viewportWorldLocation));
+  const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, viewportWorldLocation, createInitialState);
   const [getChunkQuery, getChunkQueryStatus] = useLazyQuery(GET_CHUNK_COLLECTION, {
     onCompleted: data => chunkManagerDispatch({ type: RECEIVED_CHUNK_COLLECTION, payload: data }),
     onError: e => console.log('on error',e),

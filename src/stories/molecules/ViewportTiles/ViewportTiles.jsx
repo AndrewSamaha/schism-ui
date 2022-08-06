@@ -9,6 +9,7 @@ import { applyFriction } from '../../../helpers/physics';
 import { GET_NEARBY_TILES } from '../../../graph/queries';
 import { visibilityRange } from '../../../constants/clientGame';
 import { ChunkManager } from '../../molecules/ChunkManager/ChunkManager';
+import { EntityManager } from '../../molecules/EntityManager/EntityManager';
 
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
@@ -85,6 +86,13 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
 
   return (
   <group>
+    <EntityManager 
+      gameReducer={{gameState, gameDispatch}}
+      userReducer={{userState, userDispatch}}
+      worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+      chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+      client={client}
+    />
     <ChunkManager
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
