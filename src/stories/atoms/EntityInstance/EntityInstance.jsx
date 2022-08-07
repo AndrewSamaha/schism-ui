@@ -4,8 +4,8 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Instance } from '@react-three/drei';
 
 export const EntityInstance = (props) => {
-  const { unit } = props;
-  const { color, position, rotation, id, scale } = unit;
+  const { entity } = props;
+  const { color, position, rotation, id, scale } = entity;
   // This reference gives us direct access to the THREE.Mesh object
   const ref = useRef()
   // Hold state for hovered and clicked events
@@ -17,14 +17,14 @@ export const EntityInstance = (props) => {
   return (
     <Instance
       key={id}
-      color={color}
+      color={hovered ? 'white' : color}
       position={position}
       rotation={rotation} // [Math.PI / 3, 0, 0]
       ref={ref}
       scale={scale}
       // onClick={(event) => click(!clicked)}
-      // onPointerOver={(event) => hover(true)}
-      // onPointerOut={(event) => hover(false)}
+      onPointerOver={(event) => hover(true)}
+      onPointerOut={(event) => hover(false)}
       />
   )
 }

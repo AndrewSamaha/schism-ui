@@ -76,8 +76,8 @@ export const EntityManager = ({gameReducer, userReducer, worldStateQuery, childr
       <boxGeometry />
       <meshStandardMaterial />
       {
-        entityManagerState.myUnits && entityManagerState.myUnits.map((unit) => {
-          return (<EntityInstance unit={unit} />);
+        entityManagerState.myUnits && entityManagerState.myUnits.map((entity) => {
+          return (<EntityInstance entity={entity} />);
           // return (<Instance
           //           key={unit.id}
           //           color={unit.color}
