@@ -28,13 +28,14 @@ const physicsTic = (delta, state) => {
   };
 }
 
-export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery, chunkQuery}) => {
+export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, worldStateQuery, chunkQuery}) => {
   //tilesQuery={{getNearbyTilesQuery, nearbyTilesStatus}}
   const {getChunkQuery, getChunkQueryStatus} = chunkQuery;
   const [viewportTiles, setViewportTiles] = useState(null);
   const [tileStatus, setTileStatus] = useState(null);
   const { gameState, gameDispatch } = gameReducer;
   const { userState, userDispatch } = userReducer;
+  const { entityState, entityDispatch } = entityReducer;
   const {viewportWorldLocation} = userState;
   const { tiles } = gameState;
   const {getWorldStateQuery, worldStateQueryStatus} = worldStateQuery;
@@ -89,6 +90,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
     <EntityManager 
       gameReducer={{gameState, gameDispatch}}
       userReducer={{userState, userDispatch}}
+      entityReducer={{entityState, entityDispatch}}
       worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
       chunkQuery={{getChunkQuery, getChunkQueryStatus}}
       client={client}
@@ -96,6 +98,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, worldStateQuery
     <ChunkManager
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
+              entityReducer={{entityState, entityDispatch}}
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
               chunkQuery={{getChunkQuery, getChunkQueryStatus}}
               client={client}

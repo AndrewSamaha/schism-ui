@@ -8,12 +8,15 @@ import { Canvas } from '@react-three/fiber';
 import { Stats } from '@react-three/drei';
 import { UserContext, userReducer } from '../../../contexts/UserContext';
 import { gameReducer } from '../../../contexts/GameContext';
+// Reducers
+import { createInitialState as createInitialEntityState, entityManagerReducer } from '../../../reducers/entityReducer';
+
+
 import { createClientGameState } from '../../../mock/gameState';
 import { Debug } from '../../organisms/Debug/Debug';
 import { GET_NEARBY_TILES, GET_WORLD_STATE, GET_CHUNK } from '../../../graph/queries';
 // Constants 
 import { visibilityRange } from '../../../constants/clientGame';
-import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 import './play.css';
 
@@ -23,6 +26,11 @@ export const Play = ({client}) => {
   const contextUser = useContext(UserContext);
   const [userState, userDispatch] = useReducer(userReducer, contextUser);
   const [gameState, gameDispatch] = useReducer(gameReducer, createClientGameState());
+  const [entityState, entityDispatch] = useReducer(
+    entityManagerReducer, 
+    userState.viewportWorldLocation, 
+    createInitialEntityState);
+
   const [getWorldStateQuery, worldStateQueryStatus] = useLazyQuery(GET_WORLD_STATE, {
     variables: {
       positions: [{x: 5, y: 7}],
@@ -95,6 +103,7 @@ export const Play = ({client}) => {
             <ViewportTiles
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
+              entityReducer={{entityState, entityDispatch}}
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
               chunkQuery={{getChunkQuery, getChunkQueryStatus}}
               client={client}
