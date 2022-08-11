@@ -1,5 +1,7 @@
 import React, { useReducer, useContext, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
+import { useThree } from '@react-three/fiber';
+
 import { Header } from '../../organisms/Header/Header';
 import { Box } from '../../atoms/Box/Box';
 import { ViewportTiles } from '../../molecules/ViewportTiles/ViewportTiles';
@@ -8,8 +10,9 @@ import { Canvas } from '@react-three/fiber';
 import { Stats } from '@react-three/drei';
 import { UserContext, userReducer } from '../../../contexts/UserContext';
 import { gameReducer } from '../../../contexts/GameContext';
+
 // Reducers
-import { createInitialState as createInitialEntityState, entityManagerReducer } from '../../../reducers/entityReducer';
+import { createInitialState as createInitialEntityState, entityReducer } from '../../../reducers/entityReducer';
 
 
 import { createClientGameState } from '../../../mock/gameState';
@@ -26,8 +29,10 @@ export const Play = ({client}) => {
   const contextUser = useContext(UserContext);
   const [userState, userDispatch] = useReducer(userReducer, contextUser);
   const [gameState, gameDispatch] = useReducer(gameReducer, createClientGameState());
+  const performance = 0; //useThree((state) => state.performance);
+
   const [entityState, entityDispatch] = useReducer(
-    entityManagerReducer, 
+    entityReducer, 
     userState.viewportWorldLocation, 
     createInitialEntityState);
 
@@ -90,7 +95,27 @@ export const Play = ({client}) => {
       />
 
       <div onKeyDown={(e) => keydown(e)} onKeyUp={(e)=>keyup(e)} tabIndex={-1} >
-        <Debug userState={userState} gameState={gameState} />
+        <Debug userState={userState} gameState={gameState} performance={performance} entityReducer={{entityState, entityDispatch}} />
+        {/* <Canvas className="selectedUnits"
+          style={{width: '100px', height: '150px', zIndex: '2', backgroundColor: 'white'}}>
+            <perspectiveCamera 
+            makeDefault 
+            position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
+            rotation={ViewRotation}>
+            <ambientLight />
+            <pointLight position={[10, 10, 10]} />
+            <Box position={[-2, 0, 0]} />
+            <Box position={[2, 0, 0]} />
+            <ViewportTiles
+              gameReducer={{gameState, gameDispatch}}
+              userReducer={{userState, userDispatch}}
+              entityReducer={{entityState, entityDispatch}}
+              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+              chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+              client={client}
+            />
+          </perspectiveCamera>
+        </Canvas> */}
         <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
           <perspectiveCamera 
             makeDefault 

@@ -22,17 +22,23 @@ const createInitialState = (viewportWorldLocation) => {
     return {
         myUnits: myUnits,
         otherUnits: [],
+        selectedUnits: [],
         perf: {},
         actionsToServer: []  // a queue of actions needed to be sent to server
     }
 }
 
 const STARTUP = 'STARTUP';
+const SELECT_ENTITY = 'SELECT_ENTITY';
 
-const entityManagerReducer = (state, action) => {
+const entityReducer = (state, action) => {
     switch (action.type) {
+        case SELECT_ENTITY:
+            state.selectedUnits = action.payload;
+            console.log({selected: state.selectedUnits})
+            return state;
         case STARTUP:
-        return state;
+            return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);
             console.log({action});
@@ -42,5 +48,6 @@ const entityManagerReducer = (state, action) => {
 
 export {
     createInitialState,
-    entityManagerReducer
+    entityReducer,
+    SELECT_ENTITY
 }

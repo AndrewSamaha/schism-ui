@@ -1,8 +1,9 @@
 import React from 'react';
 import './Debug.css';
 
-export const Debug = ({userState, gameState}) => {
+export const Debug = ({userState, gameState, performance, entityReducer}) => {
     const { viewportWorldLocation } = userState;
+    const { entityState, entityDispatch } = entityReducer;
     return (
         <div className='debug'>
             <div className='position'>
@@ -13,6 +14,12 @@ export const Debug = ({userState, gameState}) => {
             <div className='tiles'>
                 tilesFromServer: {Object.entries(gameState?.tilesFromServer || {}).length} 
             </div>
+            { 
+                entityState?.selectedUnits.length && 
+                <div>
+                   {entityState.selectedUnits.map((entity) => (<div key={entity.id}>{entity.id}</div>))}
+                </div>
+            }
         </div>
     );
 }

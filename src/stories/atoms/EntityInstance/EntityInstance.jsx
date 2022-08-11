@@ -3,9 +3,13 @@ import PropTypes from 'prop-types';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Instance } from '@react-three/drei';
 
+// entity dispatch events
+import { SELECT_ENTITY } from '../../../reducers/entityReducer';
+
 export const EntityInstance = (props) => {
-  const { entity } = props;
+  const { entity, entityReducer } = props;
   const { color, position, rotation, id, scale } = entity;
+  const { entityState, entityDispatch } = entityReducer;
   // This reference gives us direct access to the THREE.Mesh object
   const ref = useRef()
   // Hold state for hovered and clicked events
@@ -22,7 +26,14 @@ export const EntityInstance = (props) => {
       rotation={rotation} // [Math.PI / 3, 0, 0]
       ref={ref}
       scale={scale}
-      // onClick={(event) => click(!clicked)}
+      //onClick={(event) => click(!clicked)}
+      onClick={(event) => {
+        if (entityState.selectedUnits.length && entityState.selectedUnits[0] === entity) return;
+        entityDispatch({ 
+          type: SELECT_ENTITY,
+          payload: [entity] 
+        }) 
+      }}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}
       />
