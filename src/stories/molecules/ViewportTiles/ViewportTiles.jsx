@@ -29,9 +29,11 @@ const physicsTic = (delta, state) => {
   };
 }
 
-const mouseWorldClick = (pointerData) => {
-  const {point, shiftKey, altKey, button, buttons, type, ctrlKey } = pointerData;
-  console.log({type, shiftKey, altKey, button, buttons, ctrlKey}, point)
+const mouseWorldClick = (pointerData, reducers) => {
+  const {point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
+  console.log({type, shiftKey, altKey, button, buttons, ctrlKey});
+  console.log('projected point', point)
+  //console.log('unprojected point', unprojectedPoint);
   console.log(pointerData)
   
   // var vec = new THREE.Vector3(); // create once and reuse
@@ -109,7 +111,11 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   });
 
   return (
-  <group onPointerDown={mouseWorldClick}>
+  <group onPointerDown={(event) => {
+    mouseWorldClick(event, {
+      gameReducer, userReducer, entityReducer,
+    });
+  }}>
     <EntityManager 
       gameReducer={{gameState, gameDispatch}}
       userReducer={{userState, userDispatch}}

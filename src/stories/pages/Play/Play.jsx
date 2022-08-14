@@ -120,6 +120,7 @@ export const Play = ({client}) => {
           <perspectiveCamera 
             makeDefault 
             position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
+            // position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], 100]} 
             rotation={ViewRotation}>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
@@ -132,8 +133,9 @@ export const Play = ({client}) => {
               worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
               chunkQuery={{getChunkQuery, getChunkQueryStatus}}
               client={client}
-            />
+            />  
           </perspectiveCamera>
+          
           {showStats && <Stats />} 
         </Canvas>
       </div>
