@@ -116,7 +116,7 @@ export const Play = ({client}) => {
             />
           </perspectiveCamera>
         </Canvas> */}
-        <Canvas className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
+        <Canvas onContextMenu={(e)=> e.preventDefault()} className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
           <perspectiveCamera 
             makeDefault 
             position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 

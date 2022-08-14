@@ -15,8 +15,8 @@ export const Debug = ({userState, gameState, performance, entityReducer}) => {
                 tilesFromServer: {Object.entries(gameState?.tilesFromServer || {}).length} 
             </div>
             { 
-                entityState?.selectedUnits.length && 
-                <div>
+                entityState?.selectedUnits.length > 0 && 
+                <div>Selected:
                    {entityState.selectedUnits.map((entity) => (<div key={entity.id}>{entity.id}</div>))}
                 </div>
             }

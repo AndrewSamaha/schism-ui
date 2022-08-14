@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import * as THREE from 'three';
 import { ApolloConsumer, useLazyQuery, useQuery } from '@apollo/client';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import './ViewportTiles.css';
 import { ViewMoveFriction, ViewGeometry } from '../../../constants/viewport';
 import { Tile } from '../../atoms/Tile/Tile';
@@ -26,6 +27,28 @@ const physicsTic = (delta, state) => {
   return {
     ...state
   };
+}
+
+const mouseWorldClick = (pointerData) => {
+  const {point, shiftKey, altKey, button, buttons, type, ctrlKey } = pointerData;
+  console.log({type, shiftKey, altKey, button, buttons, ctrlKey}, point)
+  console.log(pointerData)
+  
+  // var vec = new THREE.Vector3(); // create once and reuse
+  // var pos = new THREE.Vector3(); // create once and reuse
+
+  // vec.set(
+  //     ( event.clientX / window.innerWidth ) * 2 - 1,
+  //     - ( event.clientY / window.innerHeight ) * 2 + 1,
+  //     0.5 );
+
+  // vec.unproject( camera );
+
+  // vec.sub( camera.position ).normalize();
+
+  // var distance = - camera.position.z / vec.z;
+
+  // pos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
 }
 
 export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, worldStateQuery, chunkQuery}) => {
@@ -86,7 +109,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   });
 
   return (
-  <group>
+  <group onPointerDown={mouseWorldClick}>
     <EntityManager 
       gameReducer={{gameState, gameDispatch}}
       userReducer={{userState, userDispatch}}
