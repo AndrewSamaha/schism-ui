@@ -11,6 +11,7 @@ import { GET_NEARBY_TILES } from '../../../graph/queries';
 import { visibilityRange } from '../../../constants/clientGame';
 import { ChunkManager } from '../../molecules/ChunkManager/ChunkManager';
 import { EntityManager } from '../../molecules/EntityManager/EntityManager';
+import { SELECT_ENTITY } from '../../../reducers/entityReducer';
 
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
@@ -29,12 +30,47 @@ const physicsTic = (delta, state) => {
   };
 }
 
+const LEFT_CLICK = 0;
+const RIGHT_CLICK = 2;
+
 const mouseWorldClick = (pointerData, reducers) => {
   const {point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
   console.log({type, shiftKey, altKey, button, buttons, ctrlKey});
   console.log('projected point', point)
   //console.log('unprojected point', unprojectedPoint);
   console.log(pointerData)
+  if (button === LEFT_CLICK) {
+    console.log('left click!')
+    const { entityState, entityDispatch } = reducers.entityReducer;
+    if (entityState?.selectedUnits.length > 0) {
+      entityDispatch({
+        type: SELECT_ENTITY,
+        payload: []
+      });
+    }
+    
+    return;
+  }
+  if (button === RIGHT_CLICK) {
+    console.log('right click!')
+    const { entityState, entityDispatch } = reducers.entityReducer;
+    if (entityState?.selectedUnits.length > 0) {
+      entityState.selectedUnits.forEach((entity) => {
+        const unitsPerMS = .001;
+        const end = [...point];
+        const vector = [end[0] - point[0], end[1] - point[1], end[2] - point[2]];
+        const dist = Math.sqrt(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
+        entity.lastTic = Date.now();
+        entity.tic = (me, delta) => {
+          
+          me.position = [
+            me.position + unitsPerMS * delta
+          ]
+        }
+      });
+    }
+    return;
+  }
   
   // var vec = new THREE.Vector3(); // create once and reuse
   // var pos = new THREE.Vector3(); // create once and reuse

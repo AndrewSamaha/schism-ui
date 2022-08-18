@@ -11,7 +11,8 @@ const createEntity = (params) => {
     const entity = {
         id: uniqueId('entity-'),
         color,
-        position
+        position,
+        lastTic: Date.now()
     }
     return entity;
 }

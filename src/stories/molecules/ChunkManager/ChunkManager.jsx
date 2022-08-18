@@ -9,7 +9,7 @@ import { GET_CHUNK_COLLECTION } from '../../../graph/queries';
 // Helpers
 import { getTextureSrc } from '../../../helpers/texture';
 // Constants
-import { ViewGeometry } from '../../../constants/viewport';
+import { ViewGeometry, ViewRotation } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 
