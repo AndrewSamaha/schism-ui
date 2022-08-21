@@ -1,26 +1,29 @@
 import React, { useReducer, useContext, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useThree } from '@react-three/fiber';
-
-import { Header } from '../../organisms/Header/Header';
-import { Box } from '../../atoms/Box/Box';
-import { ViewportTiles } from '../../molecules/ViewportTiles/ViewportTiles';
-import { ViewRotation } from '../../../constants/viewport';
 import { Canvas } from '@react-three/fiber';
 import { Stats } from '@react-three/drei';
-import { UserContext, userReducer } from '../../../contexts/UserContext';
-import { gameReducer } from '../../../contexts/GameContext';
 
 // Reducers
+import { UserContext, userReducer } from '../../../contexts/UserContext';
+import { gameReducer } from '../../../contexts/GameContext';
 import { createInitialState as createInitialEntityState, entityReducer } from '../../../reducers/entityReducer';
-
-
 import { createClientGameState } from '../../../mock/gameState';
-import { Debug } from '../../organisms/Debug/Debug';
-import { GET_NEARBY_TILES, GET_WORLD_STATE, GET_CHUNK } from '../../../graph/queries';
-// Constants 
-import { visibilityRange } from '../../../constants/clientGame';
 
+// Components
+import { Header } from '../../organisms/Header/Header';
+import { Debug } from '../../organisms/Debug/Debug';
+import { ViewportTiles } from '../../molecules/ViewportTiles/ViewportTiles';
+
+// Queries
+import { GET_NEARBY_TILES, GET_WORLD_STATE, GET_CHUNK } from '../../../graph/queries';
+
+// Constants 
+import { ViewRotation } from '../../../constants/viewport';
+import { visibilityRange } from '../../../constants/clientGame';
+import { CANVAS_ZINDEX } from '../../../constants/zIndex';
+
+//CSS
 import './play.css';
 
 
@@ -96,37 +99,13 @@ export const Play = ({client}) => {
 
       <div onKeyDown={(e) => keydown(e)} onKeyUp={(e)=>keyup(e)} tabIndex={-1} >
         <Debug userState={userState} gameState={gameState} performance={performance} entityReducer={{entityState, entityDispatch}} />
-        {/* <Canvas className="selectedUnits"
-          style={{width: '100px', height: '150px', zIndex: '2', backgroundColor: 'white'}}>
-            <perspectiveCamera 
+        <Canvas onContextMenu={(e)=> e.preventDefault()} className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: `${CANVAS_ZINDEX}`, backgroundColor: 'black'}}>
+          <perspectiveCamera 
             makeDefault 
             position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
             rotation={ViewRotation}>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Box position={[-2, 0, 0]} />
-            <Box position={[2, 0, 0]} />
-            <ViewportTiles
-              gameReducer={{gameState, gameDispatch}}
-              userReducer={{userState, userDispatch}}
-              entityReducer={{entityState, entityDispatch}}
-              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
-              chunkQuery={{getChunkQuery, getChunkQueryStatus}}
-              client={client}
-            />
-          </perspectiveCamera>
-        </Canvas> */}
-        <Canvas onContextMenu={(e)=> e.preventDefault()} className="homedemo" style={{width: '100%', height: '100%', minHeight: '700px' ,zIndex: '1', backgroundColor: 'black'}}>
-          <perspectiveCamera 
-            makeDefault 
-            position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
-            // position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], 100]} 
-            rotation={ViewRotation}
-            lookAt={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1]+100, userState.viewportWorldLocation[2]+100]}>
-            <ambientLight />
-            <pointLight position={[10, 10, 10]} />
-            <Box position={[-2, 0, 0]} />
-            <Box position={[2, 0, 0]} />
             <ViewportTiles
               gameReducer={{gameState, gameDispatch}}
               userReducer={{userState, userDispatch}}
