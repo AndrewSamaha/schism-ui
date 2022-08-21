@@ -15,13 +15,30 @@ import { ChunkManager } from '../../molecules/ChunkManager/ChunkManager';
 import { EntityManager } from '../../molecules/EntityManager/EntityManager';
 import { SELECT_ENTITY } from '../../../reducers/entityReducer';
 
+// the first action generator
+const straightLineMoveGenerator = ({entity, finalDestination}) => {
+  return (ref, delta) => {
+    const length = entity.speed * delta;
+    const { current } = ref;
+    const { angle, dist } = getAngleDist(current.position, finalDestination);  
+    if (dist < length) {
+      const new3DPosition = new THREE.Vector3(finalDestination.x, finalDestination.y, finalDestination.z); 
+      current.position.set(new3DPosition.x, new3DPosition.y, new3DPosition.z);
+      entity.tic = null;
+      return;
+    }
+    const step = new THREE.Vector2(length, 0);
+    step.rotateAround({x: 0, y: 0}, angle);
+    const step3D = new THREE.Vector3(step.x, step.y, 0);
+    current.position.add(step3D);
+  }
+}
+
 const getAngleDist = (start, end) => {
   let start2D;
   if (Array.isArray(start)) {
-    console.log('getAngleDist received Array');
     start2D = new THREE.Vector2(start[0], start[1])
   } else {
-    console.log('getAngleDist received Vector');
     start2D = new THREE.Vector2(start.x, start.y);
   }
   const end2D = new THREE.Vector2(end.x, end.y);
@@ -71,70 +88,12 @@ const mouseWorldClick = (pointerData, reducers) => {
       const { userState, userDispatch } = reducers.userReducer;
       const { viewportWorldLocation: vWL } = userState;
       entityState.selectedUnits.forEach((entity) => {
-        const unitsPerMS = 5.0;
-        const start2 = new THREE.Vector2(entity.position[0], entity.position[1]);
-        const end2 = new THREE.Vector2(point.x - vWL[0], point.y - vWL[1]);
-        const finalDestinationV3 = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0); 
-
-        // const vector = end2.sub(start2);
-        // const angle2 = vector.angle();
-        // const dist2 = vector.length();
-        // const dist = dist2;
-        // const angle = angle2;
-
-        
-        entity.lastTic = Date.now();
-        
-        // console.log('origAngle  : ', angle, ' dist:', dist);
-        //console.log('helperAngle: ', helperAngle, ' dist:', helperDist);
-        
-        entity.tic = (ref, delta) => {
-          
-          const length = unitsPerMS * delta;
-          const { current } = ref;
-          // const { angle, dist } = getAngleDist(entity.position, finalDestinationV3);  
-          const { angle, dist } = getAngleDist(current.position, finalDestinationV3);  
-          if (dist < length) {
-            const new3DPosition = new THREE.Vector3(finalDestinationV3.x, finalDestinationV3.y, finalDestinationV3.z); 
-            
-            console.log('point',point);
-            console.log('entity has reached destination length:', length, ' distance to travel:', dist);
-            console.log('currentPosition', current.position, 'newPosition', new3DPosition);
-            console.log('2current',ref.current.position);
-            current.position.set(new3DPosition.x, new3DPosition.y, new3DPosition.z);
-            entity.position[0] = new3DPosition.x;
-            entity.position[1] = new3DPosition.y;
-            entity.position[2] = new3DPosition.z;
-            entity.tic = null;
-            return;
-          }
-          const step = new THREE.Vector2(length, 0);
-          step.rotateAround({x: 0, y: 0}, angle);
-          const new3DPosition = current.position.clone();
-          const step3D = new THREE.Vector3(step.x, step.y, 0);
-          current.position.add(step3D);
-          console.log('dist:', dist, ' length', length);
-        }
+        const finalDestination = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
+        entity.tic = straightLineMoveGenerator({ entity, finalDestination });
       });
     }
     return;
   }
-  
-  // var vec = new THREE.Vector3(); // create once and reuse
-  // var pos = new THREE.Vector3(); // create once and reuse
-
-  // vec.set(
-  //     ( event.clientX / window.innerWidth ) * 2 - 1,
-  //     - ( event.clientY / window.innerHeight ) * 2 + 1,
-  //     0.5 );
-
-  // vec.unproject( camera );
-
-  // vec.sub( camera.position ).normalize();
-
-  // var distance = - camera.position.z / vec.z;
-
-  // pos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
 }
 
 export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, worldStateQuery, chunkQuery}) => {

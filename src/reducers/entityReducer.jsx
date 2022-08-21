@@ -12,7 +12,8 @@ const createEntity = (params) => {
         id: uniqueId('entity-'),
         color,
         position,
-        lastTic: Date.now()
+        lastTic: Date.now(),
+        speed: 1.5
     }
     return entity;
 }
