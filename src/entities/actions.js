@@ -3,6 +3,11 @@ import * as THREE from 'three';
 // Helpers
 import { getAngleDist } from '../helpers/vector';
 
+// Dummy / Placeholder Generator
+const dummyActionGenerator = (args) => {
+    return (ref, delta) => { }
+}
+
 // the first action generator
 const straightLineMoveGenerator = ({entity, finalDestination}) => {
     return (ref, delta) => {
@@ -23,5 +28,6 @@ const straightLineMoveGenerator = ({entity, finalDestination}) => {
 }
 
 export {
-    straightLineMoveGenerator
+    straightLineMoveGenerator,
+    dummyActionGenerator
 }
