@@ -1,25 +1,8 @@
-// lodash
-import uniqueId from 'lodash/uniqueId';
 import times from 'lodash/times';
-
-const colorArray = ['blue','brown','blue','green','red','pink'];
-const createEntity = (params) => {
-    const {viewportWorldLocation} = params;
-    //console.log({viewportWorldLocation})
-    const position = [Math.random()*10, Math.random()*10, 0]; // viewportWorldLocation.slice();
-    const color = colorArray[Math.floor(colorArray.length * Math.random())];
-    const entity = {
-        id: uniqueId('entity-'),
-        color,
-        position,
-        lastTic: Date.now(),
-        speed: 1.5
-    }
-    return entity;
-}
+import { testEntityGenerator } from '../constants/entityTypes';
 
 const createInitialState = (viewportWorldLocation) => {
-    const myUnits = times(5, () => { return createEntity({viewportWorldLocation}) });
+    const myUnits = times(5, () => { return testEntityGenerator({viewportWorldLocation}) });
     console.log('entityManager.createInitialState myUnit=', myUnits)
     return {
         myUnits: myUnits,
