@@ -1,9 +1,9 @@
 import times from 'lodash/times';
-import { testEntityGenerator } from '../constants/entityTypes';
+import { testEntity } from '../constants/entities/testEntity';
 
 const createInitialState = (viewportWorldLocation) => {
-    const myUnits = times(5, () => { return testEntityGenerator({viewportWorldLocation}) });
-    console.log('entityManager.createInitialState myUnit=', myUnits)
+    const myUnits = times(5, () => { return testEntity.generate() });
+    // console.log('entityManager.createInitialState myUnit=', myUnits)
     return {
         myUnits: myUnits,
         otherUnits: [],

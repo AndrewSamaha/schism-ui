@@ -59,6 +59,9 @@ const mouseWorldClick = (pointerData, reducers) => {
       const { userState, userDispatch } = reducers.userReducer;
       const { viewportWorldLocation: vWL } = userState;
       entityState.selectedUnits.forEach((entity) => {
+        const { defaultAction } = entity;
+        if (!defaultAction) return;
+        
         const finalDestination = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
         entity.tic = straightLineMoveGenerator({ entity, finalDestination });
       });

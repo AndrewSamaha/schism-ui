@@ -10,7 +10,11 @@ const loggedOut = {
     name: null,
     viewportWorldLocation: defaultStartingLocation,
     viewportVelocity: [0,0],
-    userInput: {}
+    userInput: {},
+    resources: {
+        gold: 100,
+        wood: 20
+    }
 };
 
 const initialState = { ...loggedOut };
