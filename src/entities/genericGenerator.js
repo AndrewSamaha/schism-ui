@@ -1,5 +1,5 @@
 import uniqueId from 'lodash/uniqueId';
-import { randColor } from '../../helpers/colors';
+import { randColor } from '../helpers/colors';
 
 export const genericGenerator = (entityType, params) => {
     const position = [Math.random()*10, Math.random()*10, 0];

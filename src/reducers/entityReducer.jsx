@@ -1,5 +1,5 @@
 import times from 'lodash/times';
-import { testEntity } from '../constants/entities/testEntity';
+import { testEntity } from '../entities/testEntity';
 
 const createInitialState = (viewportWorldLocation) => {
     const myUnits = times(5, () => { return testEntity.generate() });

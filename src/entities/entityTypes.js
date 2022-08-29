@@ -1,6 +1,6 @@
 import uniqueId from 'lodash/uniqueId';
 // Actions
-import { straightLineMoveGenerator } from "../entities/actions"
+import { straightLineMoveGenerator } from "./actions"
 
 // components
 import { ActionButton } from '../stories/atoms/ActionButton/ActionButton';
