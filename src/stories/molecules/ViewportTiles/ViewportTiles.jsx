@@ -18,6 +18,9 @@ import { EntityManager } from '../../molecules/EntityManager/EntityManager';
 import { SELECT_ENTITY } from '../../../reducers/entityReducer';
 import { straightLineMoveGenerator } from '../../../entities/actions';
 
+// Constants
+import { RIGHT_CLICK, LEFT_CLICK } from '../../../constants/inputEvents';
+
 
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
@@ -36,9 +39,6 @@ const physicsTic = (delta, state) => {
   };
 }
 
-const LEFT_CLICK = 0;
-const RIGHT_CLICK = 2;
-
 const mouseWorldClick = (pointerData, reducers) => {
   const {point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
   console.log({type, shiftKey, altKey, button, buttons, ctrlKey});
@@ -54,7 +54,8 @@ const mouseWorldClick = (pointerData, reducers) => {
     return;
   }
   if (button === RIGHT_CLICK) {
-    const { entityState, entityDispatch } = reducers.entityReducer;
+    
+    const { entityState, entityDispatch, displayName } = reducers.entityReducer;
     if (entityState?.selectedUnits.length > 0) {
       const { userState, userDispatch } = reducers.userReducer;
       const { viewportWorldLocation: vWL } = userState;
@@ -130,7 +131,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   return (
   <group onPointerDown={(event) => {
     mouseWorldClick(event, {
-      gameReducer, userReducer, entityReducer,
+      gameReducer, userReducer, entityReducer, displayName: this.constructor.displayName
     });
   }}>
     <EntityManager 

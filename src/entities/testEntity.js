@@ -8,6 +8,13 @@ export const testEntity = {
     actions: [
         STRAIGHT_LINE_MOVE
     ],
+    newActions: [
+        {
+            action: STRAIGHT_LINE_MOVE,
+            
+        }
+        
+    ],
     defaultAction: STRAIGHT_LINE_MOVE,
     generate: function(params) {
         return genericGenerator(this, params)
