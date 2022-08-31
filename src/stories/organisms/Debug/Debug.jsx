@@ -24,6 +24,14 @@ export const Debug = ({userState, gameState, performance, entityReducer}) => {
                    ))}
                 </div>
             }
+            {
+                entityState?.hoverEntities &&
+                <div>
+                    {entityState.hoverEntities.map((entity) => (
+                   <div key={entity.id}>{entity.name} {entity.id}</div>
+                   ))}
+                </div>
+            }
         </div>
     );
 }

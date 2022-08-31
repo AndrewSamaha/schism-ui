@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Instance } from '@react-three/drei';
 
 // entity dispatch events
-import { SELECT_ENTITY } from '../../../reducers/entityReducer';
+import { SELECT_ENTITY, HOVER_ENTITY_START, HOVER_ENTITY_STOP } from '../../../reducers/entityReducer';
 
 export const EntityInstance = (props) => {
   const { entity, entityReducer } = props;
@@ -37,8 +37,20 @@ export const EntityInstance = (props) => {
           payload: [entity] 
         }) 
       }}
-      onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}
+      onPointerOver={(event) => {
+        hover(true);
+        entityDispatch({
+          type: HOVER_ENTITY_START,
+          payload: entity
+        });
+      }}
+      onPointerOut={(event) => {
+        hover(false)
+        entityDispatch({
+          type: HOVER_ENTITY_STOP,
+          payload: entity
+        });
+      }}
       />
   )
 }

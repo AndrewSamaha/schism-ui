@@ -20,7 +20,8 @@ import { straightLineMoveGenerator } from '../../../entities/actions';
 
 // Constants
 import { RIGHT_CLICK, LEFT_CLICK } from '../../../constants/inputEvents';
-
+import { INPUT_EVENT } from '../../../reducers/entityReducer';
+import { VIEWPORT_TILES } from '../../../constants/inputSources';
 
 const physicsTic = (delta, state) => {
   if (!state.viewportVelocity) return state;
@@ -40,25 +41,22 @@ const physicsTic = (delta, state) => {
 }
 
 const mouseWorldClick = (pointerData, reducers) => {
-  const {point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
+  const { point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
+  const { userState, userDispatch } = reducers.userReducer;
+  const { entityState, entityDispatch } = reducers.entityReducer;
+  const { viewportWorldLocation: vWL } = userState;
+  entityDispatch({
+    type: INPUT_EVENT,
+    pointerData,
+    inputSource: VIEWPORT_TILES,
+    worldLocation: new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0),
+    time: Date.now()
+  });
+
   console.log({type, shiftKey, altKey, button, buttons, ctrlKey});
-  if (button === LEFT_CLICK) {
-    const { entityState, entityDispatch } = reducers.entityReducer;
-    if (entityState?.selectedUnits.length > 0) {
-      entityDispatch({
-        type: SELECT_ENTITY,
-        payload: []
-      });
-    }
-    
-    return;
-  }
+
   if (button === RIGHT_CLICK) {
-    
-    const { entityState, entityDispatch, displayName } = reducers.entityReducer;
     if (entityState?.selectedUnits.length > 0) {
-      const { userState, userDispatch } = reducers.userReducer;
-      const { viewportWorldLocation: vWL } = userState;
       entityState.selectedUnits.forEach((entity) => {
         const { defaultAction } = entity;
         if (!defaultAction) return;
@@ -131,7 +129,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   return (
   <group onPointerDown={(event) => {
     mouseWorldClick(event, {
-      gameReducer, userReducer, entityReducer, displayName: this.constructor.displayName
+      gameReducer, userReducer, entityReducer
     });
   }}>
     <EntityManager 
