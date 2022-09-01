@@ -30,19 +30,24 @@ const handleInputEvent = (state, action) => {
 
     // Handle Select and Unselect
     if (button === LEFT_CLICK) {
-        if (state.hoverEntities?.length) {
-            state.selectedUnits = last(state.hoverEntities);
+        if (hoverEntities?.length) {
+            state.selectedUnits = last(hoverEntities);
         } else {
             state.selectedUnits = [];
         }
         return state;
     }
-    if (!selectedUnits.length) {
-    
-        return state;
-    }
-    if (selectedUnits.length) {
+    if (!selectedUnits?.length) { return state; }
 
+    if (button === RIGHT_CLICK) {
+       selectedUnits.map((entity) => {
+           const { defaultAction } = entity;
+           if (!defaultAction) return;
+           const { generator } = defaultAction;
+           if (!generator) return;
+           console.log('initiating ', defaultAction.longName, ' for ', entity.id);
+           entity.tic = generator({entity, worldLocation});
+       })
     }
     return state;
 }

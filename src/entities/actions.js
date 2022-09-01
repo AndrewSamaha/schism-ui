@@ -9,13 +9,13 @@ const dummyActionGenerator = (args) => {
 }
 
 // the first action generator
-const straightLineMoveGenerator = ({entity, finalDestination}) => {
+const straightLineMoveGenerator = ({entity, worldLocation}) => {
     return (ref, delta) => {
         const length = entity.speed * delta;
         const { current } = ref;
-        const { angle, dist } = getAngleDist(current.position, finalDestination);  
+        const { angle, dist } = getAngleDist(current.position, worldLocation);  
         if (dist < length) {
-            const new3DPosition = new THREE.Vector3(finalDestination.x, finalDestination.y, finalDestination.z); 
+            const new3DPosition = new THREE.Vector3(worldLocation.x, worldLocation.y, worldLocation.z); 
             current.position.set(new3DPosition.x, new3DPosition.y, new3DPosition.z);
             entity.tic = null;
             return;

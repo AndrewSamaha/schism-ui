@@ -52,21 +52,6 @@ const mouseWorldClick = (pointerData, reducers) => {
     worldLocation: new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0),
     time: Date.now()
   });
-
-  console.log({type, shiftKey, altKey, button, buttons, ctrlKey});
-
-  if (button === RIGHT_CLICK) {
-    if (entityState?.selectedUnits.length > 0) {
-      entityState.selectedUnits.forEach((entity) => {
-        const { defaultAction } = entity;
-        if (!defaultAction) return;
-        
-        const finalDestination = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
-        entity.tic = straightLineMoveGenerator({ entity, finalDestination });
-      });
-    }
-    return;
-  }
 }
 
 export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, worldStateQuery, chunkQuery}) => {
@@ -127,11 +112,8 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   });
 
   return (
-  <group onPointerDown={(event) => {
-    mouseWorldClick(event, {
-      gameReducer, userReducer, entityReducer
-    });
-  }}>
+  <group 
+    onPointerDown={(event) => { mouseWorldClick(event, {gameReducer, userReducer, entityReducer })}}>
     <EntityManager 
       gameReducer={{gameState, gameDispatch}}
       userReducer={{userState, userDispatch}}

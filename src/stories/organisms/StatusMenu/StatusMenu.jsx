@@ -20,14 +20,7 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
             height: '700px',
             padding: '12px',
             boxSizing: 'border-box'}}>
-            {/* <div className='position'>
-                Position: {viewportWorldLocation[0].toFixed(2)}, 
-                {viewportWorldLocation[1].toFixed(2)}, 
-                {viewportWorldLocation[2].toFixed(2)}
-            </div>
-            <div className='tiles'>
-                tilesFromServer: {Object.entries(gameState?.tilesFromServer || {}).length} 
-            </div> */}
+           
             <div className='ResourceList'>
                 {Object.entries(resources).map(([resourceName, amount]) => (<ResourceContainer resourceName={resourceName} amount={amount}/>))}
             </div>
@@ -35,8 +28,8 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
                 selected && 
                 <div>
                     {selected.name}
-                   {first(entityState.selectedUnits).actions.map((action) => (
-                   action.ButtonComponent()
+                   {first(entityState.selectedUnits).actionDefinitions.map((definition) => (
+                    definition.action.ButtonComponent()
                    ))}
                 </div>
             }

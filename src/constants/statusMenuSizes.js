@@ -1,0 +1,5 @@
+const ACTION_BUTTON_SIZE = 64;
+
+export {
+    ACTION_BUTTON_SIZE
+}
