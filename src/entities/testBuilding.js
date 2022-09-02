@@ -6,5 +6,6 @@ export const testBuilding = {
     speed: 0,
     actions: [],
     defaultAction: null,
+    selectedAction: null,
     generate: function(params) { return genericGenerator(this, params) }
 }

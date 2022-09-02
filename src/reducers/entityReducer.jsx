@@ -2,6 +2,7 @@ import times from 'lodash/times';
 import without from 'lodash/without';
 import union from 'lodash/union';
 import last from 'lodash/last';
+import first from 'lodash/first';
 import { testEntity } from '../entities/testEntity';
 import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
 
@@ -22,6 +23,7 @@ const SELECT_ENTITY = 'SELECT_ENTITY';
 const INPUT_EVENT = 'INPUT_EVENT';
 const HOVER_ENTITY_START = 'HOVER_ENTITY_START';
 const HOVER_ENTITY_STOP = 'HOVER_ENTITY_STOP';
+const SELECT_ACTION = 'SELECT_ACTION';
 
 const handleInputEvent = (state, action) => {
     const { pointerData, inputSource, worldLocation, time } = action;
@@ -56,6 +58,7 @@ const entityReducer = (state, action) => {
     switch (action.type) {
         case SELECT_ENTITY:
             state.selectedUnits = action.payload;
+            state.selectedUnits.forEach((entity) => entity.selectedAction = null)
             console.log({selected: state.selectedUnits})
             return state;
         case STARTUP:
@@ -68,6 +71,12 @@ const entityReducer = (state, action) => {
             return state;
         case INPUT_EVENT:
             return handleInputEvent(state, action);
+        case SELECT_ACTION:
+            if (state.selectedUnits?.length) {
+                first(state.selectedUnits).selectedAction = action.payload;
+            }
+            console.log('new selectedAction: ', first(state.selectedUnits).selectedAction)
+            return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);
             console.log({action});
@@ -81,5 +90,6 @@ export {
     SELECT_ENTITY,
     INPUT_EVENT,
     HOVER_ENTITY_START,
-    HOVER_ENTITY_STOP
+    HOVER_ENTITY_STOP,
+    SELECT_ACTION
 }

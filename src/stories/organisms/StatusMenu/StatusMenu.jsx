@@ -28,9 +28,17 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
                 selected && 
                 <div>
                     {selected.name}
-                   {first(entityState.selectedUnits).actionDefinitions.map((definition) => (
-                    definition.action.ButtonComponent()
-                   ))}
+                    <div style={{display: 'flex', boxSizing: 'border-box', flexWrap: 'wrap'}}>
+                        {first(entityState.selectedUnits).actionDefinitions.map((definition) => {
+                            // console.log(definition.action);
+                            return (                    
+                                definition.action.ButtonComponent({
+                                    entity: first(entityState.selectedUnits),
+                                    action: definition.action,
+                                    entityReducer
+                                })
+                        )})}
+                   </div>
                 </div>
             }
         </div>

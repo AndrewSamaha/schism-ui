@@ -5,7 +5,7 @@ import moveEntityIcon_hover from '../stories/assets/ui/Buttons/CreateEntity_hove
 
 // Actions
 export const CREATE_ENTITY = {
-    name: 'Move',
+    name: 'Create',
     longName: 'CREATE_ENTITY',
     generator: straightLineMoveGenerator,
     icon: moveEntityIcon,
