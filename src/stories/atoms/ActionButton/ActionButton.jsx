@@ -1,17 +1,23 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import { ACTION_BUTTON_SIZE } from '../../../constants/statusMenuSizes';
 import { SELECT_ACTION } from '../../../reducers/entityReducer';
 
-export const ActionButton = ({icon, icon_hover},{entity, action, entityReducer}) => {
+export const ActionButton = ({icon, icon_hover, name},{entity, action, entityReducer}) => {
     const isSelected = entity.selectedAction === action;
     const border = isSelected ? 'dashed red' : 'none';
     // if (isSelected) console.log('rendering Action button ', entity.selectedAction.longName)
     return (
         <div>
+            <ReactTooltip />
             <img
                 src={isSelected ? icon_hover : icon}
+                data-tip={name}
                 onMouseEnter={e => e.currentTarget.src = icon_hover}
-                onMouseLeave={e => e.currentTarget.src = icon}
+                onMouseLeave={e => {
+                    e.currentTarget.src = icon;
+                    ReactTooltip.hide(this);
+                }}
                 onClick={() => {
                     const { entityState, entityDispatch } = entityReducer;
                     console.log('selecting action test ', entity, action);
