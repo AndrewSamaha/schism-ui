@@ -4,7 +4,7 @@ const colorArray = ['blue', 'brown', 'blue', 'green', 'red',
                         'blueviolet','burlywood','cadetblue','maroon',
                         'chartreuse','chocolate','coral','cornflowerblue',
                         'crimson','cyan','darkblue', 'darkcyan',
-                        'darkgoldenrod', 'darkgray', 'darkorgange',
+                        'darkgoldenrod', 'darkgray',
                         'darkorchid', 'darksalmon', 'deeppink', 'darkturquoise'];
 
 export {

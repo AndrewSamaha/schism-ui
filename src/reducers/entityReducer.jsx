@@ -25,12 +25,37 @@ const HOVER_ENTITY_START = 'HOVER_ENTITY_START';
 const HOVER_ENTITY_STOP = 'HOVER_ENTITY_STOP';
 const SELECT_ACTION = 'SELECT_ACTION';
 
+const getGeneratedAction = (entity, worldLocation) => {
+    const action = entity.selectedAction || entity.defaultAction;
+    if (!action) return null;
+    const { generator } = action;
+    if (!generator) return null;
+    console.log('initiating ', action.longName, ' for ', entity.id, ' selectedAction=', !!entity.selectedAction);
+    return generator({entity, worldLocation});
+}
+
+const performActions = (selectedUnits, worldLocation) => {
+    selectedUnits.map((entity) => {
+        entity.tic = getGeneratedAction(entity, worldLocation);
+    });
+}
+
 const handleInputEvent = (state, action) => {
     const { pointerData, inputSource, worldLocation, time } = action;
     const { point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
     const { selectedUnits, hoverEntities } = state;
 
-    // Handle Select and Unselect
+    if (action.meetsRequirements) {
+        const inputEventState = {
+            ...action, 
+            ...pointerData,
+            state
+        };
+        if (!action.meetsRequirements(inputEventState)) {
+            return state;
+        }
+    }
+    // Handle Select and Unselect entities
     if (button === LEFT_CLICK) {
         if (hoverEntities?.length) {
             state.selectedUnits = last(hoverEntities);
@@ -42,14 +67,7 @@ const handleInputEvent = (state, action) => {
     if (!selectedUnits?.length) { return state; }
 
     if (button === RIGHT_CLICK) {
-       selectedUnits.map((entity) => {
-           const { defaultAction } = entity;
-           if (!defaultAction) return;
-           const { generator } = defaultAction;
-           if (!generator) return;
-           console.log('initiating ', defaultAction.longName, ' for ', entity.id);
-           entity.tic = generator({entity, worldLocation});
-       })
+        performActions(selectedUnits, worldLocation);
     }
     return state;
 }

@@ -10,6 +10,9 @@ export const CREATE_ENTITY = {
     generator: straightLineMoveGenerator,
     icon: moveEntityIcon,
     icon_hover: moveEntityIcon_hover,
+    meetsRequirements: function(inputEventState) {
+        return true;
+    },
     ButtonComponent: function (params) {
         return ActionButton(this, params)
     }
