@@ -24,6 +24,7 @@ const INPUT_EVENT = 'INPUT_EVENT';
 const HOVER_ENTITY_START = 'HOVER_ENTITY_START';
 const HOVER_ENTITY_STOP = 'HOVER_ENTITY_STOP';
 const SELECT_ACTION = 'SELECT_ACTION';
+const POINTER_MOVE = 'POINTER_MOVE';
 
 const getGeneratedAction = (entity, worldLocation) => {
     const action = entity.selectedAction || entity.defaultAction;
@@ -58,7 +59,7 @@ const handleInputEvent = (state, action) => {
     // Handle Select and Unselect entities
     if (button === LEFT_CLICK) {
         if (hoverEntities?.length) {
-            state.selectedUnits = last(hoverEntities);
+            state.selectedUnits = [last(hoverEntities)];
         } else {
             state.selectedUnits = [];
         }
@@ -75,7 +76,7 @@ const handleInputEvent = (state, action) => {
 const entityReducer = (state, action) => {
     switch (action.type) {
         case SELECT_ENTITY:
-            state.selectedUnits = action.payload;
+            state.selectedUnits = Array.isArray(action.payload) ? action.payload : [action.payload];
             state.selectedUnits.forEach((entity) => entity.selectedAction = null)
             console.log({selected: state.selectedUnits})
             return state;
@@ -95,6 +96,9 @@ const entityReducer = (state, action) => {
             }
             console.log('new selectedAction: ', first(state.selectedUnits).selectedAction)
             return state;
+        case POINTER_MOVE:
+            state.pointerData = action.payload;
+            return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);
             console.log({action});
@@ -109,5 +113,6 @@ export {
     INPUT_EVENT,
     HOVER_ENTITY_START,
     HOVER_ENTITY_STOP,
-    SELECT_ACTION
+    SELECT_ACTION,
+    POINTER_MOVE
 }

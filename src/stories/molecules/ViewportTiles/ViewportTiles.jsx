@@ -20,7 +20,7 @@ import { straightLineMoveGenerator } from '../../../entities/actions';
 
 // Constants
 import { RIGHT_CLICK, LEFT_CLICK } from '../../../constants/inputEvents';
-import { INPUT_EVENT } from '../../../reducers/entityReducer';
+import { INPUT_EVENT, POINTER_MOVE } from '../../../reducers/entityReducer';
 import { VIEWPORT_TILES } from '../../../constants/inputSources';
 
 const physicsTic = (delta, state) => {
@@ -113,14 +113,16 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
 
   return (
   <group 
-    onPointerDown={(event) => { mouseWorldClick(event, {gameReducer, userReducer, entityReducer })}}>
+    onPointerDown={(event) => { mouseWorldClick(event, {gameReducer, userReducer, entityReducer })}}
+    onPointerMove={(event) => { entityDispatch({type: POINTER_MOVE, payload: event})}}
+    >
     <EntityManager 
-      gameReducer={{gameState, gameDispatch}}
-      userReducer={{userState, userDispatch}}
-      entityReducer={{entityState, entityDispatch}}
-      worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
-      chunkQuery={{getChunkQuery, getChunkQueryStatus}}
-      client={client}
+        gameReducer={{gameState, gameDispatch}}
+        userReducer={{userState, userDispatch}}
+        entityReducer={{entityState, entityDispatch}}
+        worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+        chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+        client={client}
     />
     <ChunkManager
               gameReducer={{gameState, gameDispatch}}

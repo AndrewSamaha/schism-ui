@@ -1,8 +1,9 @@
 // external
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { CanvasTexture } from 'three';
 import { Instances, Instance } from '@react-three/drei';
+import first from 'lodash/first';
 
 // Components
 import { TileChunk } from '../TileChunk/TileChunk';
@@ -20,6 +21,25 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
   const { userState, userDispatch } = userReducer;
   const { entityState, entityDispatch } = entityReducer;
   const {viewportWorldLocation} = userState;
+
+  const [pointerEvent, setPointerEvent] = useState();
+  
+  const actor = first(entityState.selectedUnits);
+  const selectedAction = actor?.selectedAction;
+
+  //console.log('selectedUnits', selectedUnits.length, selectedUnits);
+  const pointerEntity = useMemo( () => {
+    if (!selectedAction) {
+      // console.log('pE useMemo bailing out because no selectedAction was found')
+      return () => {};
+    }
+    if (!selectedAction?.pointerEntityGenerator) {
+      // console.log('pE useMemo bailing out because no pointerEntityGenerator was found')
+      return () => {}};
+    
+    return selectedAction.pointerEntityGenerator(actor, {userReducer, entityReducer});
+  }, [selectedAction]);
+  //if (pointerEvent) console.log(pointerEvent?.point);
   
   return (
     <Instances>
@@ -30,6 +50,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
           return (<EntityInstance key={entity.id} entity={entity} entityReducer={entityReducer} />);
         })
       }
+      {entityState?.pointerData && pointerEntity(entityState.pointerData)}
       {children}
     </Instances>
   );
