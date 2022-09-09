@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import times from 'lodash/times';
 import without from 'lodash/without';
 import union from 'lodash/union';
@@ -97,7 +98,11 @@ const entityReducer = (state, action) => {
             console.log('new selectedAction: ', first(state.selectedUnits).selectedAction)
             return state;
         case POINTER_MOVE:
-            state.pointerData = action.payload;
+            const { pointerData, userState } = action.payload;
+            const { viewportWorldLocation: vWL } = userState;
+            const { point } = pointerData;
+            pointerData.pointWorld = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
+            state.pointerData = pointerData;
             return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);

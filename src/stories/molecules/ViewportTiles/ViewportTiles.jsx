@@ -114,7 +114,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   return (
   <group 
     onPointerDown={(event) => { mouseWorldClick(event, {gameReducer, userReducer, entityReducer })}}
-    onPointerMove={(event) => { entityDispatch({type: POINTER_MOVE, payload: event})}}
+    onPointerMove={(pointerData) => { entityDispatch({type: POINTER_MOVE, payload: {pointerData, userState}})}}
     >
     <EntityManager 
         gameReducer={{gameState, gameDispatch}}

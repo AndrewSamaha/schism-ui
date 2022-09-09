@@ -7,7 +7,7 @@ import { Instance } from '@react-three/drei';
 import { SELECT_ENTITY, HOVER_ENTITY_START, HOVER_ENTITY_STOP } from '../../../reducers/entityReducer';
 
 export const EntityInstance = (props) => {
-  const { entity, entityReducer } = props;
+  const { entity, entityReducer, action } = props;
   const { color, position, rotation, id, scale } = entity;
   const { entityState, entityDispatch } = entityReducer;
   // This reference gives us direct access to the THREE.Mesh object
@@ -31,6 +31,7 @@ export const EntityInstance = (props) => {
       scale={scale}
       //onClick={(event) => click(!clicked)}
       onClick={(event) => {
+        if (action) return;
         if (entityState.selectedUnits.length && entityState.selectedUnits[0] === entity) return;
         entityDispatch({ 
           type: SELECT_ENTITY,
@@ -38,6 +39,7 @@ export const EntityInstance = (props) => {
         }) 
       }}
       onPointerOver={(event) => {
+        if (action) return;
         hover(true);
         entityDispatch({
           type: HOVER_ENTITY_START,
@@ -45,6 +47,7 @@ export const EntityInstance = (props) => {
         });
       }}
       onPointerOut={(event) => {
+        if (action) return;
         hover(false)
         entityDispatch({
           type: HOVER_ENTITY_STOP,

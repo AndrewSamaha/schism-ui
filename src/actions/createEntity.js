@@ -38,10 +38,12 @@ export const CREATE_ENTITY = {
                 console.log('pE is NULL')
                 return null;
             }
-            const { point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = event;
-            entity.position = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
+            const { point, pointWorld, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = event;
+            //entity.position = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
+            entity.position = pointWorld;
             return (
             <EntityInstance
+                action
                 key={entity.id}
                 entity={entity}
                 entityReducer={entityReducer} 
