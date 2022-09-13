@@ -20,7 +20,7 @@ import { straightLineMoveGenerator } from '../../../entities/actions';
 
 // Constants
 import { RIGHT_CLICK, LEFT_CLICK } from '../../../constants/inputEvents';
-import { INPUT_EVENT, POINTER_MOVE } from '../../../reducers/entityReducer';
+import { INPUT_EVENT, POINTER_MOVE, POINTER_OUT } from '../../../reducers/entityReducer';
 import { VIEWPORT_TILES } from '../../../constants/inputSources';
 
 const physicsTic = (delta, state) => {
@@ -115,6 +115,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   <group 
     onPointerDown={(event) => { mouseWorldClick(event, {gameReducer, userReducer, entityReducer })}}
     onPointerMove={(pointerData) => { entityDispatch({type: POINTER_MOVE, payload: {pointerData, userState}})}}
+    onPointerOut={() => entityDispatch({type: POINTER_OUT })}
     >
     <EntityManager 
         gameReducer={{gameState, gameDispatch}}
