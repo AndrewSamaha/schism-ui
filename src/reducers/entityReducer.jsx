@@ -47,7 +47,21 @@ const handleInputEvent = (state, action) => {
     const { pointerData, inputSource, worldLocation, time } = action;
     const { point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
     const { selectedUnits, hoverEntities } = state;
+    
+    const selectedUnit = (() => {
+        if (!selectedUnits) return null;
+        if (!selectedUnits.length) return null;
+        return first(selectedUnits);
+    })();
 
+    const selectedAction = (() => {
+        if (!selectedUnit) return null;
+        if (!selectedUnit.selectedAction) return null;
+        return selectedUnit.selectedAction;
+    })();
+
+    // this block is sus
+    // I don't think action means here what the author thought it means
     if (action.meetsRequirements) {
         const inputEventState = {
             ...action, 
@@ -58,17 +72,34 @@ const handleInputEvent = (state, action) => {
             return state;
         }
     }
-    // Handle Select and Unselect entities
+
+    // Left Click
+    // - Select and Unselect entities
+    // - Perform selected actions
     if (button === LEFT_CLICK) {
-        if (hoverEntities?.length) {
-            state.selectedUnits?.forEach((entity) => entity.selectedAction = null);
-            state.selectedUnits = [last(hoverEntities)];
-        } else {
+        // check to see if there's a selected action
+        if (!selectedAction) {
+            if (hoverEntities?.length) {
+                state.selectedUnits?.forEach((entity) => entity.selectedAction = null);
+                state.selectedUnits = [last(hoverEntities)];
+                return state;
+            }
+            
             state.selectedUnits = [];
+            return state;
         }
-        return state;
+
+        if (selectedAction.meetsRequirements) {
+            if (selectedAction.meetsRequirements()) {
+                performActions(selectedUnits, worldLocation);
+                selectedUnits.forEach((entity) => entity.selectedAction = null);
+                return state;
+            }
+        };
+        
     }
-    if (!selectedUnits?.length) { return state; }
+
+    if (!selectedUnit) { return state; }
 
     if (button === RIGHT_CLICK) {
         performActions(selectedUnits, worldLocation);

@@ -21,8 +21,6 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
   const { userState, userDispatch } = userReducer;
   const { entityState, entityDispatch } = entityReducer;
   const {viewportWorldLocation} = userState;
-
-  const [pointerEvent, setPointerEvent] = useState();
   
   const actor = first(entityState.selectedUnits);
   const selectedAction = actor?.selectedAction;
