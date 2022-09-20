@@ -4,6 +4,8 @@ import without from 'lodash/without';
 import union from 'lodash/union';
 import last from 'lodash/last';
 import first from 'lodash/first';
+import set from 'lodash/set';
+import get from 'lodash/get';
 import { testEntity } from '../entities/testEntity';
 import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
 
@@ -27,6 +29,7 @@ const HOVER_ENTITY_STOP = 'HOVER_ENTITY_STOP';
 const SELECT_ACTION = 'SELECT_ACTION';
 const POINTER_MOVE = 'POINTER_MOVE';
 const POINTER_OUT = 'POINTER_OUT';
+const SET_ENTITY_FIELD = 'SET_ENTITY_FIELD';
 
 const getGeneratedAction = (entity, worldLocation) => {
     const action = entity.selectedAction || entity.defaultAction;
@@ -140,6 +143,9 @@ const entityReducer = (state, action) => {
             return state;
         case POINTER_OUT:
             state.pointerData = null;
+            return state;
+        case SET_ENTITY_FIELD:
+
             return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);

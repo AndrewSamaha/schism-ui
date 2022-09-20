@@ -1,4 +1,4 @@
-import { straightLineMoveGenerator } from "../entities/actions";
+import { straightLineMoveTicGenerator } from "../entities/ticGenerators";
 import { ActionButton } from "../stories/atoms/ActionButton/ActionButton";
 import moveEntityIcon from '../stories/assets/ui/Buttons/MoveEntity.png';
 import moveEntityIcon_hover from '../stories/assets/ui/Buttons/MoveEntity_hover.png';
@@ -7,7 +7,7 @@ import moveEntityIcon_hover from '../stories/assets/ui/Buttons/MoveEntity_hover.
 export const STRAIGHT_LINE_MOVE = {
     name: 'Move',
     longName: 'STRAIGHT_LINE_MOVE',
-    generator: straightLineMoveGenerator,
+    generator: straightLineMoveTicGenerator,
     icon: moveEntityIcon,
     icon_hover: moveEntityIcon_hover,
     meetsRequirements: function(inputEventState) {

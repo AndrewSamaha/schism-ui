@@ -16,7 +16,7 @@ import { ChunkManager } from '../../molecules/ChunkManager/ChunkManager';
 // Entities
 import { EntityManager } from '../../molecules/EntityManager/EntityManager';
 import { SELECT_ENTITY } from '../../../reducers/entityReducer';
-import { straightLineMoveGenerator } from '../../../entities/actions';
+import { straightLineMoveTicGenerator } from '../../../entities/ticGenerators';
 
 // Constants
 import { RIGHT_CLICK, LEFT_CLICK } from '../../../constants/inputEvents';

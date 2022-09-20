@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import uniq from 'lodash/uniq';
 
 // Local Imports
-import { straightLineMoveGenerator } from "../entities/actions";
+import { createEntityTicGenerator } from "../entities/ticGenerators";
 import { ActionButton } from "../stories/atoms/ActionButton/ActionButton";
 import moveEntityIcon from '../stories/assets/ui/Buttons/CreateEntity.png';
 import moveEntityIcon_hover from '../stories/assets/ui/Buttons/CreateEntity_hover.png';
@@ -13,7 +13,7 @@ import { testEntity } from '../entities/testEntity';
 export const CREATE_ENTITY = {
     name: 'Create',
     longName: 'CREATE_ENTITY',
-    generator: straightLineMoveGenerator,
+    generator: createEntityTicGenerator,
     icon: moveEntityIcon,
     icon_hover: moveEntityIcon_hover,
     getReferenceEntity: () => testEntity,
@@ -24,7 +24,6 @@ export const CREATE_ENTITY = {
         return ActionButton(this, params)
     },
     pointerEntityGenerator: function (actor, reducers) {
-        // console.log('pointerEntityGenerator being called')
         const { userReducer, entityReducer } = reducers;
         const { userState, userDispatch } = userReducer;
         const { viewportWorldLocation: vWL } = userState;
@@ -39,7 +38,7 @@ export const CREATE_ENTITY = {
                 return null;
             }
             const { point, pointWorld, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = event;
-            //entity.position = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
+
             entity.position = pointWorld;
             return (
             <EntityInstance
@@ -49,7 +48,7 @@ export const CREATE_ENTITY = {
                 entityReducer={entityReducer} 
                 opacity={0.01} transparent />);
         }
-        //console.log('pointerEntityGenerator returning new pointerEntity function', pointerEntity)
+        
         return pointerEntity;
     }
 };
