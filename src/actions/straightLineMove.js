@@ -7,7 +7,7 @@ import moveEntityIcon_hover from '../stories/assets/ui/Buttons/MoveEntity_hover.
 export const STRAIGHT_LINE_MOVE = {
     name: 'Move',
     longName: 'STRAIGHT_LINE_MOVE',
-    generator: straightLineMoveTicGenerator,
+    ticGenerator: straightLineMoveTicGenerator,
     icon: moveEntityIcon,
     icon_hover: moveEntityIcon_hover,
     meetsRequirements: function(inputEventState) {

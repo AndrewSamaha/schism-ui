@@ -1,6 +1,5 @@
 #header {
   position: sticky;
-  background-color: white;
 }
 
 .wrapper {
@@ -11,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
+  background-color: black;
 }
 
 svg {
@@ -26,6 +25,7 @@ h1 {
   margin: 6px 0 6px 10px;
   display: inline-block;
   vertical-align: top;
+  color: white;
 }
 
 button + button {
@@ -33,7 +33,7 @@ button + button {
 }
 
 .welcome {
-  color: #333;
+  color: white;
   font-size: 14px;
   margin-right: 10px;
 }

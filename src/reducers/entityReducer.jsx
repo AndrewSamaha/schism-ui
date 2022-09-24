@@ -34,10 +34,10 @@ const SET_ENTITY_FIELD = 'SET_ENTITY_FIELD';
 const getGeneratedAction = (entity, worldLocation) => {
     const action = entity.selectedAction || entity.defaultAction;
     if (!action) return null;
-    const { generator } = action;
-    if (!generator) return null;
+    const { ticGenerator, ticGeneratorParams } = action;
+    if (!ticGenerator) return null;
     console.log('initiating ', action.longName, ' for ', entity.id, ' selectedAction=', !!entity.selectedAction);
-    return generator({entity, worldLocation});
+    return ticGenerator({entity, worldLocation, ...ticGeneratorParams});
 }
 
 const performActions = (selectedUnits, worldLocation) => {
@@ -145,7 +145,7 @@ const entityReducer = (state, action) => {
             state.pointerData = null;
             return state;
         case SET_ENTITY_FIELD:
-
+            const { path, payload, entityId } = action;
             return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);
@@ -163,5 +163,6 @@ export {
     HOVER_ENTITY_STOP,
     SELECT_ACTION,
     POINTER_MOVE,
-    POINTER_OUT
+    POINTER_OUT,
+    SET_ENTITY_FIELD
 }

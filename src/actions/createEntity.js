@@ -13,7 +13,10 @@ import { testEntity } from '../entities/testEntity';
 export const CREATE_ENTITY = {
     name: 'Create',
     longName: 'CREATE_ENTITY',
-    generator: createEntityTicGenerator,
+    ticGenerator: createEntityTicGenerator,
+    ticGeneratorParams: {
+        totalTime: 10_000
+    },
     icon: moveEntityIcon,
     icon_hover: moveEntityIcon_hover,
     getReferenceEntity: () => testEntity,
@@ -28,8 +31,8 @@ export const CREATE_ENTITY = {
         const { userState, userDispatch } = userReducer;
         const { viewportWorldLocation: vWL } = userState;
         const entity = {
-            ...this.getReferenceEntity().generate(),
-            id: uniq('selected-action-entity')
+            ...this.getReferenceEntity().generate({color: 'gray'}),
+            id: uniq('selected-action-entity'),
         };
             
         const pointerEntity = function (event) {
@@ -46,7 +49,8 @@ export const CREATE_ENTITY = {
                 key={entity.id}
                 entity={entity}
                 entityReducer={entityReducer} 
-                opacity={0.01} transparent />);
+                opacity={0.01} transparent 
+                wireframe={true} />);
         }
         
         return pointerEntity;
