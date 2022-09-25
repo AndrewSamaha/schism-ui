@@ -23,7 +23,8 @@ const createEntityTicGenerator = ({entity, worldLocation, totalTime}) => {
         if (elapsedTime >= totalTime) {
             entity.tic = null;
             const newEntity = testEntity.generate({
-                position: worldLocation
+                position: worldLocation,
+                color: entity.color
             });
             const { entityState, entityDispatch } = entityReducer;
             entityDispatch({

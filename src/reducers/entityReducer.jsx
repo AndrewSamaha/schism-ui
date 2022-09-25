@@ -133,7 +133,7 @@ const entityReducer = (state, action) => {
             if (state.selectedUnits?.length) {
                 first(state.selectedUnits).selectedAction = action.payload;
             }
-            console.log('new selectedAction: ', first(state.selectedUnits).selectedAction)
+            // console.log('new selectedAction: ', first(state.selectedUnits).selectedAction)
             return state;
         case POINTER_MOVE:
             const { pointerData, userState } = action.payload;
@@ -150,7 +150,6 @@ const entityReducer = (state, action) => {
             return state;
         case ADD_TO_MY_ENTITIES:
             state.myUnits = union(state.myUnits, [action.payload]);
-            console.log('add to my entities, new length=', state.myUnits.length)
             return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);

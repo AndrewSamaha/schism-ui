@@ -8,7 +8,6 @@ const randColor = (not = ['not']) => {
     while (not.includes(color)) {
         color = colorArray[Math.floor(colorArray.length * Math.random())];
     }
-    console.log('generating color that is not ', not, '. generated=', color)
     return color;
 };
 
