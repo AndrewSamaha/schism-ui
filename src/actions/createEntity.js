@@ -15,7 +15,7 @@ export const CREATE_ENTITY = {
     longName: 'CREATE_ENTITY',
     ticGenerator: createEntityTicGenerator,
     ticGeneratorParams: {
-        totalTime: 10_000
+        totalTime: 2_000
     },
     icon: moveEntityIcon,
     icon_hover: moveEntityIcon_hover,

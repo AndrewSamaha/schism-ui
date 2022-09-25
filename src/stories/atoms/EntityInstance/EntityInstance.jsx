@@ -18,7 +18,7 @@ export const EntityInstance = (props) => {
   // Subscribe this component to the render-loop, rotate the mesh every frame
   useFrame((state, delta) => {
     ref.current.rotation.x += 0.01;
-    if (entity.tic) entity.tic(ref, delta);
+    if (entity.tic) entity.tic(ref, delta, entityReducer);
   });
   // Return the view, these are regular Threejs elements expressed in JSX
   return (

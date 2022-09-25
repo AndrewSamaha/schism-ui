@@ -32,6 +32,11 @@ export const Debug = ({userState, gameState, performance, entityReducer}) => {
                    ))}
                 </div>
             }
+            { 
+                entityState?.myUnits.length > 0 && 
+                <div>myUnits.length {entityState.myUnits.length}
+                </div>
+            }
         </div>
     );
 }

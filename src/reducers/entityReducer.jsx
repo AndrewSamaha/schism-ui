@@ -30,6 +30,7 @@ const SELECT_ACTION = 'SELECT_ACTION';
 const POINTER_MOVE = 'POINTER_MOVE';
 const POINTER_OUT = 'POINTER_OUT';
 const SET_ENTITY_FIELD = 'SET_ENTITY_FIELD';
+const ADD_TO_MY_ENTITIES = 'ADD_TO_MY_ENTITIES';
 
 const getGeneratedAction = (entity, worldLocation) => {
     const action = entity.selectedAction || entity.defaultAction;
@@ -147,6 +148,10 @@ const entityReducer = (state, action) => {
         case SET_ENTITY_FIELD:
             const { path, payload, entityId } = action;
             return state;
+        case ADD_TO_MY_ENTITIES:
+            state.myUnits = union(state.myUnits, [action.payload]);
+            console.log('add to my entities, new length=', state.myUnits.length)
+            return state;
         default:
             console.log(`unknown action in chunkManagerReducer: ${action}`);
             console.log({action});
@@ -164,5 +169,6 @@ export {
     SELECT_ACTION,
     POINTER_MOVE,
     POINTER_OUT,
-    SET_ENTITY_FIELD
+    SET_ENTITY_FIELD,
+    ADD_TO_MY_ENTITIES
 }
