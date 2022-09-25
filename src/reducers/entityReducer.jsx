@@ -152,9 +152,9 @@ const entityReducer = (state, action) => {
             state.myUnits = union(state.myUnits, [action.payload]);
             return state;
         default:
-            console.log(`unknown action in chunkManagerReducer: ${action}`);
+            console.log(`unknown action in entityManagerReducer: ${action}`);
             console.log({action});
-            throw new Error(`unknown action in chunkManagerReducer: ${action}`);
+            throw new Error(`unknown action in entityManagerReducer: ${action}`);
     }
 }
 
