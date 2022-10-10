@@ -1,6 +1,6 @@
 // external
-import React, { useState, useMemo } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import React, { useEffect, useMemo } from 'react';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { CanvasTexture } from 'three';
 import { Instances, Instance } from '@react-three/drei';
 import first from 'lodash/first';
@@ -10,17 +10,19 @@ import { TileChunk } from '../TileChunk/TileChunk';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
 // Queries
 import { GET_CHUNK_COLLECTION } from '../../../graph/queries';
+import { RECEIVED_VISIBLE_ENTITIES } from '../../../reducers/entityReducer';
 // Helpers
 import { getTextureSrc } from '../../../helpers/texture';
-// Constants
-import { ViewGeometry } from '../../../constants/viewport';
-import { CHUNK_SIZE } from '../../../constants/tileChunks';
+// Queries
+
 
 
 export const EntityManager = ({gameReducer, userReducer, entityReducer, worldStateQuery, children, client }) => { // chunkQuery,
   const { userState, userDispatch } = userReducer;
   const { entityState, entityDispatch } = entityReducer;
   const {viewportWorldLocation} = userState;
+
+ 
   
   const actor = first(entityState.selectedUnits);
   const selectedAction = actor?.selectedAction;

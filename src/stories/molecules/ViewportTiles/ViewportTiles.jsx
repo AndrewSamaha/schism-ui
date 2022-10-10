@@ -18,6 +18,10 @@ import { EntityManager } from '../../molecules/EntityManager/EntityManager';
 import { SELECT_ENTITY } from '../../../reducers/entityReducer';
 import { straightLineMoveTicGenerator } from '../../../entities/ticGenerators';
 
+// Queries
+import { GET_ENTITIES_I_CAN_SEE } from '../../../graph/entities';
+import { RECEIVED_VISIBLE_ENTITIES } from '../../../reducers/entityReducer';
+
 // Constants
 import { RIGHT_CLICK, LEFT_CLICK } from '../../../constants/inputEvents';
 import { INPUT_EVENT, POINTER_MOVE, POINTER_OUT } from '../../../reducers/entityReducer';
@@ -65,6 +69,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   const {viewportWorldLocation} = userState;
   const { tiles } = gameState;
   const {getWorldStateQuery, worldStateQueryStatus} = worldStateQuery;
+  
   const UpperLeft = {
     x: -1 * (userState.viewportWorldLocation[0] + ViewGeometry[0]/2),
     y: -1 * (userState.viewportWorldLocation[1] - ViewGeometry[1]/2)
@@ -74,6 +79,29 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
     y: -1 * (userState.viewportWorldLocation[1] + ViewGeometry[1]/2)
   };
 
+  const {loading, error, data, startPolling, stopPolling} = useQuery(
+    GET_ENTITIES_I_CAN_SEE, 
+    {
+      pollInterval: 500,
+      onCompleted: data => entityDispatch({ 
+        type: RECEIVED_VISIBLE_ENTITIES,
+        payload: data 
+      }),
+      onError: e => console.log('on error',e),
+      client,
+      fetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true
+    }
+  ); 
+
+  // useEffect(() => {
+  //   console.log('getEntitiesICanSee useEffect', data)
+  //   startPolling(250);
+  // }, [data])
+  // useEffect(() => {
+  //   console.log('starting polling for get_entities query')
+  //   startPolling(200);
+  // },[])
   useFrame((state, delta) => {
       const { userInput } = userState;
 

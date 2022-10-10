@@ -59,6 +59,15 @@ root.render(
     </UserContext.Provider>
   </React.StrictMode>
 );
+// root.render(
+//     <UserContext.Provider value={initialState}>
+//       <GameContext.Provider value={null}>
+//         <ApolloProvider client={client}>
+//             <App client={client} />
+//         </ApolloProvider>
+//       </GameContext.Provider>
+//     </UserContext.Provider>
+// );
 
 
 // If you want to start measuring performance in your app, pass a function

@@ -10,7 +10,7 @@ import { testEntity } from '../entities/testEntity';
 import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
 
 const createInitialState = (viewportWorldLocation) => {
-    const myUnits = times(5, () => { return testEntity.generate() });
+    const myUnits = []; // times(5, () => { return testEntity.generate() });
     // console.log('entityManager.createInitialState myUnit=', myUnits)
     return {
         myUnits: myUnits,
@@ -31,6 +31,7 @@ const POINTER_MOVE = 'POINTER_MOVE';
 const POINTER_OUT = 'POINTER_OUT';
 const SET_ENTITY_FIELD = 'SET_ENTITY_FIELD';
 const ADD_TO_MY_ENTITIES = 'ADD_TO_MY_ENTITIES';
+const RECEIVED_VISIBLE_ENTITIES = 'RECEIVED_VISIBLE_ENTITIES';
 
 const getGeneratedAction = (entity, worldLocation) => {
     const action = entity.selectedAction || entity.defaultAction;
@@ -151,6 +152,31 @@ const entityReducer = (state, action) => {
         case ADD_TO_MY_ENTITIES:
             state.myUnits = union(state.myUnits, [action.payload]);
             return state;
+        case RECEIVED_VISIBLE_ENTITIES:
+            const statsPath = `queryResults[${RECEIVED_VISIBLE_ENTITIES}].stats`;
+            const { timeOfLastResult, numReceived } = get(state, statsPath, {
+                timeOfLastResult: 0,
+                numReceived: 0
+            });
+            console.log(RECEIVED_VISIBLE_ENTITIES, numReceived)
+            if (!timeOfLastResult) {
+                console.log(action.payload)
+            }
+            const { getEntitiesICanSee } = action.payload;
+            state.myUnits = getEntitiesICanSee
+                .filter(entity => entity.ownerId === 'player.1')
+                .map(entity => ({
+                    ...entity, 
+                    position: {
+                        ...entity.position,
+                        z: 10
+                    }}));
+            console.log('state.myUnits', state.myUnits)
+            //state.otherUnits = action.payload.fil
+            set(state, `${statsPath}.numReceived`, numReceived+1);
+            set(state, `${statsPath}.timeOfLastResult`, Date.now());
+            
+            return state;
         default:
             console.log(`unknown action in entityManagerReducer: ${action}`);
             console.log({action});
@@ -169,5 +195,6 @@ export {
     POINTER_MOVE,
     POINTER_OUT,
     SET_ENTITY_FIELD,
-    ADD_TO_MY_ENTITIES
+    ADD_TO_MY_ENTITIES,
+    RECEIVED_VISIBLE_ENTITIES
 }
