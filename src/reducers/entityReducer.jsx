@@ -6,8 +6,8 @@ import last from 'lodash/last';
 import first from 'lodash/first';
 import set from 'lodash/set';
 import get from 'lodash/get';
-import { testEntity } from '../entities/testEntity';
 import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
+import { entityTypes } from '../entities/entityTypes';
 
 const createInitialState = (viewportWorldLocation) => {
     const myUnits = []; // times(5, () => { return testEntity.generate() });
@@ -19,6 +19,30 @@ const createInitialState = (viewportWorldLocation) => {
         perf: {},
         actionsToServer: []  // a queue of actions needed to be sent to server
     }
+}
+
+const hydrateEntityFromServer = (entity, entityTypes) => {
+    const { name } = entity;
+    const type = entityTypes[name];
+    if (!type) {
+        console.log(`hydrateEntityFromServer: received unknown entity type name ${name}, entity=`, entity)
+        return {
+            ...entity, 
+            position: [
+                entity.position.x,
+                entity.position.y,
+                entity.position.z || 0
+            ]};
+    }
+    const hydrated = type.generate({
+        ...entity, 
+        position: [
+            entity.position.x,
+            entity.position.y,
+            entity.position.z || 0
+        ]});
+    //onsole.log(`hydrateEntityFromServer ${hydrated.name}`, hydrated);
+    return hydrated;
 }
 
 const STARTUP = 'STARTUP';
@@ -158,20 +182,14 @@ const entityReducer = (state, action) => {
                 timeOfLastResult: 0,
                 numReceived: 0
             });
-            console.log(RECEIVED_VISIBLE_ENTITIES, numReceived)
+            // console.log(RECEIVED_VISIBLE_ENTITIES, numReceived)
             if (!timeOfLastResult) {
                 console.log(action.payload)
             }
             const { getEntitiesICanSee } = action.payload;
             state.myUnits = getEntitiesICanSee
                 .filter(entity => entity.ownerId === 'player.1')
-                .map(entity => ({
-                    ...entity, 
-                    position: [
-                        entity.position.x,
-                        entity.position.y,
-                        entity.position.z || 0
-                    ]}));
+                .map(entity => hydrateEntityFromServer(entity, entityTypes));
             // console.log('state.myUnits', state.myUnits)
             //state.otherUnits = action.payload.fil
             set(state, `${statsPath}.numReceived`, numReceived+1);

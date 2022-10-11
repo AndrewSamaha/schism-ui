@@ -1,17 +1,6 @@
-import uniqueId from 'lodash/uniqueId';
-// Actions
-import { straightLineMoveTicGenerator } from "./actions"
-
-// components
-import { ActionButton } from '../stories/atoms/ActionButton/ActionButton';
-
-// Helpers
-import { randColor } from '../helpers/colors';
-
-// icons
-import moveEntityIcon from '../stories/assets/ui/Buttons/MoveEntity.png';
-import moveEntityIcon_hover from '../stories/assets/ui/Buttons/MoveEntity_hover.png';
-
-
+import { testEntity } from "./testEntity"
+export const entityTypes = {
+    testEntity
+}
 
 
