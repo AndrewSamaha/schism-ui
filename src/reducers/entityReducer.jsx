@@ -167,11 +167,12 @@ const entityReducer = (state, action) => {
                 .filter(entity => entity.ownerId === 'player.1')
                 .map(entity => ({
                     ...entity, 
-                    position: {
-                        ...entity.position,
-                        z: 10
-                    }}));
-            console.log('state.myUnits', state.myUnits)
+                    position: [
+                        entity.position.x,
+                        entity.position.y,
+                        entity.position.z || 0
+                    ]}));
+            // console.log('state.myUnits', state.myUnits)
             //state.otherUnits = action.payload.fil
             set(state, `${statsPath}.numReceived`, numReceived+1);
             set(state, `${statsPath}.timeOfLastResult`, Date.now());

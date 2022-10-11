@@ -29,6 +29,7 @@ export const EntityInstance = (props) => {
       rotation={rotation} // [Math.PI / 3, 0, 0]
       ref={ref}
       scale={scale}
+
       //onClick={(event) => click(!clicked)}
       onClick={(event) => {
         if (action) return;
