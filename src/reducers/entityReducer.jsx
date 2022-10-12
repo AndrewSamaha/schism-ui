@@ -14,6 +14,7 @@ const createInitialState = (viewportWorldLocation) => {
     // console.log('entityManager.createInitialState myUnit=', myUnits)
     return {
         myUnits: myUnits,
+        myUnitsDict: {},
         otherUnits: [],
         selectedUnits: [],
         perf: {},
@@ -21,28 +22,57 @@ const createInitialState = (viewportWorldLocation) => {
     }
 }
 
-const hydrateEntityFromServer = (entity, entityTypes) => {
-    const { name } = entity;
+const hydrateEntityFromServer = (receivedEntity, entityTypes, existingEntitiesDict = {}) => {
+    const { name } = receivedEntity;
     const type = entityTypes[name];
+    const existingEntity = existingEntitiesDict[name];
+
     if (!type) {
-        console.log(`hydrateEntityFromServer: received unknown entity type name ${name}, entity=`, entity)
+        console.log(`hydrateEntityFromServer: received unknown entity type name ${name}, entity=`, receivedEntity)
         return {
-            ...entity, 
+            ...receivedEntity, 
             position: [
-                entity.position.x,
-                entity.position.y,
-                entity.position.z || 0
+                receivedEntity.position.x,
+                receivedEntity.position.y,
+                receivedEntity.position.z || 0
             ]};
     }
-    const hydrated = type.generate({
-        ...entity, 
+    if (existingEntity) {
+        return {
+            ...existingEntity,
+            ...receivedEntity,
+            position: [
+                receivedEntity.position.x,
+                receivedEntity.position.y,
+                receivedEntity.position.z || 0
+            ]
+        }
+    }
+    const newEntity = type.generate({
+        ...receivedEntity, 
         position: [
-            entity.position.x,
-            entity.position.y,
-            entity.position.z || 0
+            receivedEntity.position.x,
+            receivedEntity.position.y,
+            receivedEntity.position.z || 0
         ]});
-    //onsole.log(`hydrateEntityFromServer ${hydrated.name}`, hydrated);
-    return hydrated;
+    //onsole.log(`hydrateEntityFromServer ${newEntity.name}`, hydrated);
+    return newEntity;
+}
+
+const createMyUnitsDictionary = (state) => {
+    const startingDict = state.myUnitsById || {};
+    const myUnitsById = state.myUnits.reduce((acc, unit) => {
+        if (!acc[unit.id]) {
+            acc[unit.id] = unit;
+            return acc;
+        }
+        acc[unit.id] = {
+            ...acc[unit.id],
+            ...unit
+        }
+        return acc;
+    }, startingDict);
+    return myUnitsById;
 }
 
 const STARTUP = 'STARTUP';
@@ -187,9 +217,16 @@ const entityReducer = (state, action) => {
                 console.log(action.payload)
             }
             const { getEntitiesICanSee } = action.payload;
+            let unitDict = createMyUnitsDictionary(state);
             state.myUnits = getEntitiesICanSee
                 .filter(entity => entity.ownerId === 'player.1')
-                .map(entity => hydrateEntityFromServer(entity, entityTypes));
+                .map(entity => hydrateEntityFromServer(
+                    entity,
+                    entityTypes,
+                    unitDict));
+            state.myUnitsById = createMyUnitsDictionary(state);
+            
+            
             // console.log('state.myUnits', state.myUnits)
             //state.otherUnits = action.payload.fil
             set(state, `${statsPath}.numReceived`, numReceived+1);
