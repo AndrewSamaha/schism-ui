@@ -15,12 +15,11 @@ import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
 import { entityTypes } from '../entities/entityTypes';
 
 const createInitialState = (viewportWorldLocation) => {
-    const myUnits = []; // times(5, () => { return testEntity.generate() });
+    const myUnits = {}; // times(5, () => { return testEntity.generate() });
     // console.log('entityManager.createInitialState myUnit=', myUnits)
     return {
-        myUnits: myUnits,
-        myUnitsDict: {},
-        otherUnits: [],
+        myUnits,
+        otherUnits: {},
         selectedUnits: [],
         perf: {},
         actionsToServer: []  // a queue of actions needed to be sent to server
@@ -65,22 +64,6 @@ const hydrateEntityFromServer = (receivedEntity, entityTypes, existingEntitiesDi
         });
     //onsole.log(`hydrateEntityFromServer ${newEntity.name}`, hydrated);
     return newEntity;
-}
-
-const createMyUnitsDictionary = (state) => {
-    const startingDict = state.myUnitsById || {};
-    const myUnitsById = state.myUnits.reduce((acc, unit) => {
-        if (!acc[unit.id]) {
-            acc[unit.id] = unit;
-            return acc;
-        }
-        acc[unit.id] = {
-            ...acc[unit.id],
-            ...unit
-        }
-        return acc;
-    }, startingDict);
-    return myUnitsById;
 }
 
 const STARTUP = 'STARTUP';
