@@ -198,6 +198,7 @@ const entityReducer = (state, action) => {
             const { path, payload, entityId } = action;
             return state;
         case ADD_TO_MY_ENTITIES:
+            console.warn('entityReducer ADD_TO_MY_ENTITIES has not been updated to treat state.myUnits as an object (it expects an array)')
             state.myUnits = union(state.myUnits, [action.payload]);
             return state;
         case RECEIVED_VISIBLE_ENTITIES:
@@ -206,37 +207,12 @@ const entityReducer = (state, action) => {
                 timeOfLastResult: 0,
                 numReceived: 0
             });
-            // console.log(RECEIVED_VISIBLE_ENTITIES, numReceived)
             if (!timeOfLastResult) {
                 console.log(action.payload)
             }
             const { getEntitiesICanSee } = action.payload;
-            // Objectives:
-            // 1. update myEntities from server
-            //    - add any new units
-            //    - update fields on existing units
-            //    - filter out units that don't belong to the player 
-            //      (or put them in another structure)
-
-            updateEntitiesInState(state, getEntitiesICanSee, hydrateNewEntityFromServer)
-
-            // let unitDict = createMyUnitsDictionary(state);
-            // state.myUnits = getEntitiesICanSee
-            //     .filter(entity => entity.ownerId === 'player.1')
-            //     .map(entity => hydrateEntityFromServer({
-            //         ...entity, 
-            //         position: [
-            //             entity.position.x,
-            //             entity.position.y,
-            //             entity.position.z || 0
-            //         ]},
-            //         entityTypes,
-            //         unitDict));
-            // state.myUnitsById = createMyUnitsDictionary(state);
-            
-            
-            // console.log('state.myUnits', state.myUnits)
-            //state.otherUnits = action.payload.fil
+    
+            updateEntitiesInState(state, getEntitiesICanSee, hydrateNewEntityFromServer);
             set(state, `${statsPath}.numReceived`, numReceived+1);
             set(state, `${statsPath}.timeOfLastResult`, Date.now());
             
