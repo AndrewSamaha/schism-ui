@@ -26,44 +26,47 @@ const createInitialState = (viewportWorldLocation) => {
     }
 }
 
-const hydrateEntityFromServer = (receivedEntity, entityTypes, existingEntitiesDict = {}) => {
+const hydrateNewEntityFromServer = (receivedEntity, entityTypes) => {
     const { name, id } = receivedEntity;
     const type = entityTypes[name];
-    const existingEntity = existingEntitiesDict[id];
-    console.log('hydrateEntityFromServer name=',name, ' id=',id,'   existingEntity=', existingEntity);
-    if (!existingEntity) {
-        console.log('existingEntitiesDict', existingEntitiesDict);
-    }
+    
+    console.log('hydrateEntityFromServer name=',name, ' id=',id);
     if (!type) {
         console.log(`hydrateEntityFromServer: received unknown entity type name ${name}, entity=`, receivedEntity)
         return receivedEntity;
     }
-    if (existingEntity) {
-        const changes = differenceWith(
-            toPairs(existingEntity), 
-            toPairs(receivedEntity), 
-            isEqual)
-        console.log('received existing entity from server with changes id= ', id);
-        if (changes?.length) changes.forEach(change => {
-            console.log(id, change[0], change[1])
-        })
-        console.log('returning merged entity:', {
-            ...existingEntity,
-            ...receivedEntity
-        })
-        return assignIn(existingEntity, receivedEntity); 
-        // {
-        //     ...existingEntity,
-        //     ...receivedEntity
-        // }
-    }
-    console.log('received new entity from server with changes id= ', id);
+    
+    console.log('received new entity from server id= ', id);
     console.log(receivedEntity);
     const newEntity = type.generate({
             ...receivedEntity,
         });
     //onsole.log(`hydrateEntityFromServer ${newEntity.name}`, hydrated);
     return newEntity;
+}
+
+const updateEntitiesInState = (targetState, source, hydrate) => {
+    const { myUnits, otherUnits } = targetState;
+    const myOwnerId = 'player.1';
+    console.warn('updateEntitiesInState still using hard-coded ownerId',myOwnerId)
+    source.forEach((sourceEntity) => {
+        const { id: entityId, ownerId } = sourceEntity;
+        //const { ownerId } = sourceEntity;
+        const targetDictionary= ownerId === myOwnerId ? myUnits : otherUnits;
+        const targetEntity = targetDictionary[entityId];
+        if (targetEntity) {
+            Object.entries(sourceEntity).forEach(([field, value]) => {
+                if (field[0]==='_') return;
+                console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
+                targetEntity[field] = sourceEntity[field];
+            })
+            return;
+        }
+        console.log(`adding targetDictionary.${entityId}`)
+        console.log('   sourceEntity=', sourceEntity)
+        targetDictionary[entityId] = hydrate(sourceEntity, entityTypes);
+        
+    })
 }
 
 const STARTUP = 'STARTUP';
@@ -208,19 +211,28 @@ const entityReducer = (state, action) => {
                 console.log(action.payload)
             }
             const { getEntitiesICanSee } = action.payload;
-            let unitDict = createMyUnitsDictionary(state);
-            state.myUnits = getEntitiesICanSee
-                .filter(entity => entity.ownerId === 'player.1')
-                .map(entity => hydrateEntityFromServer({
-                    ...entity, 
-                    position: [
-                        entity.position.x,
-                        entity.position.y,
-                        entity.position.z || 0
-                    ]},
-                    entityTypes,
-                    unitDict));
-            state.myUnitsById = createMyUnitsDictionary(state);
+            // Objectives:
+            // 1. update myEntities from server
+            //    - add any new units
+            //    - update fields on existing units
+            //    - filter out units that don't belong to the player 
+            //      (or put them in another structure)
+
+            updateEntitiesInState(state, getEntitiesICanSee, hydrateNewEntityFromServer)
+
+            // let unitDict = createMyUnitsDictionary(state);
+            // state.myUnits = getEntitiesICanSee
+            //     .filter(entity => entity.ownerId === 'player.1')
+            //     .map(entity => hydrateEntityFromServer({
+            //         ...entity, 
+            //         position: [
+            //             entity.position.x,
+            //             entity.position.y,
+            //             entity.position.z || 0
+            //         ]},
+            //         entityTypes,
+            //         unitDict));
+            // state.myUnitsById = createMyUnitsDictionary(state);
             
             
             // console.log('state.myUnits', state.myUnits)
