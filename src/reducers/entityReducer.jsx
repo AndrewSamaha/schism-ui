@@ -15,11 +15,11 @@ import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
 import { entityTypes } from '../entities/entityTypes';
 
 const createInitialState = (viewportWorldLocation) => {
-    const myUnits = {}; // times(5, () => { return testEntity.generate() });
-    // console.log('entityManager.createInitialState myUnit=', myUnits)
+    const myEntities = {}; // times(5, () => { return testEntity.generate() });
+    // console.log('entityManager.createInitialState myUnit=', myEntities)
     return {
-        myUnits,
-        otherUnits: {},
+        myEntities,
+        otherEntities: {},
         selectedUnits: [],
         perf: {},
         actionsToServer: []  // a queue of actions needed to be sent to server
@@ -46,13 +46,13 @@ const hydrateNewEntityFromServer = (receivedEntity, entityTypes) => {
 }
 
 const updateEntitiesInState = (targetState, source, hydrate) => {
-    const { myUnits, otherUnits } = targetState;
+    const { myEntities, otherEntities } = targetState;
     const myOwnerId = 'player.1';
     console.warn('updateEntitiesInState still using hard-coded ownerId',myOwnerId)
     source.forEach((sourceEntity) => {
         const { id: entityId, ownerId } = sourceEntity;
         //const { ownerId } = sourceEntity;
-        const targetDictionary= ownerId === myOwnerId ? myUnits : otherUnits;
+        const targetDictionary= ownerId === myOwnerId ? myEntities : otherEntities;
         const targetEntity = targetDictionary[entityId];
         if (targetEntity) {
             Object.entries(sourceEntity).forEach(([field, value]) => {
@@ -198,8 +198,8 @@ const entityReducer = (state, action) => {
             const { path, payload, entityId } = action;
             return state;
         case ADD_TO_MY_ENTITIES:
-            console.warn('entityReducer ADD_TO_MY_ENTITIES has not been updated to treat state.myUnits as an object (it expects an array)')
-            state.myUnits = union(state.myUnits, [action.payload]);
+            console.warn('entityReducer ADD_TO_MY_ENTITIES has not been updated to treat state.myEntities as an object (it expects an array)')
+            state.myEntities = union(state.myEntities, [action.payload]);
             return state;
         case RECEIVED_VISIBLE_ENTITIES:
             const statsPath = `queryResults[${RECEIVED_VISIBLE_ENTITIES}].stats`;
