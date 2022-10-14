@@ -6,6 +6,11 @@ import last from 'lodash/last';
 import first from 'lodash/first';
 import set from 'lodash/set';
 import get from 'lodash/get';
+import toPairs from 'lodash/toPairs';
+import isEqual from 'lodash/isEqual';
+import differenceWith from 'lodash/differenceWith';
+import assign from 'lodash/assign';
+import assignIn from 'lodash/assignIn';
 import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
 import { entityTypes } from '../entities/entityTypes';
 
@@ -23,38 +28,41 @@ const createInitialState = (viewportWorldLocation) => {
 }
 
 const hydrateEntityFromServer = (receivedEntity, entityTypes, existingEntitiesDict = {}) => {
-    const { name } = receivedEntity;
+    const { name, id } = receivedEntity;
     const type = entityTypes[name];
-    const existingEntity = existingEntitiesDict[name];
-
+    const existingEntity = existingEntitiesDict[id];
+    console.log('hydrateEntityFromServer name=',name, ' id=',id,'   existingEntity=', existingEntity);
+    if (!existingEntity) {
+        console.log('existingEntitiesDict', existingEntitiesDict);
+    }
     if (!type) {
         console.log(`hydrateEntityFromServer: received unknown entity type name ${name}, entity=`, receivedEntity)
-        return {
-            ...receivedEntity, 
-            position: [
-                receivedEntity.position.x,
-                receivedEntity.position.y,
-                receivedEntity.position.z || 0
-            ]};
+        return receivedEntity;
     }
     if (existingEntity) {
-        return {
+        const changes = differenceWith(
+            toPairs(existingEntity), 
+            toPairs(receivedEntity), 
+            isEqual)
+        console.log('received existing entity from server with changes id= ', id);
+        if (changes?.length) changes.forEach(change => {
+            console.log(id, change[0], change[1])
+        })
+        console.log('returning merged entity:', {
             ...existingEntity,
-            ...receivedEntity,
-            position: [
-                receivedEntity.position.x,
-                receivedEntity.position.y,
-                receivedEntity.position.z || 0
-            ]
-        }
+            ...receivedEntity
+        })
+        return assignIn(existingEntity, receivedEntity); 
+        // {
+        //     ...existingEntity,
+        //     ...receivedEntity
+        // }
     }
+    console.log('received new entity from server with changes id= ', id);
+    console.log(receivedEntity);
     const newEntity = type.generate({
-        ...receivedEntity, 
-        position: [
-            receivedEntity.position.x,
-            receivedEntity.position.y,
-            receivedEntity.position.z || 0
-        ]});
+            ...receivedEntity,
+        });
     //onsole.log(`hydrateEntityFromServer ${newEntity.name}`, hydrated);
     return newEntity;
 }
@@ -220,8 +228,13 @@ const entityReducer = (state, action) => {
             let unitDict = createMyUnitsDictionary(state);
             state.myUnits = getEntitiesICanSee
                 .filter(entity => entity.ownerId === 'player.1')
-                .map(entity => hydrateEntityFromServer(
-                    entity,
+                .map(entity => hydrateEntityFromServer({
+                    ...entity, 
+                    position: [
+                        entity.position.x,
+                        entity.position.y,
+                        entity.position.z || 0
+                    ]},
                     entityTypes,
                     unitDict));
             state.myUnitsById = createMyUnitsDictionary(state);
