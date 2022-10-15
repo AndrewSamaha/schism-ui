@@ -6,73 +6,76 @@ import last from 'lodash/last';
 import first from 'lodash/first';
 import set from 'lodash/set';
 import get from 'lodash/get';
+import toPairs from 'lodash/toPairs';
+import isEqual from 'lodash/isEqual';
+import differenceWith from 'lodash/differenceWith';
+import assign from 'lodash/assign';
+import assignIn from 'lodash/assignIn';
 import { RIGHT_CLICK, LEFT_CLICK } from '../constants/inputEvents';
 import { entityTypes } from '../entities/entityTypes';
 
 const createInitialState = (viewportWorldLocation) => {
-    const myUnits = []; // times(5, () => { return testEntity.generate() });
-    // console.log('entityManager.createInitialState myUnit=', myUnits)
+    const myEntities = {}; // times(5, () => { return testEntity.generate() });
+    // console.log('entityManager.createInitialState myUnit=', myEntities)
     return {
-        myUnits: myUnits,
-        myUnitsDict: {},
-        otherUnits: [],
+        myEntities,
+        otherEntities: {},
         selectedUnits: [],
         perf: {},
         actionsToServer: []  // a queue of actions needed to be sent to server
     }
 }
 
-const hydrateEntityFromServer = (receivedEntity, entityTypes, existingEntitiesDict = {}) => {
-    const { name } = receivedEntity;
+const hydrateNewEntityFromServer = (receivedEntity, entityTypes) => {
+    const { name, id } = receivedEntity;
     const type = entityTypes[name];
-    const existingEntity = existingEntitiesDict[name];
-
+    
+    console.log('hydrateEntityFromServer name=',name, ' id=',id);
     if (!type) {
         console.log(`hydrateEntityFromServer: received unknown entity type name ${name}, entity=`, receivedEntity)
-        return {
-            ...receivedEntity, 
-            position: [
-                receivedEntity.position.x,
-                receivedEntity.position.y,
-                receivedEntity.position.z || 0
-            ]};
+        return receivedEntity;
     }
-    if (existingEntity) {
-        return {
-            ...existingEntity,
-            ...receivedEntity,
-            position: [
-                receivedEntity.position.x,
-                receivedEntity.position.y,
-                receivedEntity.position.z || 0
-            ]
-        }
-    }
+    
+    console.log('received new entity from server id= ', id);
+    console.log(receivedEntity);
     const newEntity = type.generate({
-        ...receivedEntity, 
-        position: [
-            receivedEntity.position.x,
-            receivedEntity.position.y,
-            receivedEntity.position.z || 0
-        ]});
+            ...receivedEntity,
+        });
     //onsole.log(`hydrateEntityFromServer ${newEntity.name}`, hydrated);
     return newEntity;
 }
 
-const createMyUnitsDictionary = (state) => {
-    const startingDict = state.myUnitsById || {};
-    const myUnitsById = state.myUnits.reduce((acc, unit) => {
-        if (!acc[unit.id]) {
-            acc[unit.id] = unit;
-            return acc;
+const updateEntitiesInState = (targetState, source, hydrate) => {
+    const { myEntities, otherEntities } = targetState;
+    const myOwnerId = 'player.1';
+    console.warn('updateEntitiesInState still using hard-coded ownerId',myOwnerId)
+    source.forEach((sourceEntity) => {
+        const { id: entityId, ownerId } = sourceEntity;
+        //const { ownerId } = sourceEntity;
+        const targetDictionary= ownerId === myOwnerId ? myEntities : otherEntities;
+        const targetEntity = targetDictionary[entityId];
+        if (targetEntity) {
+            Object.entries(sourceEntity).forEach(([field, value]) => {
+                if (field[0]==='_') return;
+                if (field === 'position') {
+                    console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
+                    targetEntity.position = [
+                        sourceEntity[field].x,
+                        sourceEntity[field].y,
+                        sourceEntity[field].z || 0
+                    ];
+                    return;
+                }
+                console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
+                targetEntity[field] = sourceEntity[field];
+            })
+            return;
         }
-        acc[unit.id] = {
-            ...acc[unit.id],
-            ...unit
-        }
-        return acc;
-    }, startingDict);
-    return myUnitsById;
+        console.log(`adding targetDictionary.${entityId}`)
+        console.log('   sourceEntity=', sourceEntity)
+        targetDictionary[entityId] = hydrate(sourceEntity, entityTypes);
+        
+    })
 }
 
 const STARTUP = 'STARTUP';
@@ -204,7 +207,8 @@ const entityReducer = (state, action) => {
             const { path, payload, entityId } = action;
             return state;
         case ADD_TO_MY_ENTITIES:
-            state.myUnits = union(state.myUnits, [action.payload]);
+            console.warn('entityReducer ADD_TO_MY_ENTITIES has not been updated to treat state.myEntities as an object (it expects an array)')
+            state.myEntities = union(state.myEntities, [action.payload]);
             return state;
         case RECEIVED_VISIBLE_ENTITIES:
             const statsPath = `queryResults[${RECEIVED_VISIBLE_ENTITIES}].stats`;
@@ -212,23 +216,12 @@ const entityReducer = (state, action) => {
                 timeOfLastResult: 0,
                 numReceived: 0
             });
-            // console.log(RECEIVED_VISIBLE_ENTITIES, numReceived)
             if (!timeOfLastResult) {
                 console.log(action.payload)
             }
             const { getEntitiesICanSee } = action.payload;
-            let unitDict = createMyUnitsDictionary(state);
-            state.myUnits = getEntitiesICanSee
-                .filter(entity => entity.ownerId === 'player.1')
-                .map(entity => hydrateEntityFromServer(
-                    entity,
-                    entityTypes,
-                    unitDict));
-            state.myUnitsById = createMyUnitsDictionary(state);
-            
-            
-            // console.log('state.myUnits', state.myUnits)
-            //state.otherUnits = action.payload.fil
+    
+            updateEntitiesInState(state, getEntitiesICanSee, hydrateNewEntityFromServer);
             set(state, `${statsPath}.numReceived`, numReceived+1);
             set(state, `${statsPath}.timeOfLastResult`, Date.now());
             
