@@ -57,6 +57,15 @@ const updateEntitiesInState = (targetState, source, hydrate) => {
         if (targetEntity) {
             Object.entries(sourceEntity).forEach(([field, value]) => {
                 if (field[0]==='_') return;
+                if (field === 'position') {
+                    console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
+                    targetEntity.position = [
+                        sourceEntity[field].x,
+                        sourceEntity[field].y,
+                        sourceEntity[field].z || 0
+                    ];
+                    return;
+                }
                 console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
                 targetEntity[field] = sourceEntity[field];
             })
