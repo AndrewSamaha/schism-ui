@@ -36,7 +36,9 @@ export const Debug = ({userState, gameState, performance, entityReducer}) => {
                 Object.keys(entityState?.myEntities).length > 0 && 
                 <div>myEntities.length {Object.keys(entityState.myEntities).length}
                 {Object.entries(entityState.myEntities).map(([id, entity]) => (
-                   <div key={entity.id}>{entity.id}<br />x: {entity.position[0]}<br />y: {entity.position[1]}<br />z: {entity.position[2]}</div>
+                   <div key={entity.id}>{entity.id}<br />
+                   position={entity.position}<br />
+                   x: {entity.position[0]}<br />y: {entity.position[1]}<br />z: {entity.position[2]}</div>
                    ))}
                 </div>
             }

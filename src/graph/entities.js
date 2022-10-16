@@ -8,11 +8,9 @@ query GetEntitiesICanSee {
       longName
       speed
       ownerId
-      position {
-        x
-        y
-      }
+      position
       color
+      sightRange
     }
   }
 `;

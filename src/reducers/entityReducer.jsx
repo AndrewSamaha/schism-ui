@@ -58,12 +58,8 @@ const updateEntitiesInState = (targetState, source, hydrate) => {
             Object.entries(sourceEntity).forEach(([field, value]) => {
                 if (field[0]==='_') return;
                 if (field === 'position') {
-                    console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
-                    targetEntity.position = [
-                        sourceEntity[field].x,
-                        sourceEntity[field].y,
-                        sourceEntity[field].z || 0
-                    ];
+                    targetEntity.position = sourceEntity.position;
+                    targetEntity.position[2] = 0; // Add a z Coordinate
                     return;
                 }
                 console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
@@ -207,8 +203,12 @@ const entityReducer = (state, action) => {
             const { path, payload, entityId } = action;
             return state;
         case ADD_TO_MY_ENTITIES:
-            console.warn('entityReducer ADD_TO_MY_ENTITIES has not been updated to treat state.myEntities as an object (it expects an array)')
-            state.myEntities = union(state.myEntities, [action.payload]);
+            const id = action.payload.id;
+            if (state.myEntities[id]) {
+                console.warn('entityReducer ADD_TO_MY_ENTITIES attempting to add an entity to myEntities that already exists. action.payload=', action.payload)
+                return state;
+            }
+            state.myEntities[id] = action.payload;
             return state;
         case RECEIVED_VISIBLE_ENTITIES:
             const statsPath = `queryResults[${RECEIVED_VISIBLE_ENTITIES}].stats`;

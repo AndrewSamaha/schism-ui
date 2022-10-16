@@ -41,7 +41,7 @@ export const CREATE_ENTITY = {
                 return null;
             }
             const { point, pointWorld, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = event;
-
+            console.warn('pointerEntityGenerator.pointerEntity might be trying to assign pointWorld(type Vector3) to entity.position(type array). pointWorld=', pointWorld)
             entity.position = pointWorld;
             return (
             <EntityInstance
