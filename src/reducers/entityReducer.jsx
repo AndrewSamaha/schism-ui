@@ -223,7 +223,6 @@ const entityReducer = (state, action) => {
             updateEntitiesInState(state, getEntitiesICanSee, hydrateNewEntityFromServer, playerId);
             set(state, `${statsPath}.numReceived`, numReceived+1);
             set(state, `${statsPath}.timeOfLastResult`, Date.now());
-            console.log('playerId: ', playerId)
             return state;
         default:
             console.log(`unknown action in entityManagerReducer: ${action}`);
