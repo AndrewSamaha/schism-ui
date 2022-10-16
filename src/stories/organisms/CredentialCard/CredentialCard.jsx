@@ -25,21 +25,32 @@ mutation login($name: String!, $password: String!) {
 
 export const CredentialCard = () => {
   const [state, dispatch] = useReducer(userReducer, initialState);
-  const [login, { data, loading, error }] = useMutation(LOGIN, {onCompleted: (data) => {
-    if (data?.login?.__typename === 'Player') {
-      localStorage.setItem('authorization',data.login.authToken);
-      localStorage.setItem('player', data.login.name)
-      dispatch({
-        type: 'login',
-        user: {
-          id: data.login.id,
-          name: data.login.name
-        }
-      });
-      console.log('login successful');
-      console.log({state});
-      return;
-    }
+  const [login, { data, loading, error }] = useMutation(LOGIN, {
+    onCompleted: (data) => {
+      if (data?.login?.__typename === 'Player') {
+        localStorage.setItem('authorization',data.login.authToken);
+        localStorage.setItem('player', data.login.name)
+        localStorage.setItem('id', data.login.id)
+        console.log('login mutation results: ', JSON.stringify(data.login))
+        // dispatch({
+        //   type: 'login',
+        //   user: {
+        //     id: data.login.id,
+        //     name: data.login.name
+        //   },
+        //   payload: {
+        //     user: {
+        //       id: data.login.id,
+        //       name: data.login.name,
+        //       authorization: data.login.authToken
+        //     }
+        //   }
+        // });
+        window.location = '/play'; 
+        console.log('login successful');
+        console.log({state});
+        return;
+      }
     console.log('login failed');
   }});
   const [name, setName] = useState('');

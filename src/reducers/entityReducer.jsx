@@ -36,8 +36,8 @@ const hydrateNewEntityFromServer = (receivedEntity, entityTypes) => {
         return receivedEntity;
     }
     
-    console.log('received new entity from server id= ', id);
-    console.log(receivedEntity);
+    // console.log('received new entity from server id= ', id);
+    // console.log(receivedEntity);
     const newEntity = type.generate({
             ...receivedEntity,
         });
@@ -45,13 +45,11 @@ const hydrateNewEntityFromServer = (receivedEntity, entityTypes) => {
     return newEntity;
 }
 
-const updateEntitiesInState = (targetState, source, hydrate) => {
+const updateEntitiesInState = (targetState, source, hydrate, playerId) => {
     const { myEntities, otherEntities } = targetState;
-    const myOwnerId = 'player.1';
-    console.warn('updateEntitiesInState still using hard-coded ownerId',myOwnerId)
+    const myOwnerId = `player.${playerId}`;
     source.forEach((sourceEntity) => {
         const { id: entityId, ownerId } = sourceEntity;
-        //const { ownerId } = sourceEntity;
         const targetDictionary= ownerId === myOwnerId ? myEntities : otherEntities;
         const targetEntity = targetDictionary[entityId];
         if (targetEntity) {
@@ -62,13 +60,13 @@ const updateEntitiesInState = (targetState, source, hydrate) => {
                     targetEntity.position[2] = 0; // Add a z Coordinate
                     return;
                 }
-                console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
+                //console.log(`updating ${entityId}.${field} to ${sourceEntity[field]}`)
                 targetEntity[field] = sourceEntity[field];
             })
             return;
         }
-        console.log(`adding targetDictionary.${entityId}`)
-        console.log('   sourceEntity=', sourceEntity)
+        // console.log(`adding targetDictionary.${entityId}`)
+        // console.log('   sourceEntity=', sourceEntity)
         targetDictionary[entityId] = hydrate(sourceEntity, entityTypes);
         
     })
@@ -211,6 +209,7 @@ const entityReducer = (state, action) => {
             state.myEntities[id] = action.payload;
             return state;
         case RECEIVED_VISIBLE_ENTITIES:
+            const { userState: { id: playerId }} = action;
             const statsPath = `queryResults[${RECEIVED_VISIBLE_ENTITIES}].stats`;
             const { timeOfLastResult, numReceived } = get(state, statsPath, {
                 timeOfLastResult: 0,
@@ -221,10 +220,10 @@ const entityReducer = (state, action) => {
             }
             const { getEntitiesICanSee } = action.payload;
     
-            updateEntitiesInState(state, getEntitiesICanSee, hydrateNewEntityFromServer);
+            updateEntitiesInState(state, getEntitiesICanSee, hydrateNewEntityFromServer, playerId);
             set(state, `${statsPath}.numReceived`, numReceived+1);
             set(state, `${statsPath}.timeOfLastResult`, Date.now());
-            
+            console.log('playerId: ', playerId)
             return state;
         default:
             console.log(`unknown action in entityManagerReducer: ${action}`);

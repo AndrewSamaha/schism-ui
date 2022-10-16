@@ -26,23 +26,13 @@ function userReducer(state, action) {
             const loginFromCookie = {
                 ...initialState,
                 name: localStorage.getItem('player') || initialState.name,
+                id: localStorage.getItem('id'),
                 loginType: 'loginFromCookie'
             }
-            console.log({loginFromCookie});
             return loginFromCookie;
-        case 'login':
-            console.log({function: userReducer, user: action.user});
-            
-            const login = {
-                ...initialState,
-                ...action.user,
-                loginType: 'login'
-            };
-            console.log({login});
-            window.location = '/play'; // the code stops running once this happens..fffff
-            return login;
         case 'logout':
             localStorage.removeItem('player');
+            localStorage.removeItem('id')
             window.location = '/'
             return loggedOut;
         case 'keydown':
@@ -50,9 +40,6 @@ function userReducer(state, action) {
                 ...state.userInput,
             };
             userInput[action.payload] = 1;
-         
-            // console.log({payload: action.payload});
-            // console.log({userInput});
             return {
                 ...state,
                 userInput

@@ -85,7 +85,8 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
       pollInterval: 10_000,
       onCompleted: data => entityDispatch({ 
         type: RECEIVED_VISIBLE_ENTITIES,
-        payload: data 
+        payload: data,
+        userState
       }),
       onError: e => console.log('on error',e),
       client,
