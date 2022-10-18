@@ -29,7 +29,7 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
                 <div>
                     {selected.name}
                     <div style={{display: 'flex', boxSizing: 'border-box', flexWrap: 'wrap'}}>
-                        {first(entityState.selectedUnits).actionDefinitions.map((definition) => {
+                        {first(entityState.selectedUnits).actionDefinitions?.map((definition) => {
                             // console.log(definition.action);
                             return (                    
                                 definition.action.ButtonComponent({

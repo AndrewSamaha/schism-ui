@@ -50,6 +50,11 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
           return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
         })
       }
+      {
+        entityState.otherEntities && Object.entries(entityState.otherEntities).map(([id, entity]) => {
+          return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
+        })
+      }
       {entityState?.pointerData && pointerEntity(entityState.pointerData)}
       {children}
     </Instances>
