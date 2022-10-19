@@ -83,6 +83,7 @@ const POINTER_OUT = 'POINTER_OUT';
 const SET_ENTITY_FIELD = 'SET_ENTITY_FIELD';
 const ADD_TO_MY_ENTITIES = 'ADD_TO_MY_ENTITIES';
 const RECEIVED_VISIBLE_ENTITIES = 'RECEIVED_VISIBLE_ENTITIES';
+const UPDATE_ENTITY_FROM_ACTION = 'UPDATE_ENTITY_FROM_ACTION';
 
 const getGeneratedAction = (entity, worldLocation) => {
     const action = entity.selectedAction || entity.defaultAction;
@@ -207,6 +208,15 @@ const entityReducer = (state, action) => {
                 return state;
             }
             state.myEntities[id] = action.payload;
+            return state;
+        case UPDATE_ENTITY_FROM_ACTION:
+            const { entity } = action.payload;
+            // pass an array of field/value pairs? or the whole entity?
+            // pass the time, so we can keep a record for validation and playback?
+            // include a causingEntity and a receivingEntity?
+            // include action name
+            // use bayesian updating to evaluate 'trust' for a player
+            
             return state;
         case RECEIVED_VISIBLE_ENTITIES:
             const { userState: { id: playerId }} = action;

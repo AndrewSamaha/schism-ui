@@ -33,6 +33,7 @@ function userReducer(state, action) {
         case 'logout':
             localStorage.removeItem('player');
             localStorage.removeItem('id')
+            localStorage.removeItem('authorization')
             window.location = '/'
             return loggedOut;
         case 'keydown':

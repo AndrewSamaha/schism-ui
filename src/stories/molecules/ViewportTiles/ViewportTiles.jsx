@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as THREE from 'three';
 import { ApolloConsumer, useLazyQuery, useQuery } from '@apollo/client';
 import { useFrame, useThree } from '@react-three/fiber';
+import get from 'lodash/get';
 
 // Local Imports
 import './ViewportTiles.css';
@@ -88,7 +89,17 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
         payload: data,
         userState
       }),
-      onError: e => console.log('on error',e),
+      onError: (e, r) => {
+        console.log('on error',JSON.stringify(e))
+        // console.log(e.graphQLErrors[0].extensions.code)
+        const errorCode = get(e, 'graphQLErrors[0].extensions.code', 'noErrorFound')
+        console.log('errorCode: ', errorCode)
+        if (errorCode === 'UNAUTHENTICATED') {
+          console.log('user is unauthenticated. Logging out.')
+          userDispatch({type: 'logout'});
+        }
+        
+      },
       client,
       fetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true
