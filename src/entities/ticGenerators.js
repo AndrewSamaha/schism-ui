@@ -39,6 +39,15 @@ const createEntityTicGenerator = ({entity, worldLocation, totalTime}) => {
 
 // the first action generator
 const straightLineMoveTicGenerator = ({entity, worldLocation}) => {
+    const changeLogEntry = {
+        actionName: 'StraightLineMove',
+        time: Date.now(),
+        params: { worldLocation },
+        startingState: { ...entity },
+        numTics: 0,
+        lastState: { },
+        actionCompleted: false
+    }
     return (ref, delta, entityReducer) => {
         const length = entity.speed * delta;
         const { current } = ref;
@@ -49,6 +58,9 @@ const straightLineMoveTicGenerator = ({entity, worldLocation}) => {
             entity.position[0] = current.position.x;
             entity.position[1] = current.position.y;
             entity.tic = null;
+            changeLogEntry.numTics++;
+            changeLogEntry.lastState = { ...entity };
+            changeLogEntry.actionCompleted = true;
             return;
         }
         const step = new THREE.Vector2(length, 0);
@@ -58,6 +70,8 @@ const straightLineMoveTicGenerator = ({entity, worldLocation}) => {
         console.log(current.position)
         entity.position[0] = current.position.x;
         entity.position[1] = current.position.y;
+        changeLogEntry.numTics++;
+        changeLogEntry.lastState = { ...entity };
     }
 }
 
