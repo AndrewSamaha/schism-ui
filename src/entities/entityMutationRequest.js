@@ -52,7 +52,6 @@ const actionEffect = (args) => {
     } ];
     return {
         id: uuid(),
-        parent: null,
         startTime,
         sourceEntity,
         sourceEntityJSON: JSON.stringify(sourceEntity),
