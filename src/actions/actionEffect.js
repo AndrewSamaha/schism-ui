@@ -1,4 +1,4 @@
-import { uuid } from 'uuid';
+import { v4 as uuid }from 'uuid';
 import { set } from 'lodash/set';
 
 const applyChangesToEntityState = (state, changes) => 
@@ -51,7 +51,7 @@ const actionEffect = (args) => {
         changes
     } ];
     return {
-        id: uuid(),
+        id: 1,
         startTime,
         sourceEntity,
         sourceEntityJSON: JSON.stringify(sourceEntity),
@@ -63,12 +63,6 @@ const actionEffect = (args) => {
         changeLog,
         applyAll: (target) => changeLog.forEach(({changes}) => applyChangesToEntityState(target, changes))
     }
-}
-
-const entityMutationRequest = (args) => {
-    const { sourceEntityId, targetEntityId, actionDetails, changes } = args;
-    const startTime = Date.now();
-
 }
 
 export {

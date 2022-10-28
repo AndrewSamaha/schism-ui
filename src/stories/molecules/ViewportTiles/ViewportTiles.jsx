@@ -17,7 +17,6 @@ import { ChunkManager } from '../../molecules/ChunkManager/ChunkManager';
 // Entities
 import { EntityManager } from '../../molecules/EntityManager/EntityManager';
 import { SELECT_ENTITY } from '../../../reducers/entityReducer';
-import { straightLineMoveTicGenerator } from '../../../entities/ticGenerators';
 
 // Queries
 import { GET_ENTITIES_I_CAN_SEE } from '../../../graph/entities';
