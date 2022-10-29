@@ -1,8 +1,13 @@
 import { v4 as uuid }from 'uuid';
-import { set } from 'lodash/set';
+import set from 'lodash/set';
 
-const applyChangesToEntityState = (state, changes) => 
-    changes.forEach((change) => set(state, change.path, change.value));
+const applyChangesToEntityState = (target, changes) => {
+    // console.log('applyChangesToEntityState changes.length', changes)
+    changes.forEach(({path, value}) => {
+        // console.log(' ',path,value)
+        set(target, path, value)
+    })
+};
 
 const actionEffect = (args) => {
     /*
@@ -31,27 +36,27 @@ const actionEffect = (args) => {
                 changes: an array of path and value fields since the last changeEffect
         
     */
-    const { parent, changes } = args;
+    const { parentEffect, changes } = args;
 
-    if (parent) {
-        const { changeLog, startTime } = parent;
+    if (parentEffect) {
+        const { changeLog, startTime } = parentEffect;
         changeLog.push({
             timeDelta: Date.now() - startTime,
             time: Date.now(),
             changes
         });
-        return parent;
+        return parentEffect;
     }
-
-    const { sourceEntity, targetEntity, actionDetails } = args;
+    
+    const { sourceEntity, targetEntity, actionStrings } = args;
     const startTime = Date.now();
     const changeLog = [ {
         timeDelta: 0,
         time: startTime,
         changes
     } ];
-    return {
-        id: 1,
+    const dataObj = {
+        id: uuid(),
         startTime,
         sourceEntity,
         sourceEntityJSON: JSON.stringify(sourceEntity),
@@ -59,9 +64,42 @@ const actionEffect = (args) => {
         targetEntityJSON: JSON.stringify(targetEntity),
         sourceEntityId: sourceEntity.id,
         targetEntityId: targetEntity.id,
-        actionDetails,
-        changeLog,
-        applyAll: (target) => changeLog.forEach(({changes}) => applyChangesToEntityState(target, changes))
+        actionStrings,
+        changeLog
+    }
+    const functions = {
+        applyAll: function(target) {
+            changeLog.forEach(({changes}) => applyChangesToEntityState(target, changes))
+            return this;
+        },
+        apply: function(target) {
+            if (!changeLog || !changeLog.length) {
+                console.log('apply bailing out changeLog=', changeLog)
+                return this;
+            }
+            const changeLogEntry = changeLog[changeLog.length - 1];
+            const { changes } = changeLogEntry;
+            
+            if (target) {
+                applyChangesToEntityState(target, changes)
+                return this;
+            }
+            applyChangesToEntityState(this.targetEntity, changes)
+            return this;
+        },
+        status: function() {
+            console.log('actionDetails', dataObj.actionStrings)
+            console.log('uuid', dataObj.id)
+            console.log('total tics:', changeLog.length);
+            const changeLogEntry = changeLog[changeLog.length - 1];
+            const { timeDelta } = changeLogEntry;
+            console.log('total time', timeDelta);
+            return this;
+        }
+    }
+    return {
+        ...dataObj,
+        ...functions
     }
 }
 
