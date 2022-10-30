@@ -29,7 +29,7 @@ export const functions = {
             actionStrings: strings,
         });
     
-        return (ref, delta, entityReducer) => {
+        return (ref, delta, entityReducer, actionEffectMutation) => {
             const length = entity.speed * delta;
             const { current } = ref;
             const { angle, dist } = getAngleDist(current.position, worldLocation);  
@@ -44,7 +44,11 @@ export const functions = {
                         { path: 'tic', value: null }
                     ],
                     last: true
-                }).apply().status();
+                })
+                    .apply()
+                    .callMutation(actionEffectMutation)
+                    .status();
+                    
                 return;
             }
             const step = new THREE.Vector2(length, 0);
@@ -57,7 +61,9 @@ export const functions = {
                     { path: 'position[0]', value: current.position.x },
                     { path: 'position[1]', value: current.position.y }
                 ]
-            }).apply();
+            })
+                .apply()
+                .callMutation(actionEffectMutation);
         }
     },
     meetsRequirements: function(inputEventState) {

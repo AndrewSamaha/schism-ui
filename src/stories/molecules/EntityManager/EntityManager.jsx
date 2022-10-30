@@ -1,6 +1,6 @@
 // external
 import React, { useEffect, useMemo } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { CanvasTexture } from 'three';
 import { Instances, Instance } from '@react-three/drei';
 import first from 'lodash/first';
@@ -10,7 +10,9 @@ import { TileChunk } from '../TileChunk/TileChunk';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
 // Queries
 import { GET_CHUNK_COLLECTION } from '../../../graph/queries';
+import { MY_ACTION_EFFECT_MUTATION } from '../../../graph/entities';
 import { RECEIVED_VISIBLE_ENTITIES } from '../../../reducers/entityReducer';
+
 // Helpers
 import { getTextureSrc } from '../../../helpers/texture';
 // Queries
@@ -22,7 +24,16 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
   const { entityState, entityDispatch } = entityReducer;
   const {viewportWorldLocation} = userState;
 
- 
+  const [actionEffectMutation, getActionEffectMutationStatus] = useMutation(MY_ACTION_EFFECT_MUTATION, {
+    onCompleted: (data) => {
+      console.log('actionEffectQuery on completed', data);
+    },
+    onError: (e) => {
+      console.log('actionEffectQuery on error',e)
+    },
+    client
+  });
+
   
   const actor = first(entityState.selectedUnits);
   const selectedAction = actor?.selectedAction;
@@ -47,7 +58,11 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
       <meshStandardMaterial />
       {
         entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
-          return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
+          return (<EntityInstance 
+            key={id}
+            entity={entity}
+            actionEffectMutation={actionEffectMutation}
+            entityReducer={entityReducer} />);
         })
       }
       {

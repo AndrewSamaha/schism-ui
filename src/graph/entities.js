@@ -15,7 +15,13 @@ query GetEntitiesICanSee {
   }
 `;
 
+const MY_ACTION_EFFECT_MUTATION = gql`
+mutation myActionEffect($aE: MyActionEffectInput) {
+  myActionEffect(aE: $aE)
+}
+`
 
 export {
-  GET_ENTITIES_I_CAN_SEE
+  GET_ENTITIES_I_CAN_SEE,
+  MY_ACTION_EFFECT_MUTATION
 };

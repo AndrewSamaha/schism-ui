@@ -17,6 +17,15 @@ export const testEntity = {
     ],
     defaultAction: STRAIGHT_LINE_MOVE,
     selectedAction: null,
+    toString: function() {
+        const { 
+            actionDefinitions,
+            defaultAction,
+            selectedAction,
+            ...slimEntity
+        } = this;
+        return JSON.stringify(slimEntity);
+    },
     generate: function(params) {
         return genericGenerator(this, params)
     }

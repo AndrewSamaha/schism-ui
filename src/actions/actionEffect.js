@@ -1,5 +1,6 @@
 import { v4 as uuid }from 'uuid';
 import set from 'lodash/set';
+import last from 'lodash/last';
 
 const applyChangesToEntityState = (target, changes) => {
     // console.log('applyChangesToEntityState changes.length', changes)
@@ -59,9 +60,9 @@ const actionEffect = (args) => {
         id: uuid(),
         startTime,
         sourceEntity,
-        sourceEntityJSON: JSON.stringify(sourceEntity),
+        sourceEntityJSON: sourceEntity.toString(),
         targetEntity,
-        targetEntityJSON: JSON.stringify(targetEntity),
+        targetEntityJSON: targetEntity.toString(),
         sourceEntityId: sourceEntity.id,
         targetEntityId: targetEntity.id,
         actionStrings,
@@ -85,6 +86,41 @@ const actionEffect = (args) => {
                 return this;
             }
             applyChangesToEntityState(this.targetEntity, changes)
+            return this;
+        },
+        callMutation: function(lazyMutation) {
+            const lastChangeLogEntry = last(dataObj.changeLog);
+            console.log('callMutation id', dataObj.id)
+            const stringAe = {
+                id: dataObj.id,
+                startTime: dataObj.startTime.toString(),
+                sourceEntityId: sourceEntity.id,
+                targetEntityId: targetEntity.id,
+                sourceEntityJSON: dataObj.sourceEntityJSON,
+                targetEntityJSON: dataObj.targetEntityJSON,
+                changeLog: {
+                    time: lastChangeLogEntry.time.toString(),
+                    timeDelta: lastChangeLogEntry.timeDelta.toString(),
+                    changes: lastChangeLogEntry.changes.map(change => {
+                        let stringChange = {
+                            path: change.path
+                        }
+                        if (change.value) stringChange.value = change.value.toString();
+                        else stringChange.value = null;
+
+                        return stringChange;
+                    })
+                },
+                actionStrings
+            };
+            // console.log(stringAe)
+            
+            lazyMutation({ 
+                variables: {
+                    aE: stringAe
+                }
+            });
+            
             return this;
         },
         status: function() {
