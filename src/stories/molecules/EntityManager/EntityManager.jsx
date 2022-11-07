@@ -53,26 +53,41 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
   //if (pointerEvent) console.log(pointerEvent?.point);
   
   return (
-    <Instances>
-      <boxGeometry />
-      <meshStandardMaterial />
+    <>
+      <Instances>
+        <boxGeometry />
+        <meshStandardMaterial />
+        {
+          entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
+            if (entity.component) return (<></>);
+            return (<EntityInstance 
+              key={id}
+              entity={entity}
+              actionEffectMutation={actionEffectMutation}
+              entityReducer={entityReducer} />);
+          })
+        }
+        {
+          entityState.otherEntities && Object.entries(entityState.otherEntities).map(([id, entity]) => {
+            if (entity.component) return (<></>);
+            return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
+          })
+        }
+        {entityState?.pointerData && pointerEntity(entityState.pointerData)}
+        {children}
+      </Instances>
+      <>
       {
         entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
-          return (<EntityInstance 
-            key={id}
-            entity={entity}
-            actionEffectMutation={actionEffectMutation}
-            entityReducer={entityReducer} />);
+          if (!entity.component) return (<></>);
+          return entity.component({
+            position: entity.position,
+            scale: .1
+          });
         })
       }
-      {
-        entityState.otherEntities && Object.entries(entityState.otherEntities).map(([id, entity]) => {
-          return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
-        })
-      }
-      {entityState?.pointerData && pointerEntity(entityState.pointerData)}
-      {children}
-    </Instances>
+      </>
+    </>
   );
 }
 

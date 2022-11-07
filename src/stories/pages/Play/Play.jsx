@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useEffect, useState } from 'react';
+import React, { useReducer, useContext, useEffect, useState, Suspense } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useThree } from '@react-three/fiber';
 import { Canvas } from '@react-three/fiber';
@@ -27,6 +27,7 @@ import { CANVAS_ZINDEX } from '../../../constants/zIndex';
 //CSS
 import './play.css';
 
+// import {Tower1} from '../../atoms/Tower1/Tower1';
 
 
 export const Play = ({client}) => {
@@ -117,22 +118,28 @@ export const Play = ({client}) => {
           
           zIndex: `${CANVAS_ZINDEX}`,
           backgroundColor: 'black'}}>
-          <perspectiveCamera 
-            makeDefault 
-            position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
-            rotation={ViewRotation}>
-            <ambientLight />
-            <pointLight position={[10, 10, 10]} />
-            <ViewportTiles
-              gameReducer={{gameState, gameDispatch}}
-              userReducer={{userState, userDispatch}}
-              entityReducer={{entityState, entityDispatch}}
-              worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
-              chunkQuery={{getChunkQuery, getChunkQueryStatus}}
-              client={client}
-            /> 
-          </perspectiveCamera>
- 
+            <Suspense  fallback={null}>
+              <perspectiveCamera 
+                makeDefault 
+                position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
+                rotation={ViewRotation}>
+                <ambientLight intensity={.5} />
+                {/* <pointLight position={[10, 10, 10]} intensity={.5} /> */}
+                {/* <pointLight 
+                  position={[-userState.viewportWorldLocation[0],
+                             -userState.viewportWorldLocation[1],
+                             -userState.viewportWorldLocation[2]+55]}
+                  intensity={1} /> */}
+                <ViewportTiles
+                  gameReducer={{gameState, gameDispatch}}
+                  userReducer={{userState, userDispatch}}
+                  entityReducer={{entityState, entityDispatch}}
+                  worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+                  chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+                  client={client}
+                /> 
+              </perspectiveCamera>
+            </Suspense>
           {showStats && <Stats />} 
         </Canvas>
         <StatusMenu

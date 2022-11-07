@@ -1,6 +1,7 @@
 import { STRAIGHT_LINE_MOVE } from "../actions/straightLineMove";
 import { CREATE_ENTITY } from "../actions/createEntity";
 import { genericGenerator } from "./genericGenerator";
+import { CREATE_TOWER } from "../actions/createTower";
 
 export const testEntity = {
     name: 'testEntity',
@@ -13,6 +14,9 @@ export const testEntity = {
         },{
             action: CREATE_ENTITY,
             shortcutKey: 'c'
+        }, {
+            action: CREATE_TOWER,
+            shortcutKey: 't'
         }
     ],
     defaultAction: STRAIGHT_LINE_MOVE,
