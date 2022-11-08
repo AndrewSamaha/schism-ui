@@ -5,6 +5,9 @@ import { CanvasTexture } from 'three';
 import { Instances, Instance } from '@react-three/drei';
 import first from 'lodash/first';
 
+// Constants
+import { ViewRotation } from '../../../constants/viewport';
+
 // Components
 import { TileChunk } from '../TileChunk/TileChunk';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
@@ -82,7 +85,8 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
           if (!entity.component) return (<></>);
           return entity.component({
             position: entity.position,
-            scale: .25
+            scale: .25,
+            rotation: ViewRotation
           });
         })
       }
