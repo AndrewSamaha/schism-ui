@@ -1,6 +1,6 @@
 import { genericGenerator } from "./genericGenerator";
 import towerModel from "../stories/assets/models/buildings/tower.1/tower.1.glb";
-import { Tower1 } from "../stories/atoms/Tower1/Tower1";
+import { Tower1 } from "../stories/atoms/Tower1/Tower3Baked";
 
 export const tower = {
     name: 'tower',

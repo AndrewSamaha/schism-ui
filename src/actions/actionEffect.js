@@ -90,7 +90,6 @@ const actionEffect = (args) => {
         },
         callMutation: function(lazyMutation) {
             const lastChangeLogEntry = last(dataObj.changeLog);
-            console.log('callMutation id', dataObj.id)
             const stringAe = {
                 id: dataObj.id,
                 startTime: dataObj.startTime.toString(),

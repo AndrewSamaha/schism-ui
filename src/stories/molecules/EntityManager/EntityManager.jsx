@@ -82,7 +82,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
           if (!entity.component) return (<></>);
           return entity.component({
             position: entity.position,
-            scale: .1
+            scale: .25
           });
         })
       }
