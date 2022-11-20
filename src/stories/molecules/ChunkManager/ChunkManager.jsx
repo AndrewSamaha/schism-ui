@@ -327,6 +327,7 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
     <group>
       {
         chunkManagerState.visibleChunks && Object.entries(chunkManagerState.visibleChunks).map(([key, chunk]) => {
+          //console.log('tilechunk.key=', key)
           return (<TileChunk 
                     key={key}
                     chunkData={[key, chunk]}

@@ -1,7 +1,6 @@
 // external
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useMutation } from '@apollo/client';
-import { CanvasTexture } from 'three';
 import { Instances, Instance } from '@react-three/drei';
 import first from 'lodash/first';
 
@@ -9,15 +8,13 @@ import first from 'lodash/first';
 import { ViewRotation } from '../../../constants/viewport';
 
 // Components
-import { TileChunk } from '../TileChunk/TileChunk';
+import { InteractiveModel } from '../../atoms/InteractiveModel/InteractiveModel';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
+
 // Queries
-import { GET_CHUNK_COLLECTION } from '../../../graph/queries';
 import { MY_ACTION_EFFECT_MUTATION } from '../../../graph/entities';
-import { RECEIVED_VISIBLE_ENTITIES } from '../../../reducers/entityReducer';
 
 // Helpers
-import { getTextureSrc } from '../../../helpers/texture';
 // Queries
 
 
@@ -55,7 +52,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
   }, [selectedAction]);
   //if (pointerEvent) console.log(pointerEvent?.point);
   
-  return (
+  return ( // test
     <>
       <Instances>
         <boxGeometry />
@@ -84,10 +81,33 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
         entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
           if (!entity.component) return (<></>);
           return entity.component({
-            position: entity.position,
-            scale: .25,
-            rotation: ViewRotation
-          });
+                position: entity.position,
+                scale: 1,
+                rotation: ViewRotation,
+                color: 'red'
+              })
+          // return InteractiveModel({
+          //   model: entity.component({
+          //     position: entity.position,
+          //     scale: 1,
+          //     rotation: ViewRotation
+          //   }),
+          //   entity,
+          //   entityReducer
+          // });
+          // const key = `InteractiveModel${entity.id}.${id}`;
+          // console.log('key ', key)
+          // return (<InteractiveModel
+          //     model={entity.component({
+          //       position: entity.position,
+          //       scale: 1,
+          //       rotation: ViewRotation
+          //     })}
+          //     entity={entity}
+          //     entityReducer={entityReducer}
+          //     key={key}
+          // />)
+          
         })
       }
       </>
