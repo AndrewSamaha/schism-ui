@@ -10,6 +10,7 @@ import { ViewRotation } from '../../../constants/viewport';
 // Components
 import { InteractiveModel } from '../../atoms/InteractiveModel/InteractiveModel';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
+import { TestHuman } from '../../atoms/Character/TestHuman/TestHuman';
 
 // Queries
 import { MY_ACTION_EFFECT_MUTATION } from '../../../graph/entities';
@@ -59,7 +60,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
         <meshStandardMaterial />
         {
           entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
-            if (entity.component) return (<></>);
+            if (entity.component) return (null);
             return (<EntityInstance 
               key={id}
               entity={entity}
@@ -69,7 +70,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
         }
         {
           entityState.otherEntities && Object.entries(entityState.otherEntities).map(([id, entity]) => {
-            if (entity.component) return (<></>);
+            if (entity.component) return (null);
             return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
           })
         }
@@ -79,13 +80,43 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
       <>
       {
         entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
-          if (!entity.component) return (<></>);
+          if (!entity.component) return (null);
+
+          // return entity.component({
+          //   key: entity.id,
+          //   position: entity.position,
+          //   scale: 1,
+          //   rotation: ViewRotation,
+          //   color: 'red',
+          //   entityReducer,
+          //   actionEffectMutation,
+          //   entity
+          // })
+
+          return (<TestHuman 
+            key={entity.id}
+            position={entity.position}
+            scale={1}
+            rotation={ViewRotation}
+            color={'red'}
+            entityReducer={entityReducer}
+            actionEffectMutation={actionEffectMutation}
+            entity={entity} />);
+
+          return (null);
+
+          // Below is the 'standard' practice
           return entity.component({
                 position: entity.position,
                 scale: 1,
                 rotation: ViewRotation,
-                color: 'red'
+                color: 'red',
+                entityReducer,
+                entity
               })
+          
+          // Below is an attempt to add the interactive bits
+          // to a wrapper that goes around the actual model
           // return InteractiveModel({
           //   model: entity.component({
           //     position: entity.position,

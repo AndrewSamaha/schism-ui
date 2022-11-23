@@ -4,13 +4,13 @@ import { Gold } from './Gold/Gold';
 
 export const ResourceContainer = ({resourceName, amount}) => {
     const resourceArray = times(amount, () => {
-        if (resourceName === 'gold') return (<Gold />);
+        if (resourceName === 'gold') return (<Gold key={Math.random()} />);
         return null;
     })
 
     // console.log(resourceName,amount,resourceArray);
     return (
-        <div class='ResourceContainer' style={{display: 'flex', boxSizing: 'border-box', flexWrap: 'wrap'}} >
+        <div className='ResourceContainer' key={Math.random()} style={{display: 'flex', boxSizing: 'border-box', flexWrap: 'wrap'}} >
             {resourceName}: {amount} {amount && (resourceArray)}
         </div>
     );

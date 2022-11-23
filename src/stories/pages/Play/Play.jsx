@@ -118,7 +118,7 @@ export const Play = ({client}) => {
           
           zIndex: `${CANVAS_ZINDEX}`,
           backgroundColor: 'black'}}>
-            <Suspense  fallback={null}>
+            {/* <Suspense  fallback={null}> */}
               <perspectiveCamera 
                 makeDefault 
                 position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
@@ -139,7 +139,7 @@ export const Play = ({client}) => {
                   client={client}
                 /> 
               </perspectiveCamera>
-            </Suspense>
+            {/* </Suspense> */}
           {showStats && <Stats />} 
         </Canvas>
         <StatusMenu

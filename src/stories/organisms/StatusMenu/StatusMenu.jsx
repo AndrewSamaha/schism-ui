@@ -13,7 +13,7 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
     const selected = first(entityState.selectedUnits);
 
     return (
-        <div class='StatusMenu' style={{
+        <div className='StatusMenu' style={{
             zIndex: `${STATUSMENU_ZINDEX}`,
             backgroundImage: `url(${backgroundImage})`,
             width: '300px',
@@ -22,7 +22,7 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
             boxSizing: 'border-box'}}>
            
             <div className='ResourceList'>
-                {Object.entries(resources).map(([resourceName, amount]) => (<ResourceContainer resourceName={resourceName} amount={amount}/>))}
+                {Object.entries(resources).map(([resourceName, amount]) => (<ResourceContainer key={Math.random()} resourceName={resourceName} amount={amount}/>))}
             </div>
             { 
                 selected && 

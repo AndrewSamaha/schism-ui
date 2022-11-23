@@ -113,7 +113,7 @@ const actionEffect = (args) => {
                 actionStrings
             };
             // console.log(stringAe)
-            
+            // console.log('actionEffect, lazyMutation=',lazyMutation)
             lazyMutation({ 
                 variables: {
                     aE: stringAe

@@ -11,8 +11,9 @@ export const ActionButton = ({icon, icon_hover, name},{entity, action, entityRed
     return (
 
         
-        <Tooltip title={name} >
+        <Tooltip title={name} key={`${name}.${Math.random()}`} >
             <img
+                key={`${name}.${Math.random()}`}
                 src={isSelected ? icon_hover : icon}
                 data-tip={name}
                 onMouseEnter={e => {
