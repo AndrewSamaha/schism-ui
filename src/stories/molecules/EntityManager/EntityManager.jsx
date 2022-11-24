@@ -10,7 +10,7 @@ import { ViewRotation } from '../../../constants/viewport';
 // Components
 import { InteractiveModel } from '../../atoms/InteractiveModel/InteractiveModel';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
-import { TestHuman } from '../../atoms/Character/TestHuman/TestHuman';
+import { GLTFModel } from '../../atoms/GLTFModel/GLTFModel';
 
 // Queries
 import { MY_ACTION_EFFECT_MUTATION } from '../../../graph/entities';
@@ -60,7 +60,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
         <meshStandardMaterial />
         {
           entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
-            if (entity.component) return (null);
+            if (entity.gltfPath) return (null);
             return (<EntityInstance 
               key={id}
               entity={entity}
@@ -80,7 +80,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
       <>
       {
         entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
-          if (!entity.component) return (null);
+          if (!entity.gltfPath) return (null);
 
           // return entity.component({
           //   key: entity.id,
@@ -93,7 +93,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
           //   entity
           // })
 
-          return (<TestHuman 
+          return (<GLTFModel
             key={entity.id}
             position={entity.position}
             scale={1}
@@ -101,7 +101,8 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             color={'red'}
             entityReducer={entityReducer}
             actionEffectMutation={actionEffectMutation}
-            entity={entity} />);
+            entity={entity} 
+            gltfPath={entity.gltfPath} />);
 
           return (null);
 

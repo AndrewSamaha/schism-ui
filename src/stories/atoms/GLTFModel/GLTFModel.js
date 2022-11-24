@@ -8,17 +8,17 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei'
 
 // entity dispatch events
-import { SELECT_ENTITY, HOVER_ENTITY_START, HOVER_ENTITY_STOP } from '../../../../reducers/entityReducer';
+import { SELECT_ENTITY, HOVER_ENTITY_START, HOVER_ENTITY_STOP } from '../../../reducers/entityReducer';
 
-export function TestHuman(props) {
-  const { entity, entityReducer, action, actionEffectMutation } = props;
+export function GLTFModel(props) {
+  const { entity, entityReducer, action, actionEffectMutation, gltfPath } = props;
   const { position } = props;
   // const { color, position, rotation, id, scale } = entity;
   const { entityState, entityDispatch } = entityReducer;
 
   const ref = useRef();
   const [hovered, hover] = useState(false);
-  const { nodes, materials } = useGLTF('/TestHuman.gltf');
+  const { nodes, materials } = useGLTF(gltfPath); // useGLTF('/TestHuman.gltf');
   
 
   // <mesh geometry={nodes.Cube.geometry} material={materials.Material} color={props.color} >s
@@ -26,7 +26,7 @@ export function TestHuman(props) {
     if (entity.tic) entity.tic(ref, delta, entityReducer, actionEffectMutation);
   });
   return (
-    // <Suspense fallback={null}>
+    <Suspense fallback={null}>
       <group {...props} position={position} key={entity.id} dispose={null}
         ref={ref}
         onClick={(event) => {
@@ -58,9 +58,9 @@ export function TestHuman(props) {
           {/* <meshStandardMaterial color={props.color} /> */}
         </mesh>
         </group>
-    // </Suspense>
+      </Suspense>
     
   )
 }
 
-useGLTF.preload('/TestHuman.gltf')
+// useGLTF.preload('/TestHuman.gltf')

@@ -2,10 +2,9 @@ import { STRAIGHT_LINE_MOVE } from "../actions/straightLineMove";
 import { CREATE_ENTITY } from "../actions/createEntity";
 import { genericGenerator } from "./genericGenerator";
 import { CREATE_TOWER } from "../actions/createTower";
-import { TestHuman } from "../stories/atoms/Character/TestHuman/TestHuman";
 
 export const testEntity = {
-    component: TestHuman,
+    gltfPath: '/TestHuman.gltf',
     name: 'testEntity',
     longName: 'This is a test entity.',
     speed: 1.5,
