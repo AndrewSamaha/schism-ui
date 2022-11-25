@@ -1,7 +1,7 @@
 // external
 import React, { useMemo } from 'react';
 import { useMutation } from '@apollo/client';
-import { Instances, Instance } from '@react-three/drei';
+import { Instances } from '@react-three/drei';
 import first from 'lodash/first';
 import compact from 'lodash/compact';
 
@@ -18,14 +18,10 @@ import { MY_ACTION_EFFECT_MUTATION } from '../../../graph/entities';
 // Helpers
 // Queries
 
+export const EntityManager = ({gameReducer, userReducer, entityReducer, worldStateQuery, children, client }) => {
+  const { entityState } = entityReducer;
 
-
-export const EntityManager = ({gameReducer, userReducer, entityReducer, worldStateQuery, children, client }) => { // chunkQuery,
-  const { userState, userDispatch } = userReducer;
-  const { entityState, entityDispatch } = entityReducer;
-  const {viewportWorldLocation} = userState;
-
-  const [actionEffectMutation, getActionEffectMutationStatus] = useMutation(MY_ACTION_EFFECT_MUTATION, {
+  const [actionEffectMutation] = useMutation(MY_ACTION_EFFECT_MUTATION, {
     onCompleted: (data) => {
       console.log('actionEffectQuery on completed', data);
     },
@@ -39,21 +35,20 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
   const actor = first(entityState.selectedUnits);
   const selectedAction = actor?.selectedAction;
 
-  //console.log('selectedUnits', selectedUnits.length, selectedUnits);
+  
   const pointerEntity = useMemo( () => {
     if (!selectedAction) {
-      // console.log('pE useMemo bailing out because no selectedAction was found')
       return () => {};
     }
     if (!selectedAction?.pointerEntityGenerator) {
-      // console.log('pE useMemo bailing out because no pointerEntityGenerator was found')
-      return () => {}};
+      return () => {}
+    };
     
     return selectedAction.pointerEntityGenerator(actor, {userReducer, entityReducer});
-  }, [selectedAction]);
-  //if (pointerEvent) console.log(pointerEvent?.point);
+  }, [selectedAction, actor, userReducer, entityReducer]);
   
-  return ( // test
+  
+  return (
     <>
       <Instances>
         <boxGeometry />
