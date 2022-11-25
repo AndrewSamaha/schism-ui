@@ -21,9 +21,8 @@ export function GLTFModel(props) {
 
   const ref = useRef();
   const [hovered, hover] = useState(false);
-  const { nodes, materials } = useGLTF(gltfPath); // useGLTF('/TestHuman.gltf');
+  const { nodes, materials } = useGLTF(gltfPath);
   
-  // <mesh geometry={nodes.Cube.geometry} material={materials.Material} color={props.color} >s
   useFrame((state, delta) => {
     if (entity.tic) entity.tic(ref, delta, entityReducer, actionEffectMutation);
   });
@@ -32,14 +31,8 @@ export function GLTFModel(props) {
       <group {...props} position={position} key={entity.id} dispose={null}
         ref={ref}
         onClick={(event) => {
-          // um this doesn't seem to work... Something else is selecting entities, and it doesn'tseem to use entityDispatch(SELECT_ENTITY)
-          //console.log('gltfModel onclick action', action)
           if (action) return;
-          // console.log('gltfModel onclick selectedUnits.length', entityState.selectedUnits.length)
-          // console.log('gltfModel onclick selectedUnits[0]', entityState.selectedUnits[0])
-          // console.log('entity', entity)
           if (entityState.selectedUnits.length && entityState.selectedUnits[0].id === entity.id) return;
-          // console.log('about to call dispatch')
           entityDispatch({ 
             type: SELECT_ENTITY,
             payload: [entity] 
@@ -66,9 +59,7 @@ export function GLTFModel(props) {
             compact(Object.entries(nodes).map(([key, value]) => {
               if (key === 'Scene') return null;
               const geometry = get(nodes, `${key}.geometry`, null);
-              const material = materials[`${materialMap(key)}`]; //.Material; // get(materials, materialMap(key), null);
-              // console.log(`nodes.${key} geometry,`, geometry, ` materials.${materialMap(key)}`, material)
-              // console.log(materials)
+              const material = materials[`${materialMap(key)}`]; 
               return (
                 <mesh 
                   key={`nodes.${key}`}
@@ -76,15 +67,10 @@ export function GLTFModel(props) {
                   material={material}
                   material-color={hovered ? 'white' : props.color}
                 />);
-              //return (<mesh geometry={nodes.Cube.geometry} material={materials.Material} material-color={hovered ? 'white' : props.color} />);
             }))
           }
-          {/* material-color={hovered ? 'white' : props.color} */}
-          {/* <meshStandardMaterial color={props.color} /> */}
         </group>
       </Suspense>
     
   )
 }
-
-// useGLTF.preload('/TestHuman.gltf')
