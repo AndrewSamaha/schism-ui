@@ -105,14 +105,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
     }
   ); 
 
-  // useEffect(() => {
-  //   console.log('getEntitiesICanSee useEffect', data)
-  //   startPolling(250);
-  // }, [data])
-  // useEffect(() => {
-  //   console.log('starting polling for get_entities query')
-  //   startPolling(200);
-  // },[])
+
   useFrame((state, delta) => {
       const { userInput } = userState;
 
