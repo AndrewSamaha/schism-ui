@@ -54,13 +54,16 @@ const getVisibleChunkAddresses = ({viewportWorldLocation}) => {
   const numChunksY = Math.ceil(ViewGeometry[1] / CHUNK_SIZE);
   const chunkLocation = getChunkLocation({viewportWorldLocation});
   const visibleAddresses = [];
+  const viewportOffsets = [-3*CHUNK_SIZE, 1*CHUNK_SIZE];
+  const viewportWidth = [(numChunksX+2)*CHUNK_SIZE, (numChunksY+2)*CHUNK_SIZE];
+  const start = [chunkLocation.x + viewportOffsets[0], chunkLocation.y + viewportOffsets[1]]
 
-  for (let x = chunkLocation.x; x <= chunkLocation.x + numChunksX*CHUNK_SIZE; x+=CHUNK_SIZE) {
-    for (let y = chunkLocation.y; y <= chunkLocation.y + numChunksY*CHUNK_SIZE; y+=CHUNK_SIZE) {
+  for (let x = start[0]; x <= start[0] + viewportWidth[0]; x+=CHUNK_SIZE) {
+    for (let y = start[1]; y <= start[1] + viewportWidth[1]; y+=CHUNK_SIZE) {
       visibleAddresses.push({x, y})
     }
   }
-  // console.log('getVisChunkAddresses',`${chunkLocation.x},${chunkLocation.y}`,visibleAddresses)
+  
   return visibleAddresses;
 }
 
