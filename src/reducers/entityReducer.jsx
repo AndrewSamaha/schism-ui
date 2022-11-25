@@ -168,6 +168,7 @@ const handleInputEvent = (state, action) => {
 const entityReducer = (state, action) => {
     switch (action.type) {
         case SELECT_ENTITY:
+            // console.log('entityReducer SELECT_ENTITY action.payload=', action.payload)
             state.selectedUnits = Array.isArray(action.payload) ? action.payload : [action.payload];
             state.selectedUnits.forEach((entity) => entity.selectedAction = null)
             console.log({selected: state.selectedUnits})

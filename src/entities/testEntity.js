@@ -5,6 +5,13 @@ import { CREATE_TOWER } from "../actions/createTower";
 
 export const testEntity = {
     gltfPath: '/TestHuman.gltf',
+    materialMap: (nodeName) => {
+        switch (nodeName) {
+            case 'Cube':
+            default:
+                return 'Material'
+        }
+    },
     name: 'testEntity',
     longName: 'This is a test entity.',
     speed: 1.5,

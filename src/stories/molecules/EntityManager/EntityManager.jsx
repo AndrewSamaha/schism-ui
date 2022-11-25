@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { useMutation } from '@apollo/client';
 import { Instances, Instance } from '@react-three/drei';
 import first from 'lodash/first';
+import compact from 'lodash/compact';
 
 // Constants
 import { ViewRotation } from '../../../constants/viewport';
@@ -59,88 +60,39 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
         <boxGeometry />
         <meshStandardMaterial />
         {
-          entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
+          entityState.myEntities && compact(Object.entries(entityState.myEntities).map(([id, entity]) => {
             if (entity.gltfPath) return (null);
             return (<EntityInstance 
               key={id}
               entity={entity}
               actionEffectMutation={actionEffectMutation}
               entityReducer={entityReducer} />);
-          })
+          }))
         }
         {
-          entityState.otherEntities && Object.entries(entityState.otherEntities).map(([id, entity]) => {
+          entityState.otherEntities && compact(Object.entries(entityState.otherEntities).map(([id, entity]) => {
             if (entity.component) return (null);
             return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
-          })
+          }))
         }
         {entityState?.pointerData && pointerEntity(entityState.pointerData)}
         {children}
       </Instances>
       <>
       {
-        entityState.myEntities && Object.entries(entityState.myEntities).map(([id, entity]) => {
+        entityState.myEntities && compact(Object.entries(entityState.myEntities).map(([id, entity]) => {
           if (!entity.gltfPath) return (null);
-
-          // return entity.component({
-          //   key: entity.id,
-          //   position: entity.position,
-          //   scale: 1,
-          //   rotation: ViewRotation,
-          //   color: 'red',
-          //   entityReducer,
-          //   actionEffectMutation,
-          //   entity
-          // })
-
           return (<GLTFModel
             key={entity.id}
             position={entity.position}
-            scale={1}
+            scale={entity.scale}
             rotation={ViewRotation}
             color={'red'}
             entityReducer={entityReducer}
             actionEffectMutation={actionEffectMutation}
             entity={entity} 
             gltfPath={entity.gltfPath} />);
-
-          return (null);
-
-          // Below is the 'standard' practice
-          return entity.component({
-                position: entity.position,
-                scale: 1,
-                rotation: ViewRotation,
-                color: 'red',
-                entityReducer,
-                entity
-              })
-          
-          // Below is an attempt to add the interactive bits
-          // to a wrapper that goes around the actual model
-          // return InteractiveModel({
-          //   model: entity.component({
-          //     position: entity.position,
-          //     scale: 1,
-          //     rotation: ViewRotation
-          //   }),
-          //   entity,
-          //   entityReducer
-          // });
-          // const key = `InteractiveModel${entity.id}.${id}`;
-          // console.log('key ', key)
-          // return (<InteractiveModel
-          //     model={entity.component({
-          //       position: entity.position,
-          //       scale: 1,
-          //       rotation: ViewRotation
-          //     })}
-          //     entity={entity}
-          //     entityReducer={entityReducer}
-          //     key={key}
-          // />)
-          
-        })
+        }))
       }
       </>
     </>

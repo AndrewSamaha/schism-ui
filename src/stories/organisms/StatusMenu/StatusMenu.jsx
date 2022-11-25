@@ -37,7 +37,8 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
                                     action: definition.action,
                                     entityReducer
                                 })
-                        )})}
+                            )
+                        })}
                    </div>
                 </div>
             }

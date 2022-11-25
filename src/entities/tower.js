@@ -10,6 +10,16 @@ export const tower = {
     defaultAction: null,
     selectedAction: null,
     component: Tower1,
+    scale: .15,
+    gltfPath: '/Tower3Baked.gltf',
+    materialMap: (nodeName) => {
+        switch (nodeName) {
+            case 'Cylinder002':    return 'Material.003';
+            case 'Cylinder002_1':  return 'Material.002';
+            case 'Cylinder002_2':  
+            default:               return 'Material.001';
+        }
+    },
     toString: function() {
         const { 
             actionDefinitions,

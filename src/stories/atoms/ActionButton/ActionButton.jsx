@@ -11,9 +11,9 @@ export const ActionButton = ({icon, icon_hover, name},{entity, action, entityRed
     return (
 
         
-        <Tooltip title={name} key={`${name}.${Math.random()}`} >
+        <Tooltip title={name} key={name} >
             <img
-                key={`${name}.${Math.random()}`}
+                key={name}
                 src={isSelected ? icon_hover : icon}
                 data-tip={name}
                 onMouseEnter={e => {
@@ -23,6 +23,7 @@ export const ActionButton = ({icon, icon_hover, name},{entity, action, entityRed
                     e.currentTarget.src = icon;
                 }}
                 onClick={() => {
+                    console.log('action onclick')
                     const { entityState, entityDispatch } = entityReducer;
                     console.log('selecting action test ', entity, action);
                     //entity.selectedAction = action;
