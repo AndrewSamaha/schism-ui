@@ -121,7 +121,7 @@ export const Play = ({client}) => {
             {/* <Suspense  fallback={null}> */}
             <PerspectiveCamera 
                 makeDefault 
-                fov={30}
+                fov={20}
                 position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
                 //position={[10, 10, -20]} 
                 rotation={ViewRotation}

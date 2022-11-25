@@ -82,7 +82,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   const {loading, error, data, startPolling, stopPolling} = useQuery(
     GET_ENTITIES_I_CAN_SEE, 
     {
-      pollInterval: 10_000,
+      pollInterval: 2_000,
       onCompleted: data => entityDispatch({ 
         type: RECEIVED_VISIBLE_ENTITIES,
         payload: data,
