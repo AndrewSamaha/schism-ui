@@ -30,10 +30,10 @@ const RECEIVED_CHUNK_COLLECTION = 'RECEIVED_CHUNK_COLLECTION';
 
 const getWorldLocation = ({viewportWorldLocation}) => {
   return {
-    x1: -1 * (viewportWorldLocation[0] + ViewGeometry[0]/2),
-    y1: -1 * (viewportWorldLocation[1] + ViewGeometry[1]/2),
-    x2: -1 * (viewportWorldLocation[0] - ViewGeometry[0]/2),
-    y2: -1 * (viewportWorldLocation[1] - ViewGeometry[1]/2)
+    x1: viewportWorldLocation[0] + ViewGeometry[0]/2,
+    y1: viewportWorldLocation[1] + ViewGeometry[1]/2,
+    x2: viewportWorldLocation[0] - ViewGeometry[0]/2,
+    y2: viewportWorldLocation[1] - ViewGeometry[1]/2
   }
 }
 
@@ -116,11 +116,10 @@ const makeChunkImageContext = (chunk) => {
     }
     img.src = tile.src;
   });
-  chunk.cachedImg = canvas; //img
+  chunk.cachedImg = canvas;
   chunk.texture = new CanvasTexture(ctx.canvas);
   chunk.texture.needsUpdate = true;
   const duration = window.performance.now() - startTime;
-  // console.log(`FINAL makeChunkImage for ${tiles.length} = ${duration} ms`)
   return ctx;
 }
 

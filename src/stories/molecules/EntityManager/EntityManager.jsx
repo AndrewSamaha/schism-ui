@@ -80,7 +80,6 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             key={entity.id}
             position={entity.position}
             scale={entity.scale}
-            rotation={ViewRotation}
             color={'red'}
             entityReducer={entityReducer}
             actionEffectMutation={actionEffectMutation}

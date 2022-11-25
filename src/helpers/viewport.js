@@ -20,13 +20,13 @@ const calcNewViewportWorldPosition = (currentPosition, viewportVelocity, delta) 
     const yViewportDistance = viewportVelocity[1] * delta;
 
     const xWorldDistance = xViewportDistance;
-    const yWorldDistance = Math.cos(ViewRotation[0]) * yViewportDistance;
-    const zWorldDistance = Math.sin(ViewRotation[0]) * yViewportDistance;
+    const yWorldDistance = yViewportDistance; // Math.cos(ViewRotation[0]) *
+    const zWorldDistance = yViewportDistance; // Math.sin(ViewRotation[0]) *
 
     return [
         currentPosition[0] + xWorldDistance,
         currentPosition[1] + yWorldDistance,
-        currentPosition[2] + zWorldDistance
+        currentPosition[2] /* + zWorldDistance */
     ] 
 }
 

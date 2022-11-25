@@ -124,8 +124,8 @@ export const Play = ({client}) => {
                 fov={30}
                 position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
                 //position={[10, 10, -20]} 
-                //rotation={ViewRotation}
-                rotation={[.90,0,0]}
+                rotation={ViewRotation}
+                //rotation={[.90,0,0]}
               >
                 <ambientLight intensity={.5} />
                 {/* <pointLight position={[10, 10, 10]} intensity={.5} /> */}

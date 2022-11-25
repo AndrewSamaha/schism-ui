@@ -119,10 +119,10 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
       if (Object.entries(userInput).length > 0) {
         const push = [0,0];
         const pushSpeed = 2;
-        if ('a' in userInput) push[0] += pushSpeed;
-        if ('w' in userInput) push[1] -= pushSpeed;
-        if ('s' in userInput) push[1] += pushSpeed;
-        if ('d' in userInput) push[0] -= pushSpeed;  
+        if ('a' in userInput) push[0] -= pushSpeed;
+        if ('w' in userInput) push[1] += pushSpeed;
+        if ('s' in userInput) push[1] -= pushSpeed;
+        if ('d' in userInput) push[0] += pushSpeed;  
 
         userState.viewportVelocity[0] += push[0];
         userState.viewportVelocity[1] += push[1];
