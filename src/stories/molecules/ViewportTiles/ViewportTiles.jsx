@@ -53,7 +53,7 @@ const mouseWorldClick = (pointerData, reducers) => {
     type: INPUT_EVENT,
     pointerData,
     inputSource: VIEWPORT_TILES,
-    worldLocation: new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0),
+    worldLocation: new THREE.Vector3(point.x, point.y, 0),
     time: Date.now()
   });
 }

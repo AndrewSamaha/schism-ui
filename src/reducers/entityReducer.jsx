@@ -193,7 +193,7 @@ const entityReducer = (state, action) => {
             const { pointerData, userState } = action.payload;
             const { viewportWorldLocation: vWL } = userState;
             const { point } = pointerData;
-            pointerData.pointWorld = new THREE.Vector3(point.x - vWL[0], point.y - vWL[1], 0);
+            pointerData.pointWorld = new THREE.Vector3(point.x, point.y, 0);
             state.pointerData = pointerData;
             return state;
         case POINTER_OUT:
