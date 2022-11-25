@@ -2,7 +2,7 @@ import React, { useReducer, useContext, useEffect, useState, Suspense } from 're
 import { useLazyQuery } from '@apollo/client';
 import { useThree } from '@react-three/fiber';
 import { Canvas } from '@react-three/fiber';
-import { Stats } from '@react-three/drei';
+import { PerspectiveCamera, Stats } from '@react-three/drei';
 
 // Reducers
 import { UserContext, userReducer } from '../../../contexts/UserContext';
@@ -119,10 +119,14 @@ export const Play = ({client}) => {
           zIndex: `${CANVAS_ZINDEX}`,
           backgroundColor: 'black'}}>
             {/* <Suspense  fallback={null}> */}
-              <perspectiveCamera 
+            <PerspectiveCamera 
                 makeDefault 
+                fov={30}
                 position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
-                rotation={ViewRotation}>
+                //position={[10, 10, -20]} 
+                //rotation={ViewRotation}
+                rotation={[.90,0,0]}
+              >
                 <ambientLight intensity={.5} />
                 {/* <pointLight position={[10, 10, 10]} intensity={.5} /> */}
                 {/* <pointLight 
@@ -130,15 +134,16 @@ export const Play = ({client}) => {
                              -userState.viewportWorldLocation[1],
                              -userState.viewportWorldLocation[2]+55]}
                   intensity={1} /> */}
-                <ViewportTiles
-                  gameReducer={{gameState, gameDispatch}}
-                  userReducer={{userState, userDispatch}}
-                  entityReducer={{entityState, entityDispatch}}
-                  worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
-                  chunkQuery={{getChunkQuery, getChunkQueryStatus}}
-                  client={client}
-                /> 
-              </perspectiveCamera>
+              </PerspectiveCamera>
+              <ViewportTiles
+                gameReducer={{gameState, gameDispatch}}
+                userReducer={{userState, userDispatch}}
+                entityReducer={{entityState, entityDispatch}}
+                worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+                chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+                client={client}
+              /> 
+              
             {/* </Suspense> */}
           {showStats && <Stats />} 
         </Canvas>
