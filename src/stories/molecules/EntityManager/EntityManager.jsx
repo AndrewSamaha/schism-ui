@@ -9,7 +9,6 @@ import compact from 'lodash/compact';
 import { ViewRotation } from '../../../constants/viewport';
 
 // Components
-import { InteractiveModel } from '../../atoms/InteractiveModel/InteractiveModel';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
 import { GLTFModel } from '../../atoms/GLTFModel/GLTFModel';
 

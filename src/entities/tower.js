@@ -1,6 +1,4 @@
 import { genericGenerator } from "./genericGenerator";
-import towerModel from "../stories/assets/models/buildings/tower.1/tower.1.glb";
-import { Tower1 } from "../stories/atoms/Tower1/Tower3Baked";
 
 export const tower = {
     name: 'tower',
@@ -9,7 +7,6 @@ export const tower = {
     actionDefinitions: [],
     defaultAction: null,
     selectedAction: null,
-    component: Tower1,
     scale: .15,
     gltfPath: '/Tower3Baked.gltf',
     materialMap: (nodeName) => {
