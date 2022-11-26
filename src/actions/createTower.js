@@ -30,7 +30,8 @@ export const CREATE_TOWER = {
     ticGenerator: function({entity, worldLocation, totalTime}) {
         const startTime = Date.now();
         const actionDefinition = this;
-        return (ref, delta, entityReducer) => {
+        return (ref, delta, entityReducer, mutations) => {
+            const { myCreateNewEntitiesMutation } = mutations;
             const elapsedTime = Date.now() - startTime;
             console.log('createEntityTic time remaining', (totalTime - elapsedTime));
             if (elapsedTime >= totalTime) {
@@ -39,11 +40,23 @@ export const CREATE_TOWER = {
                     position: worldLocation,
                     color: entity.color
                 });
-                const { entityState, entityDispatch } = entityReducer;
-                entityDispatch({
-                    type: ADD_TO_MY_ENTITIES,
-                    payload: newEntity
+                myCreateNewEntitiesMutation({
+                    variables: {
+                        entities: [newEntity]
+                    }
                 });
+
+                // lazyMutation({ 
+                //     variables: {
+                //         aE: stringAe
+                //     }
+                // });
+
+                // const { entityState, entityDispatch } = entityReducer;
+                // entityDispatch({
+                //     type: ADD_TO_MY_ENTITIES,
+                //     payload: newEntity
+                // });
                 return entity;
             }
             return entity;
