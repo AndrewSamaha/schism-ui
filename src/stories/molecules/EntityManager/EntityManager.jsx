@@ -13,7 +13,7 @@ import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
 import { GLTFModel } from '../../atoms/GLTFModel/GLTFModel';
 
 // Queries
-import { MY_ACTION_EFFECT_MUTATION } from '../../../graph/entities';
+import { MY_ACTION_EFFECT_MUTATION, MY_CREATE_NEW_ENTITIES_MUTATION } from '../../../graph/entities';
 
 // Helpers
 // Queries
@@ -27,6 +27,16 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
     },
     onError: (e) => {
       console.log('actionEffectQuery on error',e)
+    },
+    client
+  });
+
+  const [myCreateNewEntitiesMutation] = useMutation(MY_CREATE_NEW_ENTITIES_MUTATION, {
+    onCompleted: (data) => {
+      console.log('myCreateNewEntitiesMutation on completes', data);
+    },
+    onError:(e) => {
+      console.log('myCreateNewEntitiesMutation on error', e)
     },
     client
   });
