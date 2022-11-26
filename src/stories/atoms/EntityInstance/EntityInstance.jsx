@@ -8,7 +8,7 @@ import { SELECT_ENTITY, HOVER_ENTITY_START, HOVER_ENTITY_STOP } from '../../../r
 import { actionEffect } from '../../../actions/actionEffect';
 
 export const EntityInstance = (props) => {
-  const { entity, entityReducer, action, actionEffectMutation } = props;
+  const { entity, entityReducer, action, mutations } = props;
   const { color, position, rotation, id, scale } = entity;
   const { entityState, entityDispatch } = entityReducer;
   // This reference gives us direct access to the THREE.Mesh object
@@ -19,7 +19,7 @@ export const EntityInstance = (props) => {
   // Subscribe this component to the render-loop, rotate the mesh every frame
   useFrame((state, delta) => {
     ref.current.rotation.x += 0.01;
-    if (entity.tic) entity.tic(ref, delta, entityReducer, actionEffectMutation);
+    if (entity.tic) entity.tic(ref, delta, entityReducer, mutations);
   });
   // Return the view, these are regular Threejs elements expressed in JSX
   return (

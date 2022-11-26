@@ -59,14 +59,18 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             return (<EntityInstance 
               key={id}
               entity={entity}
-              actionEffectMutation={actionEffectMutation}
+              mutations={{actionEffectMutation}}
               entityReducer={entityReducer} />);
           }))
         }
         {
           entityState.otherEntities && compact(Object.entries(entityState.otherEntities).map(([id, entity]) => {
             if (entity.component) return (null);
-            return (<EntityInstance key={id} entity={entity} entityReducer={entityReducer} />);
+            return (<EntityInstance
+              key={id}
+              entity={entity}
+              entityReducer={entityReducer}
+              mutations={null} />);
           }))
         }
         {entityState?.pointerData && pointerEntity(entityState.pointerData)}
@@ -82,7 +86,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             scale={entity.scale}
             color={'red'}
             entityReducer={entityReducer}
-            actionEffectMutation={actionEffectMutation}
+            mutations={{actionEffectMutation}}
             entity={entity} 
             gltfPath={entity.gltfPath} />);
         }))

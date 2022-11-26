@@ -29,7 +29,8 @@ export const functions = {
             actionStrings: strings,
         });
     
-        return (ref, delta, entityReducer, actionEffectMutation) => {
+        return (ref, delta, entityReducer, mutations) => {
+            const { actionEffectMutation } = mutations;
             const length = entity.speed * delta;
             const { current } = ref;
             const { angle, dist } = getAngleDist(current.position, worldLocation);  

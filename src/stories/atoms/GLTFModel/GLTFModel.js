@@ -13,7 +13,7 @@ import compact from 'lodash/compact';
 import { SELECT_ENTITY, HOVER_ENTITY_START, HOVER_ENTITY_STOP } from '../../../reducers/entityReducer';
 
 export function GLTFModel(props) {
-  const { entity, entityReducer, action, actionEffectMutation, gltfPath } = props;
+  const { entity, entityReducer, action, mutations, gltfPath } = props;
   const { materialMap }= entity;
   const { position } = props;
   // const { color, position, rotation, id, scale } = entity;
@@ -24,7 +24,7 @@ export function GLTFModel(props) {
   const { nodes, materials } = useGLTF(gltfPath);
   
   useFrame((state, delta) => {
-    if (entity.tic) entity.tic(ref, delta, entityReducer, actionEffectMutation);
+    if (entity.tic) entity.tic(ref, delta, entityReducer, mutations);
   });
   return (
     <Suspense fallback={null}>
