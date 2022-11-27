@@ -30,19 +30,28 @@ export const CREATE_TOWER = {
     ticGenerator: function({entity, worldLocation, totalTime}) {
         const startTime = Date.now();
         const actionDefinition = this;
-        return (ref, delta, entityReducer) => {
+        return (ref, delta, entityReducer, mutations) => {
+            const { myCreateNewEntitiesMutation } = mutations;
             const elapsedTime = Date.now() - startTime;
             console.log('createEntityTic time remaining', (totalTime - elapsedTime));
             if (elapsedTime >= totalTime) {
                 entity.tic = null;
                 const newEntity = entityDefinition.generate({
-                    position: worldLocation,
+                    position: [worldLocation.x, worldLocation.y, worldLocation.z],
                     color: entity.color
                 });
-                const { entityState, entityDispatch } = entityReducer;
-                entityDispatch({
-                    type: ADD_TO_MY_ENTITIES,
-                    payload: newEntity
+                const mutationEntity = {
+                    name: newEntity.name,
+                    longName: newEntity.longName,
+                    speed: newEntity.speed,
+                    position: newEntity.position,
+                    color: newEntity.color,
+                    sightRange: newEntity.sightRange
+                }
+                myCreateNewEntitiesMutation({
+                    variables: {
+                        entities: [mutationEntity]
+                    }
                 });
                 return entity;
             }

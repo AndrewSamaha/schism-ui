@@ -13,7 +13,7 @@ import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
 import { GLTFModel } from '../../atoms/GLTFModel/GLTFModel';
 
 // Queries
-import { MY_ACTION_EFFECT_MUTATION } from '../../../graph/entities';
+import { MY_ACTION_EFFECT_MUTATION, MY_CREATE_NEW_ENTITIES_MUTATION } from '../../../graph/entities';
 
 // Helpers
 // Queries
@@ -31,6 +31,20 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
     client
   });
 
+  const [myCreateNewEntitiesMutation] = useMutation(MY_CREATE_NEW_ENTITIES_MUTATION, {
+    onCompleted: (data) => {
+      console.log('myCreateNewEntitiesMutation on completes', data);
+    },
+    onError:(e) => {
+      console.log('myCreateNewEntitiesMutation on error', e)
+    },
+    client
+  });
+
+  const mutations = {
+    myCreateNewEntitiesMutation,
+    actionEffectMutation
+  }
   
   const actor = first(entityState.selectedUnits);
   const selectedAction = actor?.selectedAction;
@@ -59,7 +73,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             return (<EntityInstance 
               key={id}
               entity={entity}
-              mutations={{actionEffectMutation}}
+              mutations={mutations}
               entityReducer={entityReducer} />);
           }))
         }
@@ -70,7 +84,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
               key={id}
               entity={entity}
               entityReducer={entityReducer}
-              mutations={null} />);
+              mutations={mutations} />);
           }))
         }
         {entityState?.pointerData && pointerEntity(entityState.pointerData)}
@@ -86,7 +100,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             scale={entity.scale}
             color={'red'}
             entityReducer={entityReducer}
-            mutations={{actionEffectMutation}}
+            mutations={mutations}
             entity={entity} 
             gltfPath={entity.gltfPath} />);
         }))
