@@ -37,26 +37,22 @@ export const CREATE_TOWER = {
             if (elapsedTime >= totalTime) {
                 entity.tic = null;
                 const newEntity = entityDefinition.generate({
-                    position: worldLocation,
+                    position: [worldLocation.x, worldLocation.y, worldLocation.z],
                     color: entity.color
                 });
+                const mutationEntity = {
+                    name: newEntity.name,
+                    longName: newEntity.longName,
+                    speed: newEntity.speed,
+                    position: newEntity.position,
+                    color: newEntity.color,
+                    sightRange: newEntity.sightRange
+                }
                 myCreateNewEntitiesMutation({
                     variables: {
-                        entities: [newEntity]
+                        entities: [mutationEntity]
                     }
                 });
-
-                // lazyMutation({ 
-                //     variables: {
-                //         aE: stringAe
-                //     }
-                // });
-
-                // const { entityState, entityDispatch } = entityReducer;
-                // entityDispatch({
-                //     type: ADD_TO_MY_ENTITIES,
-                //     payload: newEntity
-                // });
                 return entity;
             }
             return entity;

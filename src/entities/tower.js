@@ -4,6 +4,7 @@ export const tower = {
     name: 'tower',
     longName: 'This is a tower.',
     speed: 0,
+    sightRange: 8,
     actionDefinitions: [],
     defaultAction: null,
     selectedAction: null,
