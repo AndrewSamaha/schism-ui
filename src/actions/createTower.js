@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import uniq from 'lodash/uniq';
 
 // Local Imports
-import { createEntityTicGenerator } from "../entities/ticGenerators";
+import { createEntityOnServerTicGenerator } from "../entities/ticGenerators";
 import { ActionButton } from "../stories/atoms/ActionButton/ActionButton";
 import createTowerIcon from '../stories/assets/ui/Buttons/CreateTower.png';
 import createTowerIcon_hover from '../stories/assets/ui/Buttons/CreateTower_hover.png';
@@ -27,37 +27,7 @@ export const CREATE_TOWER = {
     ButtonComponent: function (params) {
         return ActionButton(this, params)
     },
-    ticGenerator: function({entity, worldLocation, totalTime}) {
-        const startTime = Date.now();
-        const actionDefinition = this;
-        return (ref, delta, entityReducer, mutations) => {
-            const { myCreateNewEntitiesMutation } = mutations;
-            const elapsedTime = Date.now() - startTime;
-            console.log('createEntityTic time remaining', (totalTime - elapsedTime));
-            if (elapsedTime >= totalTime) {
-                entity.tic = null;
-                const newEntity = entityDefinition.generate({
-                    position: [worldLocation.x, worldLocation.y, worldLocation.z],
-                    color: entity.color
-                });
-                const mutationEntity = {
-                    name: newEntity.name,
-                    longName: newEntity.longName,
-                    speed: newEntity.speed,
-                    position: newEntity.position,
-                    color: newEntity.color,
-                    sightRange: newEntity.sightRange
-                }
-                myCreateNewEntitiesMutation({
-                    variables: {
-                        entities: [mutationEntity]
-                    }
-                });
-                return entity;
-            }
-            return entity;
-        }
-    },
+    ticGenerator: (args) => { return createEntityOnServerTicGenerator({...args, entityDefinition}) },
     pointerEntityGenerator: function (actor, reducers) {
         const { userReducer, entityReducer } = reducers;
         const { userState, userDispatch } = userReducer;

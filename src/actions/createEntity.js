@@ -2,18 +2,19 @@ import * as THREE from 'three';
 import uniq from 'lodash/uniq';
 
 // Local Imports
-import { createEntityTicGenerator } from "../entities/ticGenerators";
+import { createEntityOnServerTicGenerator } from "../entities/ticGenerators";
 import { ActionButton } from "../stories/atoms/ActionButton/ActionButton";
 import moveEntityIcon from '../stories/assets/ui/Buttons/CreateEntity.png';
 import moveEntityIcon_hover from '../stories/assets/ui/Buttons/CreateEntity_hover.png';
 import { EntityInstance } from "../stories/atoms/EntityInstance/EntityInstance";
 import { testEntity } from '../entities/testEntity';
 
+// const entityDefinition = testEntity;
 // Actions
 export const CREATE_ENTITY = {
     name: 'Create',
     longName: 'CREATE_ENTITY',
-    ticGenerator: createEntityTicGenerator,
+    ticGenerator: (args) => { return createEntityOnServerTicGenerator({...args, entityDefinition: testEntity}) },
     ticGeneratorParams: {
         totalTime: 2_000
     },
