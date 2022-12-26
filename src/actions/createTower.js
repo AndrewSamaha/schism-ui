@@ -7,7 +7,7 @@ import { ActionButton } from "../stories/atoms/ActionButton/ActionButton";
 import createTowerIcon from '../stories/assets/ui/Buttons/CreateTower.png';
 import createTowerIcon_hover from '../stories/assets/ui/Buttons/CreateTower_hover.png';
 import { EntityInstance } from "../stories/atoms/EntityInstance/EntityInstance";
-import { tower } from '../entities/tower';
+import { tower } from '../entities/buildings/tower';
 import { ADD_TO_MY_ENTITIES } from '../reducers/entityReducer';
 
 const entityDefinition = tower;
