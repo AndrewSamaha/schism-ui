@@ -2,6 +2,7 @@ import { STRAIGHT_LINE_MOVE } from "../actions/straightLineMove";
 import { CREATE_ENTITY } from "../actions/createEntity";
 import { genericGenerator } from "./genericGenerator";
 import { CREATE_TOWER } from "../actions/createTower";
+import { CREATE_BASE } from "../actions/createBase";
 
 export const testEntity = {
     gltfPath: '/TestHuman.gltf',
@@ -19,7 +20,10 @@ export const testEntity = {
         {
             action: STRAIGHT_LINE_MOVE,
             shortcutKey: 'm',
-        },{
+        }, {
+            action: CREATE_BASE,
+            shortcutKey: 'b'
+        }, {
             action: CREATE_ENTITY,
             shortcutKey: 'c'
         }, {

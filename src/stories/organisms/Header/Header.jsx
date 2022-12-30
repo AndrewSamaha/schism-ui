@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Stats } from '@react-three/drei';
 import { Button } from '../../atoms/Button/Button';
 import { LogoSVG } from '../../atoms/LogoSVG/LogoSVG';
 import './header.css';
@@ -21,11 +22,12 @@ export const Header = ({ userState, showLogin, onLogin, onLogout, onCreateAccoun
       <div>
         <LogoSVG />
         <h1>Schism</h1>
-      </div>
+      </div>      
       <div>
         {showLogin ? (
           userState ? (
           <>
+            <Stats className="statsPanel" />
             <span className="welcome">
               Welcome,  <b>{userState.name}</b>!
             </span>

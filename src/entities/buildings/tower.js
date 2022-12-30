@@ -1,4 +1,4 @@
-import { genericGenerator } from "./genericGenerator";
+import { genericGenerator } from "../genericGenerator";
 
 export const tower = {
     name: 'tower',

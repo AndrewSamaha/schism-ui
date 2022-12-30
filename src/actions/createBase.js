@@ -4,23 +4,22 @@ import uniq from 'lodash/uniq';
 // Local Imports
 import { createEntityOnServerTicGenerator } from "../entities/ticGenerators";
 import { ActionButton } from "../stories/atoms/ActionButton/ActionButton";
-import createTowerIcon from '../stories/assets/ui/Buttons/CreateTower.png';
-import createTowerIcon_hover from '../stories/assets/ui/Buttons/CreateTower_hover.png';
+import createBaseIcon from '../stories/assets/ui/Buttons/CreateBase.png';
+import createBaseIcon_hover from '../stories/assets/ui/Buttons/CreateBase_hover.png';
 import { EntityInstance } from "../stories/atoms/EntityInstance/EntityInstance";
-import { tower } from '../entities/buildings/tower';
-import { ADD_TO_MY_ENTITIES } from '../reducers/entityReducer';
+import { base } from '../entities/buildings/base';
 
-const entityDefinition = tower;
+const entityDefinition = base;
 // Actions
-export const CREATE_TOWER = {
-    name: 'CreateTower',
-    longName: 'CREATE_TOWER',
+export const CREATE_BASE = {
+    name: 'CreateBase',
+    longName: 'CREATE_BASE',
     ticGeneratorParams: {
         totalTime: 2_000
     },
-    icon: createTowerIcon,
-    icon_hover: createTowerIcon_hover,
-    getReferenceEntity: () => tower,
+    icon: createBaseIcon,
+    icon_hover: createBaseIcon_hover,
+    getReferenceEntity: () => base,
     meetsRequirements: function(inputEventState) {
         return true;
     },
