@@ -107,34 +107,20 @@ export const Play = ({client}) => {
         // justifyContent: 'flex-end'
         }} >
         <Debug userState={userState} gameState={gameState} performance={performance} entityReducer={{entityState, entityDispatch}} />
-
         <Canvas onContextMenu={(e)=> e.preventDefault()} className="homedemo" style={{
-          // maxWidth: '100%', 
           width: 'calc(100% - 300px)',
           height: '100%',
           minHeight: '700px',
           margin: '0px',
           padding: '0px',
-          
           zIndex: `${CANVAS_ZINDEX}`,
           backgroundColor: 'black'}}>
-            {/* <Suspense  fallback={null}> */}
             <PerspectiveCamera 
                 makeDefault 
                 fov={20}
                 position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
-                //position={[10, 10, -20]} 
                 rotation={ViewRotation}
-                //rotation={[.90,0,0]}
-              >
-                <ambientLight intensity={.5} />
-                {/* <pointLight position={[10, 10, 10]} intensity={.5} /> */}
-                {/* <pointLight 
-                  position={[-userState.viewportWorldLocation[0],
-                             -userState.viewportWorldLocation[1],
-                             -userState.viewportWorldLocation[2]+55]}
-                  intensity={1} /> */}
-              </PerspectiveCamera>
+              ><ambientLight intensity={.5} /></PerspectiveCamera>
               <ViewportTiles
                 gameReducer={{gameState, gameDispatch}}
                 userReducer={{userState, userDispatch}}
@@ -143,9 +129,7 @@ export const Play = ({client}) => {
                 chunkQuery={{getChunkQuery, getChunkQueryStatus}}
                 client={client}
               /> 
-              
-            {/* </Suspense> */}
-          {showStats && <Stats />} 
+          {/* {!!showStats && <Stats />} */}
         </Canvas>
         <StatusMenu
           userState={userState}
@@ -153,18 +137,11 @@ export const Play = ({client}) => {
           performance={performance}
           entityReducer={{entityState, entityDispatch}}
           style={{
-            // flexBasis: '250px',
-            // minWidth: '250px !important',
-            // maxWidth: '250px !important',
-            // width: '250px',
-            // flexGrow: '.25',
-            // flexShrink: '.25',
             height: '100%',
             minHeight: '700px',
             margin: '0px',
             padding: '0px',
             backgroundColor: 'white'}}>
-
         </StatusMenu>
       </div>
     </article>

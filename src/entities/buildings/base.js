@@ -14,16 +14,13 @@ export const base = {
     ],
     defaultAction: null,
     selectedAction: null,
-    scale: .15,
-    // gltfPath: '/Tower3Baked.gltf',
-    // materialMap: (nodeName) => {
-    //     switch (nodeName) {
-    //         case 'Cylinder002':    return 'Material.003';
-    //         case 'Cylinder002_1':  return 'Material.002';
-    //         case 'Cylinder002_2':  
-    //         default:               return 'Material.001';
-    //     }
-    // },
+    scale: 2.0,
+    rotation: [3.14/2, 0, 0],
+    // gltfPath: '/basebb.gltf',
+    materialMap: (nodeName) => {
+        return '';
+    },
+    fiberModelPath: '/basebb.gltf',
     toString: function() {
         const { 
             actionDefinitions,

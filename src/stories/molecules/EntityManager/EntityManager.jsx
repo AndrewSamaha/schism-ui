@@ -11,6 +11,7 @@ import { ViewRotation } from '../../../constants/viewport';
 // Components
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
 import { GLTFModel } from '../../atoms/GLTFModel/GLTFModel';
+import { FiberModel } from '../../atoms/GLTFModel/FiberModel';
 
 // Queries
 import { MY_ACTION_EFFECT_MUTATION, MY_CREATE_NEW_ENTITIES_MUTATION } from '../../../graph/entities';
@@ -69,7 +70,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
         <meshStandardMaterial />
         {
           entityState.myEntities && compact(Object.entries(entityState.myEntities).map(([id, entity]) => {
-            if (entity.gltfPath) return (null);
+            if (entity.gltfPath || entity.fiberModelPath) return (null);
             return (<EntityInstance 
               key={id}
               entity={entity}
@@ -93,8 +94,18 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
       <>
       {
         entityState.myEntities && compact(Object.entries(entityState.myEntities).map(([id, entity]) => {
-          if (!entity.gltfPath) return (null);
-          return (<GLTFModel
+          
+          if (!!entity.fiberModelPath) return (<FiberModel
+            key={entity.id}
+            position={entity.position}
+            scale={entity.scale}
+            color={'red'}
+            entityReducer={entityReducer}
+            mutations={mutations}
+            entity={entity} 
+            fiberModelPath={entity.fiberModelPath}/>)
+
+          if (!!entity.gltfPath) return (<GLTFModel
             key={entity.id}
             position={entity.position}
             scale={entity.scale}
@@ -103,6 +114,8 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             mutations={mutations}
             entity={entity} 
             gltfPath={entity.gltfPath} />);
+            
+          return null;
         }))
       }
       </>

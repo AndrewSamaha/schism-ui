@@ -70,7 +70,7 @@ const getVisibleChunkAddresses = ({viewportWorldLocation}) => {
 const getKey = ({x, y}) => `ChunkX${x}Y${y}`;
 
 const createNewChunk = ({key, x, y}) => {
-  console.log('createNewChunk',x,y,key)
+  // console.log('createNewChunk',x,y,key)
   return {
     key,
     x,
@@ -214,7 +214,7 @@ function chunkManagerReducer(state, action) {
         }
       case RECEIVED_CHUNK_COLLECTION:
         const { getChunkCollection: { chunks: receivedChunks } } = action.payload;
-        console.log(`calling makeChunkImage on ${receivedChunks.length} chunks.`);
+        // console.log(`calling makeChunkImage on ${receivedChunks.length} chunks.`);
         const chunks = receivedChunks.reduce((collection, chunk) => {
           const { x, y } = chunk;
           const key = getKey(chunk);

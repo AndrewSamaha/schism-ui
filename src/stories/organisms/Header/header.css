@@ -37,3 +37,7 @@ button + button {
   font-size: 14px;
   margin-right: 10px;
 }
+
+.statsPanel {
+  margin-right: 100px;
+}

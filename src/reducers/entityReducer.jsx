@@ -30,7 +30,7 @@ const hydrateNewEntityFromServer = (receivedEntity, entityTypes) => {
     const { name, id } = receivedEntity;
     const type = entityTypes[name];
     
-    console.log('hydrateEntityFromServer name=',name, ' id=',id);
+    // console.log('hydrateEntityFromServer name=',name, ' id=',id);
     if (!type) {
         console.log(`hydrateEntityFromServer: received unknown entity type name ${name}, entity=`, receivedEntity)
         return receivedEntity;
