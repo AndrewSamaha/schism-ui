@@ -14,9 +14,8 @@ export const base = {
     ],
     defaultAction: null,
     selectedAction: null,
-    scale: 2.0,
+    scale: 1.0,
     rotation: [3.14/2, 0, 0],
-    // gltfPath: '/basebb.gltf',
     materialMap: (nodeName) => {
         return '';
     },

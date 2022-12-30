@@ -33,7 +33,8 @@ export function FiberModel(props) {
     if (!geometry) return null;
     if (!key) return null;
     
-    return (<mesh key={key} geometry={geometry} material={material} material-color={hovered ? 'white' : props.color}/>);})),
+    return (<mesh key={key} geometry={geometry} material={material} material-color={hovered ? props.color : 'white'}/>);})),
+    // return (<mesh key={key} geometry={geometry} material={material}/>);})),
     [nodes, hovered]);
 
   return (
