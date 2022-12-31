@@ -43,7 +43,8 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "prepare": "husky install",
-    "commit": "git cz"
+    "commit": "git cz",
+    "import:assets": "node scripts/importAssets.js"
   },
   "eslintConfig": {
     "extends": [
@@ -89,6 +90,7 @@
     "@storybook/testing-library": "^0.0.9",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.30.0",
+    "fs-extra": "^11.1.0",
     "husky": "^8.0.2",
     "webpack": "^5.71.0"
   },
