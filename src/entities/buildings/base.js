@@ -19,7 +19,7 @@ export const base = {
     materialMap: (nodeName) => {
         return '';
     },
-    fiberModelPath: '/basebb.gltf',
+    fiberModelPath: '/assets/buildings/base/basebb.gltf',
     toString: function() {
         const { 
             actionDefinitions,
