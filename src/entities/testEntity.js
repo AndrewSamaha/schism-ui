@@ -5,7 +5,7 @@ import { CREATE_TOWER } from "../actions/createTower";
 import { CREATE_BASE } from "../actions/createBase";
 
 export const testEntity = {
-    gltfPath: '/TestHuman.gltf',
+    gltfPath: '/assets/character/TestHuman/TestHuman.gltf',
     materialMap: (nodeName) => {
         switch (nodeName) {
             case 'Cube':

@@ -9,7 +9,7 @@ export const tower = {
     defaultAction: null,
     selectedAction: null,
     scale: .15,
-    gltfPath: '/Tower3Baked.gltf',
+    gltfPath: '/assets/buildings/tower/tower.2/Tower3Baked.gltf',
     materialMap: (nodeName) => {
         switch (nodeName) {
             case 'Cylinder002':    return 'Material.003';
