@@ -4,6 +4,7 @@ const fse = require('fs-extra')
 const fs = require('fs')
 
 const ASSETS_FOLDER = './public/assets';
+const STAGING_FOLDER = `${process.env.SCHISM_ASSET_FOLDER}/staging/assets`;
 
 console.log('importAssets')
 console.log(process.env.SCHISM_ASSET_FOLDER)
@@ -15,7 +16,8 @@ const fileExtensionsToCopy = [
 const foldersToCopy = [
     'buildings',
     'character',
-    'resources'
+    'resources',
+    'ui'
 ]
 
 const filterFunc = (src, dest) => {
@@ -35,9 +37,9 @@ const filterFunc = (src, dest) => {
 console.log('removing existing assets folder ', ASSETS_FOLDER)
 fs.rmSync(ASSETS_FOLDER, { recursive: true, force: true });
 
-console.log('copying assets from schism-assets ', process.env.SCHISM_ASSET_FOLDER)
+console.log('copying assets from schism-assets ', STAGING_FOLDER)
 foldersToCopy.forEach((folder) => {
-    fse.copySync(`${process.env.SCHISM_ASSET_FOLDER}/${folder}`, `${ASSETS_FOLDER}/${folder}`, {
+    fse.copySync(`${STAGING_FOLDER}/${folder}`, `${ASSETS_FOLDER}/${folder}`, {
         filter: filterFunc
     })
 })
