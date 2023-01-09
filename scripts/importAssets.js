@@ -10,14 +10,16 @@ console.log('importAssets')
 console.log(process.env.SCHISM_ASSET_FOLDER)
 
 const fileExtensionsToCopy = [
-    '.gltf'
+    '.gltf',
+    '.ttf'
 ]
 
 const foldersToCopy = [
     'buildings',
     'character',
     'resources',
-    'ui'
+    'ui',
+    'fonts'
 ]
 
 const filterFunc = (src, dest) => {
