@@ -37,7 +37,7 @@ export const TextFallback = (props) => {
       position: [0,0,1]
     }
   }
-  const boxGeometry = [1, 1, 1];
+  const boxGeometry = [.5, .5, .5];
   const boxPosition = [0, 0, .51];
   const textPosition = [0, 0, 1.1];
   const textRotation = (() => [ViewRotation[0], ViewRotation[1], ViewRotation[2]])();
