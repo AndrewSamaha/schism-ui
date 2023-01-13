@@ -29,7 +29,7 @@ export const TextFallback = (props) => {
   
   const { materialMap, rotation }= entity;
   const { entityState, entityDispatch } = entityReducer;
-  const { scale, ...propsWithoutScale } = props;
+  const { scale, position: propPosition, ...slimProps } = props;
 
   const boxArgs = {
     args: {
@@ -38,18 +38,13 @@ export const TextFallback = (props) => {
     }
   }
   const boxGeometry = [1, 1, 1];
-  const boxPosition = [0, 0, 2];
-  const textRotation = (() => {
-    if (rotation) return [rotation[0] - ViewRotation[0], rotation[1] - ViewRotation[1], rotation[2] - ViewRotation[2]];
-    else return ViewRotation;
-  })();
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  // useFrame((state, delta) => (ref.current.rotation.x += 0.01))
-  // Return the view, these are regular Threejs elements expressed in JSX
+  const boxPosition = [0, 0, .51];
+  const textPosition = [0, 0, 1.1];
+  const textRotation = (() => [ViewRotation[0], ViewRotation[1], ViewRotation[2]])();
+
   return (
-    <group {...propsWithoutScale} position={position} key={entity.id} dispose={null}
+    <group {...slimProps} position={position} key={entity.id} dispose={null}
       ref={ref}
-      rotation={rotation}
       onClick={(event) => {
         if (action) return;
         if (entityState.selectedUnits.length && entityState.selectedUnits[0].id === entity.id) return;
@@ -75,28 +70,14 @@ export const TextFallback = (props) => {
           payload: entity
         });
       }}>
-    <mesh position={boxPosition}>
-      <boxGeometry args={boxGeometry} />
-      <meshStandardMaterial color={hovered ? props.color : 'white'} wireframe={true} />
-    </mesh>
-  
-    <Text fontSize={.5} position={boxPosition} rotation={textRotation} color={hovered ? props.color : 'white'}>
-        {entity.name}
-      </Text>
-    
-      
+      <mesh rotation={rotation} position={boxPosition} >
+        <boxGeometry args={boxGeometry} />
+        <meshStandardMaterial color={hovered ? props.color : 'white'} wireframe={true} />
+      </mesh>
+      <Text fontSize={.5} position={textPosition} rotation={textRotation} color={hovered ? props.color : 'white'}>
+          {entity.name}
+      </Text>  
     </group>
-    // <mesh
-    // {...props}
-    //   position={position}
-    //   ref={ref}
-    //   scale={scale}
-    //   onClick={(event) => click(!clicked)}
-    //   onPointerOver={(event) => hover(true)}
-    //   onPointerOut={(event) => hover(false)}>
-    //   <textGeometry args={['Test Text', {font, size: 20, height: 20}]} />
-    //   <meshStandardMaterial attach='material' color="white" />
-    // </mesh>
   )
 }
 
