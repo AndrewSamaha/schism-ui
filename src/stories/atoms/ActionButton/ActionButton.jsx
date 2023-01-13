@@ -6,7 +6,7 @@ import { SELECT_ACTION } from '../../../reducers/entityReducer';
 export const ActionButton = ({icon, icon_hover, name},{entity, action, entityReducer}) => {
     const isSelected = entity.selectedAction === action;
     const border = isSelected ? 'dashed red' : 'none';
-    const { ref } = useRef();
+    // const { ref } = useRef();
     // if (isSelected) console.log('rendering Action button ', entity.selectedAction.longName)
     return (
 
