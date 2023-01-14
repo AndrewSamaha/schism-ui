@@ -26,9 +26,12 @@ import { RECEIVED_VISIBLE_ENTITIES } from '../../../reducers/entityReducer';
 import { RIGHT_CLICK, LEFT_CLICK } from '../../../constants/inputEvents';
 import { INPUT_EVENT, POINTER_MOVE, POINTER_OUT } from '../../../reducers/entityReducer';
 import { VIEWPORT_TILES } from '../../../constants/inputSources';
+import { INTERVAL_GET_ENTITIES_I_CAN_SEE } from '../../../constants/queryIntervals';
 
 const physicsTic = (delta, state) => {
-  if (!state.viewportVelocity) return state;
+  const { viewportVelocity, userInput } = state;
+  if (!viewportVelocity) return state;
+  if (!viewportVelocity[0] && !viewportVelocity[1] && !viewportVelocity[2]) return state;
   
   state.viewportVelocity[0] = applyFriction(state.viewportVelocity[0], ViewMoveFriction);
   state.viewportVelocity[1] = applyFriction(state.viewportVelocity[1], ViewMoveFriction);
@@ -39,9 +42,7 @@ const physicsTic = (delta, state) => {
     delta
   );
 
-  return {
-    ...state
-  };
+  return state;
 }
 
 const mouseWorldClick = (pointerData, reducers) => {
@@ -82,7 +83,7 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   const {loading, error, data, startPolling, stopPolling} = useQuery(
     GET_ENTITIES_I_CAN_SEE, 
     {
-      pollInterval: 2_000,
+      pollInterval: INTERVAL_GET_ENTITIES_I_CAN_SEE,
       onCompleted: data => entityDispatch({ 
         type: RECEIVED_VISIBLE_ENTITIES,
         payload: data,
@@ -119,9 +120,18 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
 
         userState.viewportVelocity[0] += push[0];
         userState.viewportVelocity[1] += push[1];
+      } else {
+        console.log('useFrame no keys pressed')
       }
 
-      userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})
+      (()=> {
+        const { viewportVelocity } = userState;
+        if (!viewportVelocity) return state;
+        if (!viewportVelocity[0] && !viewportVelocity[1] && !viewportVelocity[2]) return state;
+        userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})
+      })();
+
+      
       if (worldStateQueryStatus.loading && tileStatus === 'requested') {
         //console.log('loading')
         setTileStatus('loading')
