@@ -96,16 +96,6 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
       {
         entityState.myEntities && compact(Object.entries(entityState.myEntities).map(([id, entity]) => {
           
-          return (<TextFallback
-            key={entity.id}
-            position={entity.position}
-            scale={entity.scale}
-            color={'red'}
-            entityReducer={entityReducer}
-            mutations={mutations}
-            entity={entity} 
-          />);
-
           if (!!entity.fiberModelPath) return (<FiberModel
             key={entity.id}
             position={entity.position}
@@ -126,7 +116,15 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             entity={entity} 
             gltfPath={entity.gltfPath} />);
             
-          return null;
+          return (<TextFallback
+            key={entity.id}
+            position={entity.position}
+            scale={entity.scale}
+            color={'red'}
+            entityReducer={entityReducer}
+            mutations={mutations}
+            entity={entity} />);
+  
         }))
       }
       </>
