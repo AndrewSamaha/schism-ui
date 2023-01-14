@@ -12,6 +12,7 @@ import { ViewRotation } from '../../../constants/viewport';
 import { EntityInstance } from '../../atoms/EntityInstance/EntityInstance';
 import { GLTFModel } from '../../atoms/GLTFModel/GLTFModel';
 import { FiberModel } from '../../atoms/GLTFModel/FiberModel';
+import { TextFallback } from '../../atoms/TextFallback/TextFallback';
 
 // Queries
 import { MY_ACTION_EFFECT_MUTATION, MY_CREATE_NEW_ENTITIES_MUTATION } from '../../../graph/entities';
@@ -115,7 +116,15 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
             entity={entity} 
             gltfPath={entity.gltfPath} />);
             
-          return null;
+          return (<TextFallback
+            key={entity.id}
+            position={entity.position}
+            scale={entity.scale}
+            color={'red'}
+            entityReducer={entityReducer}
+            mutations={mutations}
+            entity={entity} />);
+  
         }))
       }
       </>
