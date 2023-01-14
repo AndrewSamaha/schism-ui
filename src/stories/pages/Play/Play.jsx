@@ -101,48 +101,51 @@ export const Play = ({client}) => {
 
       <div onKeyDown={(e) => keydown(e)} onKeyUp={(e)=>keyup(e)} tabIndex={-1} style={{
         display: 'flex',
-        flexWrap: 'nowrap',
-        alignItems: 'flex-start',
-        flexDirection: 'row' //row-reverse
-        // justifyContent: 'flex-end'
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%'
         }} >
         <Debug userState={userState} gameState={gameState} performance={performance} entityReducer={{entityState, entityDispatch}} />
-        <Canvas onContextMenu={(e)=> e.preventDefault()} className="homedemo" style={{
-          width: 'calc(100% - 300px)',
-          height: '100%',
-          minHeight: '700px',
-          margin: '0px',
-          padding: '0px',
-          zIndex: `${CANVAS_ZINDEX}`,
-          backgroundColor: 'black'}}>
-            <PerspectiveCamera 
-                makeDefault 
-                fov={20}
-                position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
-                rotation={ViewRotation}
-              ><ambientLight intensity={.5} /></PerspectiveCamera>
-              <ViewportTiles
-                gameReducer={{gameState, gameDispatch}}
-                userReducer={{userState, userDispatch}}
-                entityReducer={{entityState, entityDispatch}}
-                worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
-                chunkQuery={{getChunkQuery, getChunkQueryStatus}}
-                client={client}
-              /> 
-          {/* {!!showStats && <Stats />} */}
-        </Canvas>
-        <StatusMenu
-          userState={userState}
-          gameState={gameState}
-          performance={performance}
-          entityReducer={{entityState, entityDispatch}}
-          style={{
-            height: '100%',
-            minHeight: '700px',
-            margin: '0px',
-            padding: '0px',
-            backgroundColor: 'white'}}>
-        </StatusMenu>
+          
+          <div style={{ order: '1', flexGrow: '2', maxWidth: '1000px', display: 'flex', flexDirection: 'column-reverse' }}>
+            <Canvas onContextMenu={(e)=> e.preventDefault()} className="homedemo" style={{
+              order: '1',
+              width: '100%',
+              height: '550px',
+              minHeight: '550px',
+              margin: '0px 0px 0px 0px',
+              padding: '0px',
+              backgroundColor: 'black'}}>
+                <PerspectiveCamera 
+                    makeDefault 
+                    fov={20}
+                    position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
+                    rotation={ViewRotation}
+                  ><ambientLight intensity={.5} /></PerspectiveCamera>
+                  <ViewportTiles
+                    gameReducer={{gameState, gameDispatch}}
+                    userReducer={{userState, userDispatch}}
+                    entityReducer={{entityState, entityDispatch}}
+                    worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+                    chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+                    client={client}
+                  /> 
+              {/* {!!showStats && <Stats />} */}
+            </Canvas>
+            
+            
+            
+            <StatusMenu
+              userState={userState}
+              gameState={gameState}
+              performance={performance}
+              entityReducer={{entityState, entityDispatch}}
+              style={{
+                order: '2',
+                backgroundColor: 'white'}}>
+            </StatusMenu>
+          </div>
+          
       </div>
     </article>
   );

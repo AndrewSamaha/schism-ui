@@ -38,12 +38,12 @@ export const StatusMenu = ({userState, gameState, performance, entityReducer}) =
     }, [selected]);
     return (
         <div className='StatusMenu' style={{
-            zIndex: `${STATUSMENU_ZINDEX}`,
-            backgroundImage: `url(${backgroundImage})`,
-            width: '300px',
-            height: '700px',
-            padding: '12px',
-            boxSizing: 'border-box'}}>
+            width: '100%',
+            minHeight: '150px',
+            padding: '10px 50px 10px 50px',
+            boxSizing: 'border-box',
+            backgroundColor: 'white',
+            }}>
            
             <div className='ResourceList'>
                 {Object.entries(resources).map(([resourceName, amount]) => (<ResourceContainer key={Math.random()} resourceName={resourceName} amount={amount}/>))}

@@ -16,7 +16,7 @@ export const Header = ({ userState, showLogin, onLogin, onLogout, onCreateAccoun
   const contextUser = useContext(UserContext);
   const { name } = contextUser;
   return (
-  <header style={{position: 'sticky', top: '0', zIndex: '10', backgroundColor: 'white'}}>
+  <header style={{position: 'sticky', marginLeft: '80px', top: '0', zIndex: '10', backgroundColor: 'white'}}>
     
     <div className="wrapper" style={{position: 'sticky'}}>
       <div>
