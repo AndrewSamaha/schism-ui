@@ -24,9 +24,6 @@ import { ViewRotation } from '../../../constants/viewport';
 import { visibilityRange } from '../../../constants/clientGame';
 import { CANVAS_ZINDEX } from '../../../constants/zIndex';
 
-import leftGradient from './GradientBorder_left.png';
-import rightGradient from './GradientBorder_right.png';
-
 //CSS
 import './play.css';
 
@@ -119,14 +116,14 @@ export const Play = ({client}) => {
                 height: '700px',
                 width: '50px',
                 zIndex: '100',
-                backgroundImage: `url(${leftGradient})`}} ></div>
+                backgroundImage: `url(${'/assets/ui/assetPrimitives/PlayPage/GradientBorder_left.png'})`}} ></div>
               <div id='iceRight' style={{
                   position: 'relative',
                   height: '700px',
                   width: '50px',
                   zIndex: '100',
                   left: '900px',
-                  backgroundImage: `url(${rightGradient})`}} ></div>
+                  backgroundImage: `url(${'/assets/ui/assetPrimitives/PlayPage/GradientBorder_right.png'})`}} ></div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
               <Canvas onContextMenu={(e)=> e.preventDefault()} className="homedemo" style={{
