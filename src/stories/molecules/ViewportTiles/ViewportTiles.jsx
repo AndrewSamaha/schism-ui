@@ -128,9 +128,8 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
         const { viewportVelocity } = userState;
         if (!viewportVelocity) return state;
         if (!viewportVelocity[0] && !viewportVelocity[1] && !viewportVelocity[2]) return state;
-        userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})
+        userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})  
       })();
-
       
       if (worldStateQueryStatus.loading && tileStatus === 'requested') {
         //console.log('loading')
