@@ -15,7 +15,12 @@ function gameReducer(state, action) {
         console.log('game state is null, creating mock state');
         return createClientGameState();
     }
+    console.log('gameReducer ', action)
     switch (action.type) {
+        case 'REGISTER_CAMERA':
+            console.log('registering camera')
+            state.camera = action.payload;
+            return state;
         case 'initMock':
             const useMocks = true;
             const newMockGameState = createClientGameState(useMocks);

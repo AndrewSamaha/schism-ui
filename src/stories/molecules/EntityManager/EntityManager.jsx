@@ -25,7 +25,7 @@ export const EntityManager = ({gameReducer, userReducer, entityReducer, worldSta
 
   const [actionEffectMutation] = useMutation(MY_ACTION_EFFECT_MUTATION, {
     onCompleted: (data) => {
-      console.log('actionEffectQuery on completed', data);
+      // console.log('actionEffectQuery on completed', data);
     },
     onError: (e) => {
       console.log('actionEffectQuery on error',e)

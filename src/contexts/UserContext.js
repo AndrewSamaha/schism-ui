@@ -41,6 +41,7 @@ function userReducer(state, action) {
                 ...state.userInput,
             };
             userInput[action.payload] = 1;
+            console.log(userInput)
             return {
                 ...state,
                 userInput

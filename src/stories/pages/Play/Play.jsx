@@ -2,7 +2,7 @@ import React, { useReducer, useContext, useEffect, useState, Suspense } from 're
 import { useLazyQuery } from '@apollo/client';
 import { useThree } from '@react-three/fiber';
 import { Canvas } from '@react-three/fiber';
-import { PerspectiveCamera, Stats } from '@react-three/drei';
+import { Stats } from '@react-three/drei';
 
 // Reducers
 import { UserContext, userReducer } from '../../../contexts/UserContext';
@@ -15,6 +15,7 @@ import { Header } from '../../organisms/Header/Header';
 import { Debug } from '../../organisms/Debug/Debug';
 import { StatusMenu } from '../../organisms/StatusMenu/StatusMenu';
 import { ViewportTiles } from '../../molecules/ViewportTiles/ViewportTiles';
+import { Camera } from '../../atoms/Camera/Camera';
 
 // Queries
 import { GET_NEARBY_TILES, GET_WORLD_STATE, GET_CHUNK } from '../../../graph/queries';
@@ -61,13 +62,34 @@ export const Play = ({client}) => {
   const keydown = (event) => {
     const {key, repeat} = event;
     if (repeat) return;
-    userDispatch({type: 'keydown', payload: key});
+
+    const { camera } = gameState;
+    
+    if (camera) {
+      const { keysDown } = camera;
+      if (keysDown.includes(key)) return;
+      const newKeysDown = `${keysDown}${key}`;
+      camera.keysDispatch({type: 'keydown', payload: key});
+    } else {
+      console.log(gameState)
+    }
+    // userDispatch({type: 'keydown', payload: key});
+
   };
 
   const keyup = (event) => {
     const {key, repeat} = event;
-    if (repeat) return;
-    userDispatch({type: 'keyup', payload: key});
+    const { camera } = gameState;
+    //if (repeat) return;
+    
+    if (camera) {
+      const keysDown = camera.keysDown.replace(key, '');
+      camera.keysDispatch({type: 'keyup', payload: key});
+
+    }else {
+      console.log(gameState)
+    }
+    // userDispatch({type: 'keyup', payload: key});
   };
   const showStats = 0;
 
@@ -98,7 +120,7 @@ export const Play = ({client}) => {
             userDispatch({type: 'logout'})
         }}
       />
-
+{/* onKeyDown={(e) => keydown(e)} onKeyUp={(e)=>keyup(e)}  */}
       <div onKeyDown={(e) => keydown(e)} onKeyUp={(e)=>keyup(e)} tabIndex={-1} style={{
         display: 'flex',
         flexDirection: 'row',
@@ -134,20 +156,19 @@ export const Play = ({client}) => {
                 margin: '0px 0px 0px 0px',
                 padding: '0px',
                 backgroundColor: 'black'}}>
-                  <PerspectiveCamera 
-                      makeDefault 
-                      fov={20}
-                      position={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
-                      rotation={ViewRotation}
-                    ><ambientLight intensity={.5} /></PerspectiveCamera>
-                    <ViewportTiles
-                      gameReducer={{gameState, gameDispatch}}
-                      userReducer={{userState, userDispatch}}
-                      entityReducer={{entityState, entityDispatch}}
-                      worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
-                      chunkQuery={{getChunkQuery, getChunkQueryStatus}}
-                      client={client}
-                    /> 
+                <Camera
+                  gameDispatch={gameDispatch}
+                  userReducer={{userState, userDispatch}}
+                  startingPosition={[userState.viewportWorldLocation[0], userState.viewportWorldLocation[1], userState.viewportWorldLocation[2]]} 
+                />
+                <ViewportTiles
+                  gameReducer={{gameState, gameDispatch}}
+                  userReducer={{userState, userDispatch}}
+                  entityReducer={{entityState, entityDispatch}}
+                  worldStateQuery={{getWorldStateQuery, worldStateQueryStatus}}
+                  chunkQuery={{getChunkQuery, getChunkQueryStatus}}
+                  client={client}
+                /> 
                 {/* {!!showStats && <Stats />} */}
               </Canvas>
               

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { ApolloConsumer, useLazyQuery, useQuery } from '@apollo/client';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -45,6 +45,18 @@ const physicsTic = (delta, state) => {
   return state;
 }
 
+const physicsTicRef = (delta, userInput, current) => {
+  const { position: currentPosition, velocity: currentVelocity } = current;
+  
+  if (!currentVelocity) return { velocity: currentVelocity, position: currentPosition }
+  if (!currentVelocity[0] && !currentVelocity[1] && !currentVelocity[2]) return { velocity: currentVelocity, position: currentPosition }
+
+  return { 
+    velocity: [ applyFriction(currentVelocity[0], ViewMoveFriction), applyFriction(currentVelocity[1], ViewMoveFriction) ],
+    position: calcNewViewportWorldPosition( currentPosition, currentVelocity, delta )
+  };
+}
+
 const mouseWorldClick = (pointerData, reducers) => {
   const { point, shiftKey, altKey, button, buttons, type, ctrlKey, unprojectedPoint } = pointerData;
   const { userState, userDispatch } = reducers.userReducer;
@@ -64,6 +76,8 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
   const {getChunkQuery, getChunkQueryStatus} = chunkQuery;
   const [viewportTiles, setViewportTiles] = useState(null);
   const [tileStatus, setTileStatus] = useState(null);
+  const viewportRef = useRef();
+
   const { gameState, gameDispatch } = gameReducer;
   const { userState, userDispatch } = userReducer;
   const { entityState, entityDispatch } = entityReducer;
@@ -118,17 +132,29 @@ export const ViewportTiles = ({client, gameReducer, userReducer, entityReducer, 
         if ('s' in userInput) push[1] -= pushSpeed;
         if ('d' in userInput) push[0] += pushSpeed;  
 
-        userState.viewportVelocity[0] += push[0];
-        userState.viewportVelocity[1] += push[1];
+        // userState.viewportVelocity[0] += push[0];
+        // userState.viewportVelocity[1] += push[1];
+        // if (viewportRef.current == null) viewportRef.current = {};
+        // if (viewportRef.current?.velocity == null) {
+        //   viewportRef.current.velocity = [0,0,0];
+        //   viewportRef.current.position = [0,0,0];
+        // }
+        // viewportRef.current.velocity[0] += push[0];
+        // viewportRef.current.velocity[1] += push[1];
+
+        // const { velocity, position } = physicsTicRef(delta, userInput, viewportRef.current);
+        // viewportRef.current.velocity = velocity;
+        // viewportRef.current.position = position;
+        // console.log({velocity, position})
       } else {
-        console.log('useFrame no keys pressed')
+        // console.log('useFrame no keys pressed')
       }
 
       (()=> {
         const { viewportVelocity } = userState;
         if (!viewportVelocity) return state;
         if (!viewportVelocity[0] && !viewportVelocity[1] && !viewportVelocity[2]) return state;
-        userDispatch({type: 'PHYSICS_TIC', payload: physicsTic(delta, userState)})  
+        userDispatch({type: 'PHYSICS_TIC', payload: {}})  
       })();
       
       if (worldStateQueryStatus.loading && tileStatus === 'requested') {
