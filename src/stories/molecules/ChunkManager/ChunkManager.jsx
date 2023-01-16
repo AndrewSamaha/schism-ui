@@ -12,13 +12,31 @@ import { getTextureSrc } from '../../../helpers/texture';
 import { ViewGeometry, ViewRotation } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
+const toArray = (pos) => {
+  if (Array.isArray(pos)) return pos;
+  return {
+    x: pos[0],
+    y: pos[1],
+    z: pos[2]
+  }
+}
 
+const toObj = (pos) => {
+  if (!Array.isArray(pos)) return pos;
+  return [
+    pos.x,
+    pos.y,
+    pos.z
+  ];
+}
 
 const createInitialState = (viewportWorldLocation) => {
   console.log('chunkManager.createInitialState, viewportWorldLocation', viewportWorldLocation)
+  const lastCameraPosition = ((location) => {})()
   return {
     visibleChunks: {},
-    lastViewportWorldLocation: viewportWorldLocation,
+    lastViewportWorldLocation: toArray(viewportWorldLocation),
+    lastCameraPosition: toObj(viewportWorldLocation),
     allChunks: {},
     queryQueue: []
   }
@@ -300,8 +318,10 @@ const hasMoved = ({viewportWorldLocation}, {lastViewportWorldLocation}) => {
 }
 
 export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, children, client }) => { // chunkQuery,
+  const { gameState, gameDispatch } = gameReducer;
   const { userState, userDispatch } = userReducer;
   const {viewportWorldLocation} = userState;
+  
   const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, viewportWorldLocation, createInitialState);
   const [getChunkQuery, getChunkQueryStatus] = useLazyQuery(GET_CHUNK_COLLECTION, {
     onCompleted: data => chunkManagerDispatch({ type: RECEIVED_CHUNK_COLLECTION, payload: data }),
