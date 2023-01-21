@@ -127,7 +127,7 @@ export const Play = ({client}) => {
         justifyContent: 'center',
         width: '100%'
         }} >
-        <Debug userState={userState} gameState={gameState} performance={performance} entityReducer={{entityState, entityDispatch}} />
+        <Debug userState={userState} gameState={gameState} cameraPosition={gameState.camera?.ref?.current?.position} performance={performance} entityReducer={{entityState, entityDispatch}} />
           <div style={{ order: '1', flexGrow: '2', maxWidth: '1000px '}}>
             <div id='gradientWrapper' style={{
               display: 'flex',

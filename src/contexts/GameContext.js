@@ -17,6 +17,12 @@ function gameReducer(state, action) {
     }
     console.log('gameReducer ', action)
     switch (action.type) {
+        // case 'UPDATE_CAMERA_STATE':
+        //     state.camera.stateHistoryaction.payload;
+        //     return state;
+        // case 'CLEAR_NEW_CAMERA_POSITION':
+        //     delete state.camera.newPosition;
+        //     return state;
         case 'REGISTER_CAMERA':
             console.log('registering camera')
             state.camera = action.payload;
@@ -65,7 +71,7 @@ function gameReducer(state, action) {
                 ...state
             }
         default:
-            console.log(`unknown action in gameReducer: ${action}`);
+            console.log(`unknown action in gameReducer: ${JSON.stringify(action)}`);
             console.log({action});
             throw new Error(`unknown action in gameReducer: ${action}`);
     }

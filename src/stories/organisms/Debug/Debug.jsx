@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './Debug.css';
 // Constants
 import { DEBUG_ZINDEX } from '../../../constants/zIndex';
+import { Position } from '@react-three/drei/helpers/Position';
 
-export const Debug = ({userState, gameState, performance, entityReducer}) => {
+export const Debug = ({userState, gameState, cameraPosition, performance, entityReducer}) => {
     const { viewportWorldLocation } = userState;
     const { entityState, entityDispatch } = entityReducer;
+
+    const PositionOutput = useMemo(()=> {
+        console.log(gameState?.camera?.ref?.current?.position?.x)
+        return (<div className='position'>
+            Position: {gameState?.camera?.ref?.current?.position?.x}, 
+            {gameState?.camera?.ref?.current?.position?.y}, 
+            {gameState?.camera?.ref?.current?.position?.z}
+        </div>)
+    },[cameraPosition?.x, cameraPosition?.y])
     return (
         <div className='debug' style={{zIndex: `${DEBUG_ZINDEX}`}}>
-            <div className='position'>
-                Position: {viewportWorldLocation[0].toFixed(2)}, 
-                {viewportWorldLocation[1].toFixed(2)}, 
-                {viewportWorldLocation[2].toFixed(2)}
-            </div>
+            (<div className='position'>
+            Position: {cameraPosition?.x}, 
+            {cameraPosition?.y}, 
+            {cameraPosition?.z}
+        </div>)
             <div className='tiles'>
                 tilesFromServer: {Object.entries(gameState?.tilesFromServer || {}).length} 
             </div>

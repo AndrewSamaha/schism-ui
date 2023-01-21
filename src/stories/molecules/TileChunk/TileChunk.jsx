@@ -55,7 +55,7 @@ function tileChunkReducer(state, action) {
 export const TileChunk = ({chunk, chunkData, chunkManagerDispatch}) => {
   const { key, tiles, lastRefresh } = chunk;
 
-  if (chunk.cachedImg && 1) {
+  if (chunk.cachedImg && 0) {
     return (<CachedChunk chunk={chunk}></CachedChunk>)
   };
 

@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { CanvasTexture } from 'three';
+import { useFrame } from '@react-three/fiber';
+
 // Components
 import { TileChunk } from '../TileChunk/TileChunk';
 // Queries
@@ -12,8 +14,27 @@ import { getTextureSrc } from '../../../helpers/texture';
 import { ViewGeometry, ViewRotation } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
-const toArray = (pos) => {
-  if (Array.isArray(pos)) return pos;
+
+const LAG_ESTIMATE = 2;
+
+const guessNextCameraPosition = (ref, lagEstimate=LAG_ESTIMATE) => {
+  return {
+    x: ref.current.position.x + ref.current.velocity[0] * lagEstimate,
+    y: ref.current.position.y + ref.current.velocity[1] * lagEstimate,
+    z: 0
+  }
+}
+
+const getNextVisibleChunk = (cameraRef) => {
+  const nextCameraPosition = guessNextCameraPosition(cameraRef);
+  const nextChunkAddress = getChunkAddress(nextCameraPosition.x, nextCameraPosition.y)
+  return nextChunkAddress;
+}
+
+const isNextChunkVisible = (cameraRef, chunkManagerState) => !!chunkManagerState.allChunks[getKey(getNextVisibleChunk(cameraRef))]
+
+const toObj = (pos) => {
+  if (!Array.isArray(pos)) return pos;
   return {
     x: pos[0],
     y: pos[1],
@@ -21,8 +42,8 @@ const toArray = (pos) => {
   }
 }
 
-const toObj = (pos) => {
-  if (!Array.isArray(pos)) return pos;
+const toArray = (pos) => {
+  if (Array.isArray(pos)) return pos;
   return [
     pos.x,
     pos.y,
@@ -45,6 +66,8 @@ const createInitialState = (viewportWorldLocation) => {
 const UPDATE_LOCATION = 'UPDATE_LOCATION';
 const RECEIVED_CHUNK = 'RECEIVED_CHUNK';
 const RECEIVED_CHUNK_COLLECTION = 'RECEIVED_CHUNK_COLLECTION';
+const REQUEST_CHUNK = 'REQUEST_CHUNK';
+const CAMERA_MOVING = 'CAMERA_MOVING';
 
 const getWorldLocation = ({viewportWorldLocation}) => {
   return {
@@ -144,18 +167,97 @@ const makeChunkImageContext = (chunk) => {
   return ctx;
 }
 
+const doCameraMove = (state, action) => {
+  const { ref } = action.payload;
+  const currentLocation 
+  const worldLocation = getWorldLocation({viewportWorldLocation: action.payload});
+  // console.log('called update_location ', action, 'worldLocation=',JSON.stringify(worldLocation))
+  const chunkLocation = getChunkAddress(worldLocation.x1, worldLocation.y1);
+  const visibleChunkAddresses = getVisibleChunkAddresses({viewportWorldLocation: action.payload});
+  const visibleChunkKeys = visibleChunkAddresses.map(({x,y}) => `ChunkX${x}Y${y}`);
+  const newVisibleChunkKeys = visibleChunkKeys.filter((key) => !Object.keys(state.visibleChunks).includes(key));
+  const newVisibleChunkAddresses = visibleChunkAddresses.filter((address) => !Object.keys(state.visibleChunks).includes(getKey(address)));
+  
+  if (!newVisibleChunkAddresses.length) {
+    return {
+      ...state,
+      lastViewportWorldLocation: action.payload,  
+    }
+  }
+  const newVisibleChunks = {};
+  const newQueries = [];
+  const chunksAddressesToQuery = [];
+
+  newVisibleChunkAddresses.forEach(({x, y}) => {
+    const key = getKey({x, y});
+    if (Object.keys(state.allChunks).includes(key)) {
+      newVisibleChunks[key] = state.allChunks[key];
+      return;
+    }
+    chunksAddressesToQuery.push({x, y});
+    newVisibleChunks[key] = createNewChunk({key, x, y});
+    
+    const queryVariables = {
+      positions: [{
+        x,
+        y
+      }],
+      chunkSize: CHUNK_SIZE
+    };
+  });
+
+  const {getChunkQuery, getChunkQueryStatus} = action.chunkQuery;
+  
+  if (chunksAddressesToQuery.length) {
+    getChunkQuery({
+      variables: {
+        positions: chunksAddressesToQuery,
+        chunkSize: CHUNK_SIZE
+      }
+    });
+  }
+
+  const queryQueue = [...state.queryQueue, ...newQueries];
+
+  const stillVisibleChunksAddresses = visibleChunkAddresses.filter((address) => Object.keys(state.visibleChunks).includes(getKey(address)));
+  const stillVisibleChunks = {};
+  stillVisibleChunksAddresses.forEach(({x, y}) => {
+    const key = getKey({x, y});
+    stillVisibleChunks[key] = state.visibleChunks[key];
+  })
+
+  const visibleChunks = {
+    ...newVisibleChunks,
+    ...stillVisibleChunks
+  }
+
+  return {
+    ...state,
+    lastViewportWorldLocation: action.payload,
+    visibleChunks,
+    allChunks: {
+      ...state.allChunks,
+      ...newVisibleChunks
+    },
+    queryQueue
+  }
+}
+
 function chunkManagerReducer(state, action) {
   switch (action.type) {
       case 'receivedGameState':
-          return {
-              ...state
-          }
+          return state;
       case 'defineChunks':
-          return {
-              ...state
-          }
+          return state;
+      case REQUEST_CHUNK:
+          return state;
+      case CAMERA_MOVING:
+        return doCameraMove(state, action);
+
       case UPDATE_LOCATION:
+        
         const worldLocation = getWorldLocation({viewportWorldLocation: action.payload});
+        // console.log('called update_location ', action, 'worldLocation=',JSON.stringify(worldLocation))
         const chunkLocation = getChunkAddress(worldLocation.x1, worldLocation.y1);
         const visibleChunkAddresses = getVisibleChunkAddresses({viewportWorldLocation: action.payload});
         const visibleChunkKeys = visibleChunkAddresses.map(({x,y}) => `ChunkX${x}Y${y}`);
@@ -214,11 +316,6 @@ function chunkManagerReducer(state, action) {
           ...newVisibleChunks,
           ...stillVisibleChunks
         }
-        
-        // console.log('update')
-        // console.log('state.visibleChunks.keys()', Object.keys(state.visibleChunks))
-        // console.log('visibleChunks', Object.keys(visibleChunks));
-
 
         return {
           ...state,
@@ -286,8 +383,7 @@ function chunkManagerReducer(state, action) {
           key,
           tiles
         }
-        //console.log('receivedChunk',chunk);
-        //console.log('chunkFrom state.visibleChunks', Object.keys(state.visibleChunks))
+
         const receivedVisibleChunks = {
           ...state.visibleChunks,
           [key]: chunk
@@ -329,20 +425,64 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
     client
   });
 
+  const [movedState, setMovedState] = useState('notset');
+
   useEffect(() => {
-    chunkManagerDispatch({ 
-      type: UPDATE_LOCATION,
-      payload: viewportWorldLocation,
-      chunkQuery
-    });
-  },[])
+    if (!gameState.camera?.ref?.current) return;
+    // console.log(gameState.camera?.ref?.current?.position?.x.toFixed(2), gameState.camera?.ref?.current?.position?.y.toFixed(2))
+    // gameDispatch({type: 'REGISTER_CHUNKMANAGER_ON_MOVE', payload: {setMovedState}})
+    if (!isNextChunkVisible(gameState.camera.ref, chunkManagerState)) {
+      const nextCameraPosition = guessNextCameraPosition(gameState.camera.ref);
+      const nextVisibleChunkAddress = getNextVisibleChunk(gameState.camera.ref);
+      
+      //console.log('calling chunkManagerDispatch to get chunk ', nextVisibleChunk)
+      
+      console.log(`move velocity=${gameState.camera?.ref?.current?.velocity}`)
+      console.log(` current position =${gameState.camera?.ref?.current?.position?.x.toFixed(2)}, ${gameState.camera?.ref?.current?.position?.y.toFixed(2)}` )
+      console.log(` next    position =${nextCameraPosition.x.toFixed(2)}, ${nextCameraPosition.y.toFixed(2)}` )
+      chunkManagerDispatch({ type: CAMERA_MOVING, payload: gameState.camera })
+      chunkManagerDispatch({ 
+        type: UPDATE_LOCATION,
+        payload: toArray(nextCameraPosition),
+        nextVisibleChunkAddress,
+        chunkQuery
+      });
+      return;
+    }
+    // chunkManagerDispatch({ 
+    //   type: UPDATE_LOCATION,
+    //   payload: viewportWorldLocation,
+    //   chunkQuery
+    // });
+    // const pos = `newposition ${gameState.camera?.ref?.history?.length} ${gameState.camera?.ref?.current?.velocity[0]}, ${gameState.camera?.ref?.current?.velocity[1]}`;
+    // console.log(pos)
+  },[gameState.camera?.ref?.current?.position?.x, gameState.camera?.ref?.current?.position?.y])
   const chunkQuery = { getChunkQuery, getChunkQueryStatus };
 
-  if (hasMoved(userState, chunkManagerState)) 
+  // useFrame(() => {
+  //   const pos = `newposition ${gameState.camera?.ref?.current?.position?.x}`;
+  //   console.log(pos)
+  //   // if (lastPosition === 'notset') {
+  //   //   setLastPosition(pos);
+  //   //   console.log(`useFrame lastPosition not set, setting to [${pos}]`)
+  //   //   return;
+  //   // }
+
+  //   // if (lastPosition === pos) {
+  //   //   console.log(`useFrame lastPosition not changed=[${pos}]`)
+  //   //   return;
+  //   // }
+  //   // setLastPosition(pos)
+  //   // console.log(`useFrame updating lastPosition to [${pos}]`)
+    
+  // })
+  
+  if (0 && hasMoved(userState, chunkManagerState)) 
     chunkManagerDispatch({ 
       type: UPDATE_LOCATION,
       payload: viewportWorldLocation,
-      chunkQuery
+      chunkQuery,
+      calledFromHasMoved: 1
     });
 
   return (

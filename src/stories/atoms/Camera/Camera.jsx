@@ -59,6 +59,8 @@ export const Camera = (props) => {
             ref.current.position.x = startingPosition[0];
             ref.current.position.y = startingPosition[1];
             ref.current.position.z = startingPosition[2];
+            ref.history = [];
+            ref.current.velocity = [0,0,0];
         }
     }, [])
 
@@ -83,6 +85,7 @@ export const Camera = (props) => {
                 ref.current.position.x = startingPosition[0];
                 ref.current.position.y = startingPosition[1];
             }
+            
             ref.current.velocity[0] += push[0];
             ref.current.velocity[1] += push[1];
         }
@@ -92,6 +95,16 @@ export const Camera = (props) => {
         ref.current.velocity = velocity;
         ref.current.position.x = position.x;
         ref.current.position.y = position.y;
+        
+        ref.history.push({
+            t: Date.now(),
+            position,
+            velocity
+        });
+        const HISTORY_SIZE = 120;
+        if (ref.history.length > HISTORY_SIZE) ref.history.splice(HISTORY_SIZE, ref.history.length - HISTORY_SIZE)
+
+        // if (velocity[0] > 0  || velocity[1] > 0) gameDispatch({ type: 'SET_NEW_CAMERA_POSITION', payload: position })
     })
 
     return (
