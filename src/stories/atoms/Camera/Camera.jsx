@@ -1,9 +1,12 @@
-import React, { useReducer, useContext, useEffect, useState, useRef } from 'react';
+import React, { useReducer, useMemo, useEffect, useLayoutEffect, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Stats } from '@react-three/drei';
+import { CameraHelper } from 'three';
+import { PerspectiveCamera, OrthographicCamera, useHelper } from '@react-three/drei';
 import { ViewRotation } from '../../../constants/viewport';
 import { applyFriction } from '../../../helpers/physics';
 import { ViewMoveFriction } from '../../../constants/viewport';
+import { FOV, ASPECT, ZOOM, ROTATION } from '../../../constants/camera';
+import { CHUNK_SIZE } from '../../../constants/tileChunks';
 
 const calcNewViewportWorldPosition = (currentPosition, viewportVelocity, delta) => {
     const xViewportDistance = viewportVelocity[0] * delta;
@@ -45,6 +48,51 @@ function keysReducer(state, action) {
     }
 }
 
+const getFrustrum = (ref) => {
+    if (!ref?.current?.position) return {};
+
+    const {x, y} = ref?.current?.position;
+    const z = 0.51;
+
+    const center = [x, y+50, z];
+    const widthRadius = 9;
+    const heightRadius = 8;
+    const topWidthAdjustment = 2;
+
+    const worldAddresses = {
+        topLeft:     [ center[0] - widthRadius - topWidthAdjustment, center[1] + heightRadius, center[2] ],
+        topRight:    [ center[0] + widthRadius + topWidthAdjustment, center[1] + heightRadius, center[2] ],
+        bottomLeft:  [ center[0] - widthRadius, center[1] - heightRadius, center[2] ],
+        bottomRight: [ center[0] + widthRadius, center[1] - heightRadius, center[2] ],
+        center
+    };
+
+
+    const worldDimensions = {
+        worldWidth: worldAddresses.topRight[0] - worldAddresses.topLeft[0],
+        worldHeight: worldAddresses.topRight[1] - worldAddresses.bottomRight[1]
+    }
+
+    const chunkFrustrum = {
+        topLeftChunk: [
+            Math.floor(worldAddresses.topLeft[0] / CHUNK_SIZE) * CHUNK_SIZE,
+            Math.floor(worldAddresses.topLeft[1] / CHUNK_SIZE) * CHUNK_SIZE
+        ],
+        bottomRightChunk: [
+            Math.floor(worldAddresses.topRight[0] / CHUNK_SIZE) * CHUNK_SIZE,
+            Math.floor(worldAddresses.bottomRight[1] / CHUNK_SIZE) * CHUNK_SIZE
+        ]
+    }
+
+    //const visibleChunks:
+    //console.log('new frustrum', chunkAddresses)
+    return {
+        ...worldAddresses,
+        ...worldDimensions,
+        ...chunkFrustrum
+    };
+}
+
 export const Camera = (props) => {
     const { startingPosition, userReducer, gameDispatch } = props;
     const { userState } = userReducer;
@@ -53,7 +101,9 @@ export const Camera = (props) => {
     const [keysDown, keysDispatch] = useReducer(keysReducer, '');
     const ref = useRef();
     
-    useEffect(() => {
+    useHelper(ref, CameraHelper, 1, 'hotpink');
+
+    useLayoutEffect(() => {
         gameDispatch({type: 'REGISTER_CAMERA', payload: {ref, keysDown, keysDispatch}})
         if (startingPosition) {
             ref.current.position.x = startingPosition[0];
@@ -62,7 +112,7 @@ export const Camera = (props) => {
             ref.history = [];
             ref.current.velocity = [0,0,0];
         }
-    }, [])
+    },[])
 
     useFrame((state, delta) => {
         //console.log(keysDown)
@@ -76,11 +126,11 @@ export const Camera = (props) => {
             if (keysDown.includes('d')) push[0] += pushSpeed;  
     
             if (ref.current == null) {
-                console.log('creating camera ref.current')
+                //console.log('creating camera ref.current')
                 ref.current = {};
             }
             if (ref.current?.velocity == null) {
-                console.log('creating camera ref.current.velocity')
+                //console.log('creating camera ref.current.velocity')
                 ref.current.velocity = [0,0,0];
                 ref.current.position.x = startingPosition[0];
                 ref.current.position.y = startingPosition[1];
@@ -91,7 +141,9 @@ export const Camera = (props) => {
         }
         
         const { velocity, position } = physicsTicRef(delta, userInput, ref.current);
-    
+        if (!ref.frustrum || position.x !== ref.current.position.x || position.y !== ref.current.position.y) {
+            ref.frustrum = getFrustrum(ref);
+        }
         ref.current.velocity = velocity;
         ref.current.position.x = position.x;
         ref.current.position.y = position.y;
@@ -103,16 +155,19 @@ export const Camera = (props) => {
         });
         const HISTORY_SIZE = 120;
         if (ref.history.length > HISTORY_SIZE) ref.history.splice(HISTORY_SIZE, ref.history.length - HISTORY_SIZE)
-
-        // if (velocity[0] > 0  || velocity[1] > 0) gameDispatch({ type: 'SET_NEW_CAMERA_POSITION', payload: position })
+        
     })
+    
+    
 
     return (
         <PerspectiveCamera 
             makeDefault 
-            fov={20}
+            fov={FOV}
+            aspect={ASPECT}
             ref={ref}
-            rotation={ViewRotation} >
+            zoom={ZOOM}
+            rotation={ROTATION} >
                 
                 <ambientLight intensity={.5} />
 
