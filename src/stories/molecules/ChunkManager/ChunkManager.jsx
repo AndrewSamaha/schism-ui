@@ -180,22 +180,26 @@ const makeChunkImageContext = (chunk) => {
 
 const doCameraMove = (state, action) => {
   const { ref: cameraRef } = action.payload;
-  const currentLocation = cameraRef.current.position; // obj
-  const currentVelocity = cameraRef.current.velocity; // array
-  console.log('goCameraMove currentLocation:', currentLocation)
-  const worldLocation = getViewportCoordinates({viewportWorldLocation: toArray(currentLocation)});
-  console.log('               worldLocation:', worldLocation)
-  // console.log('called update_location ', action, 'worldLocation=',JSON.stringify(worldLocation))
-  const chunkLocation = getChunkAddress(worldLocation.x1, worldLocation.y1);
+  // const currentLocation = cameraRef.current.position; // obj
+  // const worldLocation = getViewportCoordinates({viewportWorldLocation: toArray(currentLocation)});
+
+
+
   const nextVisibleChunkAddress = getNextVisibleChunk(cameraRef);
-  const visibleChunkAddresses = getVisibleChunkAddresses({viewportWorldLocation: toArray(currentLocation)});
-  const visibleChunkKeys = visibleChunkAddresses.map(({x,y}) => `ChunkX${x}Y${y}`);
-  const newVisibleChunkKeys = visibleChunkKeys.filter((key) => !Object.keys(state.visibleChunks).includes(key));
+  const visibleChunkAddresses = cameraRef.frustrum.visibleChunks;
+  // console.log('goCameraMove currentLocation:', currentLocation)
+  // console.log('               worldLocation:', worldLocation)
+  // console.log(cameraRef.frustrum)
+  if (!visibleChunkAddresses) return {
+    ...state,
+    lastViewportWorldLocation: action.payload,  
+  };
+
   const newVisibleChunkAddresses = visibleChunkAddresses.filter((address) => !Object.keys(state.visibleChunks).includes(getKey(address)));
   
   if (!newVisibleChunkAddresses.length) {
-    console.log('  visibleChunkAddresses', visibleChunkAddresses)
-    console.log('bailing out because no new visible chunk addresses')
+    // console.log('  visibleChunkAddresses', visibleChunkAddresses)
+    // console.log('bailing out because no new visible chunk addresses')
     return {
       ...state,
       lastViewportWorldLocation: action.payload,  
@@ -227,7 +231,7 @@ const doCameraMove = (state, action) => {
   chunksAddressesToQuery.push(nextVisibleChunkAddress);
   const uniqueChunks = uniqBy(chunksAddressesToQuery, getKey);
 
-  console.log(uniqueChunks)
+  // console.log(uniqueChunks)
 
   if (chunksAddressesToQuery.length) {
     getChunkQuery({
@@ -458,9 +462,9 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
       
       //console.log('calling chunkManagerDispatch to get chunk ', nextVisibleChunk)
       
-      console.log(`move velocity=${gameState.camera?.ref?.current?.velocity}`)
-      console.log(` current position =${gameState.camera?.ref?.current?.position?.x.toFixed(2)}, ${gameState.camera?.ref?.current?.position?.y.toFixed(2)}` )
-      console.log(` next    position =${nextCameraPosition.x.toFixed(2)}, ${nextCameraPosition.y.toFixed(2)}` )
+      // console.log(`move velocity=${gameState.camera?.ref?.current?.velocity}`)
+      // console.log(` current position =${gameState.camera?.ref?.current?.position?.x.toFixed(2)}, ${gameState.camera?.ref?.current?.position?.y.toFixed(2)}` )
+      // console.log(` next    position =${nextCameraPosition.x.toFixed(2)}, ${nextCameraPosition.y.toFixed(2)}` )
       chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery })
       // chunkManagerDispatch({ 
       //   type: UPDATE_LOCATION,

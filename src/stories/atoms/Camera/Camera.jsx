@@ -58,6 +58,8 @@ const getFrustrum = (ref) => {
     const widthRadius = 9;
     const heightRadius = 8;
     const topWidthAdjustment = 2;
+    const widthInChunks = Math.ceil((widthRadius + topWidthAdjustment) * 2 / CHUNK_SIZE);
+    const heightInChunks = Math.ceil((heightRadius * 3) / CHUNK_SIZE)
 
     const worldAddresses = {
         topLeft:     [ center[0] - widthRadius - topWidthAdjustment, center[1] + heightRadius, center[2] ],
@@ -73,7 +75,14 @@ const getFrustrum = (ref) => {
         worldHeight: worldAddresses.topRight[1] - worldAddresses.bottomRight[1]
     }
 
+    const topLeftChunk = [
+        Math.floor(worldAddresses.topLeft[0] / CHUNK_SIZE) * CHUNK_SIZE,
+        Math.floor(worldAddresses.topLeft[1] / CHUNK_SIZE) * CHUNK_SIZE
+    ];
+    
     const chunkFrustrum = {
+        widthInChunks,
+        heightInChunks,
         topLeftChunk: [
             Math.floor(worldAddresses.topLeft[0] / CHUNK_SIZE) * CHUNK_SIZE,
             Math.floor(worldAddresses.topLeft[1] / CHUNK_SIZE) * CHUNK_SIZE
@@ -84,12 +93,24 @@ const getFrustrum = (ref) => {
         ]
     }
 
+    const visibleChunks = (()=> {
+        const chunks = [];
+        // console.log('chunks')
+        for (let x = topLeftChunk[0]; x < topLeftChunk[0] + widthInChunks * CHUNK_SIZE; x+=CHUNK_SIZE) {
+            for (let y = topLeftChunk[1]; y > topLeftChunk[1] - heightInChunks * CHUNK_SIZE; y-=CHUNK_SIZE) {
+                chunks.push({x, y})
+            }
+        }
+        return chunks;
+    })()
+
     //const visibleChunks:
-    //console.log('new frustrum', chunkAddresses)
+    // console.log('new frustrum', widthInChunks*heightInChunks, visibleChunks)
     return {
         ...worldAddresses,
         ...worldDimensions,
-        ...chunkFrustrum
+        topLeftChunk,
+        visibleChunks
     };
 }
 
