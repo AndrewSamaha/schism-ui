@@ -4,6 +4,7 @@ import { useLazyQuery } from '@apollo/client';
 import { CanvasTexture } from 'three';
 import { useFrame } from '@react-three/fiber';
 import uniqBy from 'lodash/uniqBy';
+import fill from 'lodash/fill';
 
 // Components
 import { TileChunk } from '../TileChunk/TileChunk';
@@ -356,12 +357,20 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
     }
   },[gameState.camera?.ref?.current?.position?.x, gameState.camera?.ref?.current?.position?.y])
 
+  const VISIBLE_CHUNK_SIZE = 16;
+  const visibleChunkKeys = fill(chunkManagerState.visibleChunks, 0, VISIBLE_CHUNK_SIZE - chunkManagerState.visibleChunks.length, VISIBLE_CHUNK_SIZE);
+  
+  useEffect(() => {
+    console.log('attempting to render',visibleChunkKeys)
+  },visibleChunkKeys)
+
   const chunkQuery = { getChunkQuery, getChunkQueryStatus };
 
   return (
     <group>
       {
         chunkManagerState.visibleChunks && Object.entries(chunkManagerState.visibleChunks).map(([key, chunk]) => {
+          
           return (<TileChunk 
                     key={key}
                     chunkData={[key, chunk]}

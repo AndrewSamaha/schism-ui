@@ -55,7 +55,7 @@ const getFrustrum = (ref) => {
     const z = 0.51;
 
     const center = [x, y+50, z];
-    const widthRadius = 9;
+    const widthRadius = 15; // 9
     const heightRadius = 8;
     const topWidthAdjustment = 2;
     const widthInChunks = Math.ceil((widthRadius + topWidthAdjustment) * 2 / CHUNK_SIZE);

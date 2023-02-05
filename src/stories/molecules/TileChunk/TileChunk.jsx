@@ -2,65 +2,36 @@ import React, { useReducer, useRef } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { Tile } from '../../atoms/Tile/Tile';
 import { CachedChunk } from './CachedChunk';
-import { getViewportTiles, calcNewViewportWorldPosition } from '../../../helpers/viewport';
+import { Text } from '@react-three/drei';
 import { GET_CHUNK } from '../../../graph/queries';
-import { CHUNK_SIZE, CHUNK_GEOMETRY } from '../../../constants/tileChunks';
+import { CHUNK_SIZE } from '../../../constants/tileChunks';
+import { ViewRotation } from '../../../constants/viewport';
+import { SHOW_CHUNK_INFO } from '../../../constants/dev';
 
-const initialState = {
-  x: 0,
-  y: 0,
-  lastRefresh: 0,
-  tiles: [],
-  cachedImage: null,
-  key: null,
-  inited: false,
-  getChunkQuery: null,
-};
+export const TileChunk = ({chunk}) => {
+  const { key, tiles } = chunk;
+  
+  if (!tiles?.length) return (<></>)
 
-const REFRESH_TILES = 'REFRESH_TILES';
-const GOT_CHUNK_DATA = 'GOT_CHUNK_DATA';
-const INIT_CHUNK = 'INIT_CHUNK';
-
-function tileChunkReducer(state, action) {
-  switch (action.type) {
-      case INIT_CHUNK:
-        const { x, y, key } = action.payload;
-        return {
-          ...state,
-          x,
-          y,
-          key,
-          inited: true
-        }
-      case GOT_CHUNK_DATA:
-        return {
-          ...state
-        }
-      case REFRESH_TILES:
-        const cachedImage = []; // calculate a cached image
-        return {
-            ...state,
-            tiles: action.tiles
-        }
-      default:
-        console.log(`unknown action in chunkManagerReducer: ${action}`);
-        console.log({action});
-        throw new Error(`unknown action in chunkManagerReducer: ${action}`);
-  }
-  return state;
-}
-
-
-
-export const TileChunk = ({chunk, chunkData, chunkManagerDispatch}) => {
-  const { key, tiles, lastRefresh } = chunk;
-
-  if (chunk.cachedImg && 0) {
-    return (<CachedChunk chunk={chunk}></CachedChunk>)
-  };
+  const chunkPosition = [tiles[0]?.x-CHUNK_SIZE/2-.5, tiles[0]?.y-CHUNK_SIZE/2-.5, 0.01];
+  const textPosition = [0, 0, 1.1];
+  const textRotation = (() => [ViewRotation[0], ViewRotation[1], ViewRotation[2]])();
+  const boxGeometry = [10, 10];
 
   return (
   <group>
+    {SHOW_CHUNK_INFO && 
+    <group position={chunkPosition}>
+      <Text fontSize={.5} position={textPosition}  rotation={textRotation} color={'white'}>
+            {key}
+      </Text>
+      <mesh>
+        <planeGeometry args={boxGeometry} />
+        <meshStandardMaterial wireframe={true} />
+      </mesh>  
+    </group>}
+    
+    
     {
       tiles?.length && tiles.map((tile) => {
         return (<Tile key={`x${tile.x}y${tile.y}`} position={[tile.x, tile.y, 0]} src={tile.src} />)
