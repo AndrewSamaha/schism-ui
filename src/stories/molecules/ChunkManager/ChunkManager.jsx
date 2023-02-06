@@ -17,6 +17,7 @@ import { getTextureSrc } from '../../../helpers/texture';
 // Constants
 import { ViewGeometry, ViewRotation } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
+import { SHOW_VIEWPORT_BOUNDARY } from '../../../constants/dev';
 
 
 const LAG_ESTIMATE = 2;
@@ -215,6 +216,9 @@ const doCameraMove = (state, action) => {
   const uniqueChunks = uniqBy(chunksAddressesToQuery, getKey);
 
   if (chunksAddressesToQuery.length) {
+    console.log('total number of chunks', Object.keys(state?.allChunks)?.length)
+    console.log('visible chunks', Object.keys(state?.visibleChunks)?.length)
+    console.log('requesting chunks',uniqueChunks.length, uniqueChunks)
     getChunkQuery({
       variables: {
         positions: uniqueChunks,
@@ -262,10 +266,11 @@ function chunkManagerReducer(state, action) {
         
       case RECEIVED_CHUNK_COLLECTION:
         const { getChunkCollection: { chunks: receivedChunks } } = action.payload;
-        // console.log(`calling makeChunkImage on ${receivedChunks.length} chunks.`);
+        console.log(`received ${receivedChunks.length} chunks.`);
         const chunks = receivedChunks.reduce((collection, chunk) => {
           const { x, y } = chunk;
           const key = getKey(chunk);
+          console.log(`  ${x},${y} tiles=${chunk.tiles.length}`)
           const tiles = chunk.tiles.map(tile => ({
             ...tile,
             src: getTextureSrc(tile.TileType.type)
@@ -348,6 +353,8 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
     onError: e => console.log('on error',e),
     client
   });
+  
+  const chunkQuery = { getChunkQuery, getChunkQueryStatus };
 
   useEffect(() => {
     if (!gameState.camera?.ref?.current) return;
@@ -364,7 +371,7 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
     console.log('attempting to render',visibleChunkKeys)
   },visibleChunkKeys)
 
-  const chunkQuery = { getChunkQuery, getChunkQueryStatus };
+  
 
   return (
     <group>
@@ -379,8 +386,8 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
                     />);
         })
       }
-      <ViewportBoundary cameraRef={gameState.camera?.ref} />
-      {children}
+      {SHOW_VIEWPORT_BOUNDARY && <ViewportBoundary cameraRef={gameState.camera?.ref} />}
+      {/* {children} */}
     </group>
   );
 }

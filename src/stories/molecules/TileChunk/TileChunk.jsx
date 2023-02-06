@@ -13,7 +13,7 @@ export const TileChunk = ({chunk}) => {
   
   if (!tiles?.length) return (<></>)
 
-  const chunkPosition = [tiles[0]?.x-CHUNK_SIZE/2-.5, tiles[0]?.y-CHUNK_SIZE/2-.5, 0.01];
+  const chunkPosition = [tiles[0]?.x+CHUNK_SIZE/2-.5, tiles[0]?.y+CHUNK_SIZE/2-.5, 0.01];
   const textPosition = [0, 0, 1.1];
   const textRotation = (() => [ViewRotation[0], ViewRotation[1], ViewRotation[2]])();
   const boxGeometry = [10, 10];
@@ -23,7 +23,7 @@ export const TileChunk = ({chunk}) => {
     {SHOW_CHUNK_INFO && 
     <group position={chunkPosition}>
       <Text fontSize={.5} position={textPosition}  rotation={textRotation} color={'white'}>
-            {key}
+            {key} {tiles?.length}
       </Text>
       <mesh>
         <planeGeometry args={boxGeometry} />
