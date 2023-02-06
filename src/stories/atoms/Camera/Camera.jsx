@@ -53,19 +53,21 @@ const getFrustrum = (ref) => {
 
     const {x, y} = ref?.current?.position;
     const z = 0.51;
+    const centerYOffset = 50; // 50
 
-    const center = [x, y+50, z];
-    const widthRadius = 15; // 9
+    const center = [x, y + centerYOffset, z];
+    const widthRadius = 10; // 9
     const heightRadius = 8;
     const topWidthAdjustment = 2;
+    
     const widthInChunks = Math.ceil((widthRadius + topWidthAdjustment) * 2 / CHUNK_SIZE);
     const heightInChunks = Math.ceil((heightRadius * 3) / CHUNK_SIZE)
 
     const worldAddresses = {
-        topLeft:     [ center[0] - widthRadius - topWidthAdjustment, center[1] + heightRadius, center[2] ],
-        topRight:    [ center[0] + widthRadius + topWidthAdjustment, center[1] + heightRadius, center[2] ],
-        bottomLeft:  [ center[0] - widthRadius, center[1] - heightRadius, center[2] ],
-        bottomRight: [ center[0] + widthRadius, center[1] - heightRadius, center[2] ],
+        topLeft:     [ center[0] - widthRadius - topWidthAdjustment, center[1] + heightRadius,  center[2] ],
+        topRight:    [ center[0] + widthRadius + topWidthAdjustment, center[1] + heightRadius,  center[2] ],
+        bottomLeft:  [ center[0] - widthRadius                     , center[1] - heightRadius,  center[2] ],
+        bottomRight: [ center[0] + widthRadius,                      center[1] - heightRadius,  center[2] ],
         center
     };
 
@@ -77,7 +79,7 @@ const getFrustrum = (ref) => {
 
     const topLeftChunk = [
         Math.floor(worldAddresses.topLeft[0] / CHUNK_SIZE) * CHUNK_SIZE,
-        Math.floor(worldAddresses.topLeft[1] / CHUNK_SIZE) * CHUNK_SIZE
+        Math.floor(worldAddresses.topLeft[1] / CHUNK_SIZE) * CHUNK_SIZE + CHUNK_SIZE/2
     ];
     
     const chunkFrustrum = {
@@ -95,17 +97,15 @@ const getFrustrum = (ref) => {
 
     const visibleChunks = (()=> {
         const chunks = [];
-        // console.log('chunks')
-        for (let x = topLeftChunk[0]; x < topLeftChunk[0] + widthInChunks * CHUNK_SIZE; x+=CHUNK_SIZE) {
-            for (let y = topLeftChunk[1]; y > topLeftChunk[1] - heightInChunks * CHUNK_SIZE; y-=CHUNK_SIZE) {
+        for (let x = topLeftChunk[0]; x <= topLeftChunk[0] + widthInChunks * CHUNK_SIZE; x+=CHUNK_SIZE) {
+            for (let y = topLeftChunk[1]; y >= topLeftChunk[1] - heightInChunks * CHUNK_SIZE; y-=CHUNK_SIZE) {
                 chunks.push({x, y})
             }
         }
+        // console.log('Camera visibleChunks ', chunks)
         return chunks;
     })()
 
-    //const visibleChunks:
-    // console.log('new frustrum', widthInChunks*heightInChunks, visibleChunks)
     return {
         ...worldAddresses,
         ...worldDimensions,

@@ -1,5 +1,5 @@
 const SHOW_CHUNK_INFO = 1;
-const SHOW_VIEWPORT_BOUNDARY = 0;
+const SHOW_VIEWPORT_BOUNDARY = 1;
 
 export {
     SHOW_CHUNK_INFO,

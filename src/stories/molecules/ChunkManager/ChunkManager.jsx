@@ -358,20 +358,13 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
 
   useEffect(() => {
     if (!gameState.camera?.ref?.current) return;
+    chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery })
+    return
     if (!isNextChunkVisible(gameState.camera.ref, chunkManagerState)) {
       chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery })
       return;
     }
   },[gameState.camera?.ref?.current?.position?.x, gameState.camera?.ref?.current?.position?.y])
-
-  const VISIBLE_CHUNK_SIZE = 16;
-  const visibleChunkKeys = fill(chunkManagerState.visibleChunks, 0, VISIBLE_CHUNK_SIZE - chunkManagerState.visibleChunks.length, VISIBLE_CHUNK_SIZE);
-  
-  useEffect(() => {
-    console.log('attempting to render',visibleChunkKeys)
-  },visibleChunkKeys)
-
-  
 
   return (
     <group>
