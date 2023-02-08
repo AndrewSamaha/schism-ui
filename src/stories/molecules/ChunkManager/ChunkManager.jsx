@@ -5,6 +5,11 @@ import { CanvasTexture } from 'three';
 import { useFrame } from '@react-three/fiber';
 import uniqBy from 'lodash/uniqBy';
 import fill from 'lodash/fill';
+import differenceBy from 'lodash/differenceBy';
+import difference from 'lodash/difference';
+import unionBy from 'lodash/unionBy';
+import intersectionBy from 'lodash/intersectionBy';
+import intersection from 'lodash/intersection';
 
 // Components
 import { TileChunk } from '../TileChunk/TileChunk';
@@ -123,7 +128,7 @@ const getVisibleChunkAddresses = ({viewportWorldLocation}) => {
 const getKey = ({x, y}) => `ChunkX${x}Y${y}`;
 
 const createNewChunk = ({key, x, y}) => {
-  // console.log('createNewChunk',x,y,key)
+  console.log('createNewChunk',x,y,key)
   return {
     key,
     x,
@@ -180,6 +185,12 @@ const makeChunkImageContext = (chunk) => {
 }
 
 const doCameraMove = (state, action) => {
+  // This function needs to:
+  // 1. Identify chunks in the current frame
+  // 2. Pull data for those chunks from either
+  //    a. state.allChunks - in the case of previously downloaded chunks
+  //    b. getChunkQuery
+
   const { ref: cameraRef } = action.payload;
   const nextVisibleChunkAddress = getNextVisibleChunk(cameraRef);
   const visibleChunkAddresses = cameraRef.frustrum.visibleChunks;
@@ -189,56 +200,52 @@ const doCameraMove = (state, action) => {
     lastViewportWorldLocation: action.payload,  
   };
 
-  const newVisibleChunkAddresses = visibleChunkAddresses.filter((address) => !Object.keys(state.visibleChunks).includes(getKey(address)));
+  const newlyVisibleChunkAddresses = visibleChunkAddresses.filter((address) => !Object.keys(state.visibleChunks).includes(getKey(address)));
   
-  if (!newVisibleChunkAddresses.length) {
+  if (!newlyVisibleChunkAddresses.length) {
     return {
       ...state,
       lastViewportWorldLocation: action.payload,  
     }
   }
-  const newVisibleChunks = {};
-  const newQueries = [];
-  const chunksAddressesToQuery = [];
+  console.log('doCameraMove')
+  
+  const chunkAddressesFromAllChunks = intersection(Object.keys(state.allChunks), newlyVisibleChunkAddresses.map(getKey));
+  const chunkAddressesFromServer = differenceBy(newlyVisibleChunkAddresses, Object.keys(state.allChunks), getKey);
+  console.log('  chunkAddressesFromAllChunks',chunkAddressesFromAllChunks)
+  console.log('  chunkAddressesFromServer',chunkAddressesFromServer)
 
-  newVisibleChunkAddresses.forEach(({x, y}) => {
-    const key = getKey({x, y});
-    if (Object.keys(state.allChunks).includes(key)) {
-      newVisibleChunks[key] = state.allChunks[key];
-      return;
-    }
-    chunksAddressesToQuery.push({x, y});
-    newVisibleChunks[key] = createNewChunk({key, x, y});
-  });
+  const chunksAwaitingFromServer = chunkAddressesFromServer
+    .reduce((acc, curr) => {
+      const {x, y} = curr;
+      const key = getKey(curr);
+      acc[key] = createNewChunk({key, x, y});
+      return acc;
+    }, {});
 
-  const {getChunkQuery, getChunkQueryStatus} = action.chunkQuery;
-  chunksAddressesToQuery.push(nextVisibleChunkAddress);
-  const uniqueChunks = uniqBy(chunksAddressesToQuery, getKey);
+  const chunksFromAllChunks = chunkAddressesFromAllChunks
+    .reduce((acc, key) => {
+      acc[key] = state.allChunks[key];
+      return acc;
+    }, {});;
 
-  if (chunksAddressesToQuery.length) {
+  const { getChunkQuery } = action.chunkQuery;
+  
+  if (chunkAddressesFromServer.length) {
     console.log('total number of chunks', Object.keys(state?.allChunks)?.length)
     console.log('visible chunks', Object.keys(state?.visibleChunks)?.length)
-    console.log('requesting chunks',uniqueChunks.length, uniqueChunks)
+    console.log('requesting chunks',chunkAddressesFromServer.length, chunkAddressesFromServer)
     getChunkQuery({
       variables: {
-        positions: uniqueChunks,
+        positions: chunkAddressesFromServer,
         chunkSize: CHUNK_SIZE
       }
     });
   }
 
-  const queryQueue = [...state.queryQueue, ...newQueries];
-
-  const stillVisibleChunksAddresses = visibleChunkAddresses.filter((address) => Object.keys(state.visibleChunks).includes(getKey(address)));
-  const stillVisibleChunks = {};
-  stillVisibleChunksAddresses.forEach(({x, y}) => {
-    const key = getKey({x, y});
-    stillVisibleChunks[key] = state.visibleChunks[key];
-  })
-
   const visibleChunks = {
-    ...newVisibleChunks,
-    ...stillVisibleChunks
+    ...chunksAwaitingFromServer,
+    ...chunksFromAllChunks
   }
 
   return {
@@ -247,9 +254,9 @@ const doCameraMove = (state, action) => {
     visibleChunks,
     allChunks: {
       ...state.allChunks,
-      ...newVisibleChunks
+      ...chunksAwaitingFromServer
     },
-    queryQueue
+    // queryQueue
   }
 }
 
@@ -358,6 +365,7 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
 
   useEffect(() => {
     if (!gameState.camera?.ref?.current) return;
+    console.log('visibleChunks', chunkManagerState.visibleChunks)
     chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery })
     return
     if (!isNextChunkVisible(gameState.camera.ref, chunkManagerState)) {

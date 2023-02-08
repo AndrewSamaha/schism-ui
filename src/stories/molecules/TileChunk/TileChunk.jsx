@@ -8,8 +8,16 @@ import { CHUNK_SIZE } from '../../../constants/tileChunks';
 import { ViewRotation } from '../../../constants/viewport';
 import { SHOW_CHUNK_INFO } from '../../../constants/dev';
 
-export const TileChunk = ({chunk}) => {
-  const { key, tiles } = chunk;
+export const TileChunk = (props) => {
+  
+  const { chunk } = props;
+  if (!chunk) {
+    console.error('TileChunk passed no usable props')
+    return (<></>)  
+  }
+  // console.log('TileChunk props',key, !!chunk)
+  if (!chunk) return (<></>);
+  const { tiles=[], key } = chunk;
   
   if (!tiles?.length) return (<></>)
 
