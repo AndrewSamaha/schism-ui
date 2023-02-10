@@ -128,7 +128,6 @@ const getVisibleChunkAddresses = ({viewportWorldLocation}) => {
 const getKey = ({x, y}) => `ChunkX${x}Y${y}`;
 
 const createNewChunk = ({key, x, y}) => {
-  console.log('createNewChunk',x,y,key)
   return {
     key,
     x,
@@ -192,7 +191,9 @@ const doCameraMove = (state, action) => {
   //    b. getChunkQuery
 
   const { ref: cameraRef } = action.payload;
-  const nextVisibleChunkAddress = getNextVisibleChunk(cameraRef);
+
+  if (!cameraRef?.current) return state;
+  
   const visibleChunkAddresses = cameraRef.frustrum.visibleChunks;
   
   if (!visibleChunkAddresses) return {
@@ -201,19 +202,17 @@ const doCameraMove = (state, action) => {
   };
 
   const newlyVisibleChunkAddresses = visibleChunkAddresses.filter((address) => !Object.keys(state.visibleChunks).includes(getKey(address)));
-  
+
   if (!newlyVisibleChunkAddresses.length) {
     return {
       ...state,
       lastViewportWorldLocation: action.payload,  
     }
   }
-  console.log('doCameraMove')
   
   const chunkAddressesFromAllChunks = intersection(Object.keys(state.allChunks), newlyVisibleChunkAddresses.map(getKey));
-  const chunkAddressesFromServer = differenceBy(newlyVisibleChunkAddresses, Object.keys(state.allChunks), getKey);
-  console.log('  chunkAddressesFromAllChunks',chunkAddressesFromAllChunks)
-  console.log('  chunkAddressesFromServer',chunkAddressesFromServer)
+  const chunkAddressesFromServer = differenceBy(newlyVisibleChunkAddresses, Object.entries(state.allChunks).map(([key, obj]) => obj), getKey);
+
 
   const chunksAwaitingFromServer = chunkAddressesFromServer
     .reduce((acc, curr) => {
@@ -231,31 +230,59 @@ const doCameraMove = (state, action) => {
 
   const { getChunkQuery } = action.chunkQuery;
   
-  if (chunkAddressesFromServer.length) {
-    console.log('total number of chunks', Object.keys(state?.allChunks)?.length)
-    console.log('visible chunks', Object.keys(state?.visibleChunks)?.length)
-    console.log('requesting chunks',chunkAddressesFromServer.length, chunkAddressesFromServer)
+  if (1 && chunkAddressesFromServer.length) {
+    // console.log('total number of chunks', Object.keys(state?.allChunks)?.length)
+    // console.log('visible chunks', Object.keys(state?.visibleChunks)?.length)
+    // console.log('requesting chunks',chunkAddressesFromServer.length, chunkAddressesFromServer)
     getChunkQuery({
       variables: {
         positions: chunkAddressesFromServer,
         chunkSize: CHUNK_SIZE
       }
     });
+    
   }
 
-  const visibleChunks = {
-    ...chunksAwaitingFromServer,
-    ...chunksFromAllChunks
+
+  // const visibleChunks = {
+  //   ...chunksAwaitingFromServer,
+  //   ...chunksFromAllChunks
+  // }
+  const visibleChunkAddressKeys = visibleChunkAddresses.map(getKey);
+  // Delete chunks that are no longer visible
+  Object
+    .keys(state.visibleChunks)
+    .filter((key) => !visibleChunkAddressKeys.includes(key))
+    .forEach((keyToDelete) => {
+      // console.log('   deleting newlyInvisible chunk', keyToDelete)
+      // console.log('     found in visibleChunksAddresses?',visibleChunkAddresses.includes(keyToDelete))
+      delete state.visibleChunks[keyToDelete];
+    })
+  
+
+  // Add newly created chunks
+  Object.entries(chunksAwaitingFromServer).forEach(([key, chunk]) => {
+    state.visibleChunks[key] = chunk;
+  })
+
+  // Add newly visible chunks from allChunks
+  Object.entries(chunksFromAllChunks).forEach(([key, chunk]) => {
+    state.visibleChunks[key] = chunk;
+  })
+
+  // delete chunks that are no longer visible
+  
+
+  const allChunks = {
+    ...state.allChunks,
+    ...chunksAwaitingFromServer
   }
 
   return {
     ...state,
     lastViewportWorldLocation: action.payload,
-    visibleChunks,
-    allChunks: {
-      ...state.allChunks,
-      ...chunksAwaitingFromServer
-    },
+    // visibleChunks,
+    allChunks
     // queryQueue
   }
 }
@@ -273,11 +300,10 @@ function chunkManagerReducer(state, action) {
         
       case RECEIVED_CHUNK_COLLECTION:
         const { getChunkCollection: { chunks: receivedChunks } } = action.payload;
-        console.log(`received ${receivedChunks.length} chunks.`);
+        // console.log(`received ${receivedChunks.length} chunks.`);
         const chunks = receivedChunks.reduce((collection, chunk) => {
-          const { x, y } = chunk;
           const key = getKey(chunk);
-          console.log(`  ${x},${y} tiles=${chunk.tiles.length}`)
+          // console.log(`  ${x},${y} tiles=${chunk.tiles.length}`, chunk)
           const tiles = chunk.tiles.map(tile => ({
             ...tile,
             src: getTextureSrc(tile.TileType.type)
@@ -307,41 +333,7 @@ function chunkManagerReducer(state, action) {
             ...chunks
           }
         };
-      case RECEIVED_CHUNK:
-        console.log('received chunks',action.payload);
-        const { getChunk } = action.payload;
-        
-        const { x, y } = getChunk.position[0];
-        const key = getKey({x, y});
-        console.log('received chunk',key);
-        if (getChunk.tiles.length != 100) {
-          console.log('TILES != 100!!! len=', getChunk.tiles.length);
-        }
-        const tiles = getChunk.tiles.map(tile => ({
-          ...tile,
-          src: getTextureSrc(tile.TileType.type)
-        }));
-        const chunk = {
-          ...getChunk,
-          x,
-          y,
-          key,
-          tiles
-        }
-
-        const receivedVisibleChunks = {
-          ...state.visibleChunks,
-          [key]: chunk
-        };
-
-        return {
-          ...state,
-          visibleChunks: receivedVisibleChunks,
-          allChunks: {
-            ...state.allChunks,
-            ...receivedVisibleChunks
-          }
-        };
+   
       default:
           console.log(`unknown action in chunkManagerReducer: ${action}`);
           console.log({action});
@@ -353,19 +345,33 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
   const { gameState, gameDispatch } = gameReducer;
   const { userState, userDispatch } = userReducer;
   const {viewportWorldLocation} = userState;
+  const [ expectingChunkQuery, setExpectingChunkQuery ] = useState(false)
   
   const [chunkManagerState, chunkManagerDispatch] = useReducer(chunkManagerReducer, viewportWorldLocation, createInitialState);
-  const [getChunkQuery, getChunkQueryStatus] = useLazyQuery(GET_CHUNK_COLLECTION, {
-    onCompleted: data => chunkManagerDispatch({ type: RECEIVED_CHUNK_COLLECTION, payload: data }),
-    onError: e => console.log('on error',e),
+  const [getChunkQueryNative, getChunkQueryStatus] = useLazyQuery(GET_CHUNK_COLLECTION, {
+    onCompleted: data => {
+      if (!expectingChunkQuery) return;
+      setExpectingChunkQuery(false);
+      chunkManagerDispatch({ type: RECEIVED_CHUNK_COLLECTION, payload: data })
+    },
+    onError: e => {
+      if (!expectingChunkQuery) return;
+      setExpectingChunkQuery(false);
+      console.log('getChunkQuery on error',e)
+    },
+    fetchPolicy: 'network-only',
     client
   });
+  const getChunkQuery = (variables) => {
+    setExpectingChunkQuery(true);
+    getChunkQueryNative(variables);
+  }
   
   const chunkQuery = { getChunkQuery, getChunkQueryStatus };
 
   useEffect(() => {
     if (!gameState.camera?.ref?.current) return;
-    console.log('visibleChunks', chunkManagerState.visibleChunks)
+    // console.log('visibleChunks', chunkManagerState.visibleChunks)
     chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery })
     return
     if (!isNextChunkVisible(gameState.camera.ref, chunkManagerState)) {

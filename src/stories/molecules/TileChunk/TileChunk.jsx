@@ -18,13 +18,26 @@ export const TileChunk = (props) => {
   // console.log('TileChunk props',key, !!chunk)
   if (!chunk) return (<></>);
   const { tiles=[], key } = chunk;
-  
-  if (!tiles?.length) return (<></>)
-
-  const chunkPosition = [tiles[0]?.x+CHUNK_SIZE/2-.5, tiles[0]?.y+CHUNK_SIZE/2-.5, 0.01];
+  const boxGeometry = [10, 10];
   const textPosition = [0, 0, 1.1];
   const textRotation = (() => [ViewRotation[0], ViewRotation[1], ViewRotation[2]])();
-  const boxGeometry = [10, 10];
+
+  if (!tiles?.length) {
+    const chunkPosition = [chunk.x + CHUNK_SIZE/2-.5, chunk.y + CHUNK_SIZE/2 -.5, 0.01]
+    return (<group position={chunkPosition}>
+    <Text fontSize={.5} position={textPosition}  rotation={textRotation} color={'white'}>
+          {key} {tiles?.length}
+    </Text>
+    <mesh>
+      <planeGeometry args={boxGeometry} />
+      <meshStandardMaterial wireframe={true} />
+    </mesh>  
+  </group>)
+  }
+
+  const chunkPosition = [tiles[0]?.x+CHUNK_SIZE/2-.5, tiles[0]?.y+CHUNK_SIZE/2-.5, 0.01];
+  
+  
 
   return (
   <group>
