@@ -97,8 +97,8 @@ const getFrustrum = (ref) => {
 
     const visibleChunks = (()=> {
         const chunks = [];
-        for (let x = topLeftChunk[0]; x <= topLeftChunk[0] + widthInChunks * CHUNK_SIZE; x+=CHUNK_SIZE) {
-            for (let y = topLeftChunk[1]; y >= topLeftChunk[1] - heightInChunks * CHUNK_SIZE; y-=CHUNK_SIZE) {
+        for (let x = topLeftChunk[0] - CHUNK_SIZE / 2; x <= topLeftChunk[0] + widthInChunks * CHUNK_SIZE; x+=CHUNK_SIZE) {
+            for (let y = topLeftChunk[1] + CHUNK_SIZE / 2; y >= topLeftChunk[1] - heightInChunks * CHUNK_SIZE; y-=CHUNK_SIZE) {
                 chunks.push({x, y})
             }
         }
