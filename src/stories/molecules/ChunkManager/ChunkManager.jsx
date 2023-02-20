@@ -22,7 +22,7 @@ import { getTextureSrc } from '../../../helpers/texture';
 // Constants
 import { ViewGeometry, ViewRotation } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
-import { SHOW_VIEWPORT_BOUNDARY } from '../../../constants/dev';
+import { QUERY_SERVER_FOR_CHUNKS, SHOW_VIEWPORT_BOUNDARY } from '../../../constants/dev';
 
 
 const LAG_ESTIMATE = 2;
@@ -230,7 +230,7 @@ const doCameraMove = (state, action) => {
 
   const { getChunkQuery } = action.chunkQuery;
   
-  if (1 && chunkAddressesFromServer.length) {
+  if (QUERY_SERVER_FOR_CHUNKS && chunkAddressesFromServer.length) {
     // console.log('total number of chunks', Object.keys(state?.allChunks)?.length)
     // console.log('visible chunks', Object.keys(state?.visibleChunks)?.length)
     // console.log('requesting chunks',chunkAddressesFromServer.length, chunkAddressesFromServer)
