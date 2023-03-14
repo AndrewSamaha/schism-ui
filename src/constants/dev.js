@@ -1,6 +1,6 @@
 const SHOW_CHUNK_INFO = 1;
 const SHOW_VIEWPORT_BOUNDARY = 0;
-const QUERY_SERVER_FOR_CHUNKS = 0;
+const QUERY_SERVER_FOR_CHUNKS = 1;  // default: 1
 const USE_INSTANCED_MESH_TEST = 1;
 
 export {
@@ -8,4 +8,4 @@ export {
     SHOW_VIEWPORT_BOUNDARY,
     QUERY_SERVER_FOR_CHUNKS,
     USE_INSTANCED_MESH_TEST
-}
+} 

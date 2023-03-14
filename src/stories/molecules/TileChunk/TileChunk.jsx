@@ -37,7 +37,11 @@ export const TileChunk = (props) => {
 
   const chunkPosition = [tiles[0]?.x+CHUNK_SIZE/2-.5, tiles[0]?.y+CHUNK_SIZE/2-.5, 0.01];
   
-  
+  if (chunk.cachedImg) {
+    return (
+    <CachedChunk chunk={chunk}></CachedChunk>
+    )
+  }
 
   return (
   <group>
