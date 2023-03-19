@@ -39,7 +39,18 @@ export const TileChunk = (props) => {
   
   if (USE_CACHED_CHUNKS && chunk.cachedImg) {
     return (
-    <CachedChunk chunk={chunk}></CachedChunk>
+    <CachedChunk chunk={chunk}>
+        {SHOW_CHUNK_INFO && 
+      <group position={chunkPosition}>
+        <Text fontSize={.5} position={textPosition}  rotation={textRotation} color={'white'}>
+              {key} {tiles?.length}
+        </Text>
+        <mesh>
+          <planeGeometry args={boxGeometry} />
+          <meshStandardMaterial wireframe={true} />
+        </mesh>  
+      </group>}
+    </CachedChunk>
     )
   }
 
