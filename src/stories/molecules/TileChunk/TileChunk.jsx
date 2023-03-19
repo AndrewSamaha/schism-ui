@@ -33,7 +33,12 @@ export const TileChunk = (props) => {
   </group>)
   }
 
-  const chunkPosition = [tiles[0]?.x+CHUNK_SIZE/2-.5, tiles[0]?.y+CHUNK_SIZE/2-.5, 0.01];
+  const chunkOffset = -0.5;
+  const chunkPosition = [
+    tiles[0]?.x + CHUNK_SIZE/2 + chunkOffset,
+    tiles[0]?.y + CHUNK_SIZE/2 + chunkOffset,
+    0.01
+  ];
   
   if (USE_CACHED_CHUNKS && chunk.cachedImg) {
     return (

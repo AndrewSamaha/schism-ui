@@ -2,7 +2,7 @@ const SHOW_CHUNK_INFO = 1;
 const SHOW_VIEWPORT_BOUNDARY = 0;
 const QUERY_SERVER_FOR_CHUNKS = 1;  // default: 1
 const USE_INSTANCED_MESH_TEST = 1;
-const USE_CACHED_CHUNKS = 0;
+const USE_CACHED_CHUNKS = 1;
 
 export {
     SHOW_CHUNK_INFO,
