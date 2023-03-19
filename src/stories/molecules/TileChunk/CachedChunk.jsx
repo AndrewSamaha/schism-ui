@@ -1,6 +1,4 @@
 import React, { useRef } from 'react';
-import { useTexture } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import { CHUNK_GEOMETRY } from '../../../constants/tileChunks';
 export const CachedChunk = ({chunk, children}) => {
     const ref = useRef();

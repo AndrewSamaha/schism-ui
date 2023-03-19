@@ -1,9 +1,7 @@
-import React, { useReducer, useRef } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import React from 'react';
 import { Tile } from '../../atoms/Tile/Tile';
 import { CachedChunk } from './CachedChunk';
 import { Text } from '@react-three/drei';
-import { GET_CHUNK } from '../../../graph/queries';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
 import { ViewRotation } from '../../../constants/viewport';
 import { SHOW_CHUNK_INFO, USE_CACHED_CHUNKS } from '../../../constants/dev';
@@ -15,7 +13,7 @@ export const TileChunk = (props) => {
     console.error('TileChunk passed no usable props')
     return (<></>)  
   }
-  // console.log('TileChunk props',key, !!chunk)
+  
   if (!chunk) return (<></>);
   const { tiles=[], key } = chunk;
   const boxGeometry = [10, 10];
