@@ -6,7 +6,7 @@ import { Text } from '@react-three/drei';
 import { GET_CHUNK } from '../../../graph/queries';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
 import { ViewRotation } from '../../../constants/viewport';
-import { SHOW_CHUNK_INFO } from '../../../constants/dev';
+import { SHOW_CHUNK_INFO, USE_CACHED_CHUNKS } from '../../../constants/dev';
 
 export const TileChunk = (props) => {
   
@@ -37,7 +37,7 @@ export const TileChunk = (props) => {
 
   const chunkPosition = [tiles[0]?.x+CHUNK_SIZE/2-.5, tiles[0]?.y+CHUNK_SIZE/2-.5, 0.01];
   
-  if (chunk.cachedImg) {
+  if (USE_CACHED_CHUNKS && chunk.cachedImg) {
     return (
     <CachedChunk chunk={chunk}></CachedChunk>
     )
