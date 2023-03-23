@@ -1,5 +1,6 @@
 // external
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef, useUpdate } from 'react';
+import * as THREE from 'three';
 import { useLazyQuery } from '@apollo/client';
 import { CanvasTexture } from 'three';
 import { useFrame } from '@react-three/fiber';
@@ -22,7 +23,8 @@ import { getTextureSrc } from '../../../helpers/texture';
 // Constants
 import { ViewGeometry, ViewRotation } from '../../../constants/viewport';
 import { CHUNK_SIZE } from '../../../constants/tileChunks';
-import { QUERY_SERVER_FOR_CHUNKS, SHOW_VIEWPORT_BOUNDARY } from '../../../constants/dev';
+import { QUERY_SERVER_FOR_CHUNKS, SHOW_VIEWPORT_BOUNDARY, USE_INSTANCED_MESH_TEST } from '../../../constants/dev';
+import { InstancedTiles } from './InstancedTiles';
 
 
 const LAG_ESTIMATE = 2;
@@ -372,13 +374,11 @@ export const ChunkManager = ({gameReducer, userReducer, worldStateQuery, childre
   useEffect(() => {
     if (!gameState.camera?.ref?.current) return;
     // console.log('visibleChunks', chunkManagerState.visibleChunks)
-    chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery })
-    return
-    if (!isNextChunkVisible(gameState.camera.ref, chunkManagerState)) {
-      chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery })
-      return;
-    }
+    chunkManagerDispatch({ type: CAMERA_IS_MOVING, payload: gameState.camera, chunkQuery });
+    return;
   },[gameState.camera?.ref?.current?.position?.x, gameState.camera?.ref?.current?.position?.y])
+
+  if (USE_INSTANCED_MESH_TEST) return (<InstancedTiles />);
 
   return (
     <group>
